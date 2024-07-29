@@ -12,45 +12,51 @@ import {
     MenuItems,
 } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon, StarIcon } from '@heroicons/react/20/solid'
+import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon, StarIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { fetchallproductsAycn, selectAllProducts, fetchallproductscategoriesaync } from "../productsList/prodectSlice"
 
 const sortOptions = [
-    
-    { name: 'Price: Low to High', order: "asc", sort: "price",  current: false },
-    { name: 'Price: High to Low', order: "desc", sort: "price",  current: false },
+    { name: "Best Rating", sort: "-rating", current: false },
+    { name: "Price: Low to High", sort: "price", current: false },
+    { name: "Price: High to Low", sort: "-price", current: false },
+];
+const items = [
+    { id: 1, title: 'Back End Developer', department: 'Engineering', type: 'Full-time', location: 'Remote' },
+    { id: 2, title: 'Front End Developer', department: 'Engineering', type: 'Full-time', location: 'Remote' },
+    { id: 3, title: 'User Interface Designer', department: 'Design', type: 'Full-time', location: 'Remote' },
 ]
+
 
 const filters = [
     {
         id: 'brand',
         name: 'brand',
         options: [
-            
-                { value: 'Essence', label: 'Essence', checked: false },
-                { value: 'Glamour Beauty', label: 'Glamour Beauty', checked: false },
-                { value: 'Velvet Touch', label: 'Velvet Touch', checked: false },
-                { value: 'Chic Cosmetics', label: 'Chic Cosmetics', checked: false },
-                { value: 'Nail Couture', label: 'Nail Couture', checked: false },
-                { value: 'Calvin Klein', label: 'Calvin Klein', checked: false },
-                { value: 'Chanel', label: 'Chanel', checked: false },
-                { value: 'Dior', label: 'Dior', checked: false },
-                {
-                  value: 'Dolce & Gabbana',
-                  label: 'Dolce & Gabbana',
-                  checked: false
-                },
-                { value: 'Gucci', label: 'Gucci', checked: false },
-                {
-                  value: 'Annibale Colombo',
-                  label: 'Annibale Colombo',
-                  checked: false
-                },
-                { value: 'Furnitur Co.', label: 'Furniture Co.', checked: false },
-                { value: 'Knoll', label: 'Knoll', checked: false },
-                { value: 'Bath Trends', label: 'Bath Trends', checked: false },
+
+            { value: 'Essence', label: 'Essence', checked: false },
+            { value: 'Glamour Beauty', label: 'Glamour Beauty', checked: false },
+            { value: 'Velvet Touch', label: 'Velvet Touch', checked: false },
+            { value: 'Chic Cosmetics', label: 'Chic Cosmetics', checked: false },
+            { value: 'Nail Couture', label: 'Nail Couture', checked: false },
+            { value: 'Calvin Klein', label: 'Calvin Klein', checked: false },
+            { value: 'Chanel', label: 'Chanel', checked: false },
+            { value: 'Dior', label: 'Dior', checked: false },
+            {
+                value: 'Dolce & Gabbana',
+                label: 'Dolce & Gabbana',
+                checked: false
+            },
+            { value: 'Gucci', label: 'Gucci', checked: false },
+            {
+                value: 'Annibale Colombo',
+                label: 'Annibale Colombo',
+                checked: false
+            },
+            { value: 'Furnitur Co.', label: 'Furniture Co.', checked: false },
+            { value: 'Knoll', label: 'Knoll', checked: false },
+            { value: 'Bath Trends', label: 'Bath Trends', checked: false },
         ],
     },
 
@@ -59,12 +65,12 @@ const filters = [
         id: 'category',
         name: 'Category',
         options:
-        [
-            { value: 'beauty', label: 'beauty', checked: false },
-            { value: 'fragrances', label: 'fragrances', checked: false },
-            { value: 'groceries', label: 'groceries', checked: false },
-            { value: 'furniture', label: 'furniture', checked: false }
-        ],
+            [
+                { value: 'beauty', label: 'beauty', checked: false },
+                { value: 'fragrances', label: 'fragrances', checked: false },
+                { value: 'groceries', label: 'groceries', checked: false },
+                { value: 'furniture', label: 'furniture', checked: false }
+            ],
     },
 ]
 
@@ -75,26 +81,44 @@ function classNames(...classes) {
 const Productlist = () => {
     const dispatch = useDispatch();
 
-    let [filter , setfilter] = useState({})
-    const filterhandler = (e, section)=>
-        {
-            let value = e.target.value
-            let newfilter = {...filter,[section.id] : value}
-            setfilter(newfilter)
-            dispatch(fetchallproductscategoriesaync(newfilter))
-        }
-        const sorthandler = (e, option)=>
-            {
-                console.log("option", option)
-                const newfilter = { ...filter, _sort: option.sort, _order: option.order };
-                setfilter(newfilter)
-                dispatch(fetchallproductscategoriesaync(newfilter))
+    let [filter, setfilter] = useState({})
+    let [Sort, setSort] = useState({})
+
+
+    const filterhandler = (e, section, option) => {
+        console.log(e.target.checked)
+        const newFilter = { ...filter };
+        // TODO : on server it will support multiple categories
+        if (e.target.checked) {
+            if (newFilter[section.id]) {
+                newFilter[section.id].push(option.value)
+            } else {
+                newFilter[section.id] = [option.value]
             }
+        } else {
+            const index = newFilter[section.id].findIndex(el => el === option.value)
+            newFilter[section.id].splice(index, 1);
+        }
+        console.log("productlist--filter", newFilter);
+
+        setfilter(newFilter);
+    };
+    const sorthandler = (e, option) => {
+        const sort = { _sort: option.sort };
+        setSort(sort);
+    };
+    // const sorthandler = (e, option)=>
+    //     {
+    //         console.log("option", option)
+    //         const newfilter = { ...filter, _sort: option.sort, _order: option.order };
+    //         setfilter(newfilter)
+    //         dispatch(fetchallproductscategoriesaync(newfilter))
+    //     }
     const products = useSelector(selectAllProducts);
 
     useEffect(() => {
-        dispatch(fetchallproductscategoriesaync(filter))
-    }, [dispatch])
+        dispatch(fetchallproductscategoriesaync({ filter, Sort }))
+    }, [dispatch, filter, Sort])
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
 
     return (
@@ -204,7 +228,7 @@ const Productlist = () => {
                                                 <MenuItem key={option.name}>
                                                     {({ focus }) => (
                                                         <p
-                                                            onClick={(e)=>sorthandler(e,option)}
+                                                            onClick={(e) => sorthandler(e, option)}
                                                             className={classNames(
                                                                 option.current ? 'font-medium text-gray-900' : 'text-gray-500',
                                                                 focus ? 'bg-gray-100' : '',
@@ -271,7 +295,7 @@ const Productlist = () => {
                                                                         name={`${section.id}[]`}
                                                                         defaultValue={option.value}
                                                                         type="checkbox"
-                                                                        onChange={e=>filterhandler(e,section)}
+                                                                        onChange={e => filterhandler(e, section, option)}
                                                                         defaultChecked={option.checked}
                                                                         className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                                                     />
@@ -335,8 +359,71 @@ const Productlist = () => {
                                             </div>
                                         </div>
                                     </div>
+                                    <div className="flex flex-1  sm:hidden justify-between">
+                                        <a
+                                            href="#"
+                                            className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                                        >
+                                            Previous
+                                        </a>
+                                        <a
+                                            href="#"
+                                            className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                                        >
+                                            Next
+                                        </a>
+                                    </div>
+                                    <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+                                        <div>
+                                            <p className="text-sm text-gray-700">
+                                                Showing <span className="font-medium">1</span> to <span className="font-medium">10</span> of{' '}
+                                                <span className="font-medium">97</span> results
+                                            </p>
+                                        </div>
+                                        <div>
+                                            <nav aria-label="Pagination" className="isolate inline-flex -space-x-px rounded-md shadow-sm">
+                                                <a
+                                                    href="#"
+                                                    className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                                                >
+                                                    <span className="sr-only">Previous</span>
+                                                    <ChevronLeftIcon aria-hidden="true" className="h-5 w-5" />
+                                                </a>
+                                                {/* Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" */}
+                                                <a
+                                                    href="#"
+                                                    aria-current="page"
+                                                    className="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                                >
+                                                    1
+                                                </a>
+                                                <a
+                                                    href="#"
+                                                    className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                                                >
+                                                    2
+                                                </a>
+                                                <a
+                                                    href="#"
+                                                    className="relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex"
+                                                >
+                                                    3
+                                                </a>
 
+                                                <a
+                                                    href="#"
+                                                    className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+                                                >
+                                                    <span className="sr-only">Next</span>
+                                                    <ChevronRightIcon aria-hidden="true" className="h-5 w-5" />
+                                                </a>
+                                            </nav>
+                                        </div>
+                                    </div>
                                 </div>
+                                   
+                                    
+                                
                             </div>
                         </section>
                     </main>

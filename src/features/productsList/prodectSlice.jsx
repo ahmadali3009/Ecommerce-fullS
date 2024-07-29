@@ -19,10 +19,10 @@ export const fetchallproductsAycn = createAsyncThunk(
 
 export const fetchallproductscategoriesaync = createAsyncThunk(
   "products/fetchallproductscategories",
-  async(newfilter) =>
+  async({filter, Sort}) =>
       {
-        console.log(newfilter)
-          const response = await fetchallproductscategories(newfilter)
+        console.log("inslice",filter , Sort)
+          const response = await fetchallproductscategories(filter , Sort)
           console.log("this thnk recivdev product" , response)
           return response.data
       }
@@ -51,7 +51,7 @@ export const productSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(fetchallproductscategoriesaync.fulfilled, (state, action) => {
-        console.log('action', action.payload);
+        console.log('action_______', action.payload);
         state.status = 'idle';
         state.products = action.payload;
       })
