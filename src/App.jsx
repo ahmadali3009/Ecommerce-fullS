@@ -12,7 +12,7 @@ import {
 } from "react-router-dom";
 import Cartpage from './pages/cartpage'
 import Cheakout from './pages/cheakout'
-import Productdetail from './pages/productdetail'
+import Producthistory from './pages/producthistory'
 
 function App() {
   const router = createBrowserRouter([
@@ -62,11 +62,11 @@ function App() {
       ),
     },
     {
-      path: '/productdetail',
+      path: '/productdetail/:id',
       element: (
         <>
           <Nav />
-          <Productdetail />
+          <Producthistory />
         </>
       ),
     },

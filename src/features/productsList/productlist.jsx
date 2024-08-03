@@ -15,75 +15,50 @@ import { XMarkIcon } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon, StarIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { fetchallproductsAycn, selectAllProducts, fetchallproductscategoriesaync } from "../productsList/prodectSlice"
+import {  selectAllProducts, fetchallproductscategoriesaync, selectAllcategories , selectAllbrand, fetchbrandsaync, fetchcategoriesaync } from "../productsList/prodectSlice"
 
 const sortOptions = [
     { name: "Best Rating", sort: "-rating", current: false },
     { name: "Price: Low to High", sort: "price", current: false },
     { name: "Price: High to Low", sort: "-price", current: false },
 ];
-const items = [
-    { id: 1, title: 'Back End Developer', department: 'Engineering', type: 'Full-time', location: 'Remote' },
-    { id: 2, title: 'Front End Developer', department: 'Engineering', type: 'Full-time', location: 'Remote' },
-    { id: 3, title: 'User Interface Designer', department: 'Design', type: 'Full-time', location: 'Remote' },
-]
 
 
-const filters = [
-    {
-        id: 'brand',
-        name: 'brand',
-        options: [
+// const pagenation = [
+//     { name: "", page: "", per_page: "10" }
+// ]
 
-            { value: 'Essence', label: 'Essence', checked: false },
-            { value: 'Glamour Beauty', label: 'Glamour Beauty', checked: false },
-            { value: 'Velvet Touch', label: 'Velvet Touch', checked: false },
-            { value: 'Chic Cosmetics', label: 'Chic Cosmetics', checked: false },
-            { value: 'Nail Couture', label: 'Nail Couture', checked: false },
-            { value: 'Calvin Klein', label: 'Calvin Klein', checked: false },
-            { value: 'Chanel', label: 'Chanel', checked: false },
-            { value: 'Dior', label: 'Dior', checked: false },
-            {
-                value: 'Dolce & Gabbana',
-                label: 'Dolce & Gabbana',
-                checked: false
-            },
-            { value: 'Gucci', label: 'Gucci', checked: false },
-            {
-                value: 'Annibale Colombo',
-                label: 'Annibale Colombo',
-                checked: false
-            },
-            { value: 'Furnitur Co.', label: 'Furniture Co.', checked: false },
-            { value: 'Knoll', label: 'Knoll', checked: false },
-            { value: 'Bath Trends', label: 'Bath Trends', checked: false },
-        ],
-    },
-
-
-    {
-        id: 'category',
-        name: 'Category',
-        options:
-            [
-                { value: 'beauty', label: 'beauty', checked: false },
-                { value: 'fragrances', label: 'fragrances', checked: false },
-                { value: 'groceries', label: 'groceries', checked: false },
-                { value: 'furniture', label: 'furniture', checked: false }
-            ],
-    },
-]
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
 
 const Productlist = () => {
+    const products = useSelector(selectAllProducts);
+    const brand = useSelector(selectAllbrand);
+    const categories = useSelector(selectAllcategories);
+    console.log("useseletorhookbrand", brand)
+    const filters = [
+        {
+            id: 'brand',
+            name: 'brand',
+            options: brand,
+        },
+    
+    
+        {
+            id: 'category',
+            name: 'category',
+            options:categories,
+        },
+    ]
+    var limit = 10;
+    var total_product = 30;
     const dispatch = useDispatch();
 
     let [filter, setfilter] = useState({})
     let [Sort, setSort] = useState({})
-
+    let [pagee , setpage] = useState(1)
 
     const filterhandler = (e, section, option) => {
         console.log(e.target.checked)
@@ -107,6 +82,10 @@ const Productlist = () => {
         const sort = { _sort: option.sort };
         setSort(sort);
     };
+    
+    const pagenationhandler = (e , index) => {
+         setpage(index);
+    };
     // const sorthandler = (e, option)=>
     //     {
     //         console.log("option", option)
@@ -114,11 +93,17 @@ const Productlist = () => {
     //         setfilter(newfilter)
     //         dispatch(fetchallproductscategoriesaync(newfilter))
     //     }
-    const products = useSelector(selectAllProducts);
 
     useEffect(() => {
-        dispatch(fetchallproductscategoriesaync({ filter, Sort }))
-    }, [dispatch, filter, Sort])
+        const pagenation = { _page: pagee , per_page: limit  };
+        dispatch(fetchallproductscategoriesaync({ filter, Sort , pagenation }))
+    }, [dispatch, filter, Sort , pagee])
+
+    useEffect(()=>{
+        dispatch(fetchbrandsaync())
+        dispatch(fetchcategoriesaync())
+    }, [])
+
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
 
     return (
@@ -324,8 +309,8 @@ const Productlist = () => {
                                             <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
 
                                                 {products.map((product) => (
-                                                    <Link to="/productdetail">
-                                                        <div key={product.id} className=" group relative border-solid border-2 p-2 border-gray-200">
+                                                    <Link to={`/productdetail/${product.id}`} key={product.id}>
+                                                        <div  className=" group relative border-solid border-2 p-2 border-gray-200">
                                                             <div className="min-h60 aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-60">
                                                                 <img
                                                                     src={product.thumbnail}
@@ -376,40 +361,26 @@ const Productlist = () => {
                                     <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
                                         <div>
                                             <p className="text-sm text-gray-700">
-                                                Showing <span className="font-medium">1</span> to <span className="font-medium">10</span> of{' '}
-                                                <span className="font-medium">97</span> results
+                                                Showing <span className="font-medium">{(pagee-1)*limit}</span> to <span className="font-medium">{pagee*limit}</span> of{' '}
+                                                <span className="font-medium">{total_product}</span> results
                                             </p>
                                         </div>
                                         <div>
                                             <nav aria-label="Pagination" className="isolate inline-flex -space-x-px rounded-md shadow-sm">
-                                                <a
-                                                    href="#"
-                                                    className="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                                                >
-                                                    <span className="sr-only">Previous</span>
-                                                    <ChevronLeftIcon aria-hidden="true" className="h-5 w-5" />
-                                                </a>
-                                                {/* Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" */}
-                                                <a
-                                                    href="#"
+                                               {
+                                                Array.from({length : Math.ceil(total_product/limit)}).map(
+                                                    (pages , index)=>
+                                                     <p
+                                                        onClick={(e)=>pagenationhandler(e, index+1)}
                                                     aria-current="page"
                                                     className="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                                >
-                                                    1
-                                                </a>
-                                                <a
-                                                    href="#"
-                                                    className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                                                >
-                                                    2
-                                                </a>
-                                                <a
-                                                    href="#"
-                                                    className="relative hidden items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 md:inline-flex"
-                                                >
-                                                    3
-                                                </a>
-
+                                                    >
+                                                    {index+1}
+                                                    </p>
+                                                    )
+                                               }
+                                         
+                                                {/* Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" */}
                                                 <a
                                                     href="#"
                                                     className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
@@ -421,9 +392,9 @@ const Productlist = () => {
                                         </div>
                                     </div>
                                 </div>
-                                   
-                                    
-                                
+
+
+
                             </div>
                         </section>
                     </main>
