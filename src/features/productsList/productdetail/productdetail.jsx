@@ -82,7 +82,7 @@ const Productdetail = () => {
           <div className="mx-auto mt-6 max-w-2xl sm:px-6 lg:grid lg:max-w-7xl lg:grid-cols-3 lg:gap-x-8 lg:px-8">
             <div className="aspect-h-4 aspect-w-3 hidden overflow-hidden rounded-lg lg:block">
               <img
-                alt={products.images[0].title}
+                alt={products.title}
                 src={products.images[0]}
                 className="h-full w-full object-cover object-center"
               />
@@ -90,14 +90,14 @@ const Productdetail = () => {
             <div className="hidden lg:grid lg:grid-cols-1 lg:gap-y-8">
               <div className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg">
                 <img
-                  alt={products.images[1].title}
+                  alt={products.title}
                   src={products.images[1]}
                   className="h-full w-full object-cover object-center"
                 />
               </div>
               <div className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg">
                 <img
-                  alt={products.images[2].title}
+                  alt={products.title}
                   src={products.images[2]}
                   className="h-full w-full object-cover object-center"
                 />
@@ -105,7 +105,7 @@ const Productdetail = () => {
             </div>
             <div className="aspect-h-5 aspect-w-4 lg:aspect-h-4 lg:aspect-w-3 sm:overflow-hidden sm:rounded-lg">
               <img
-                alt={products.images[3].title}
+                alt={products.title}
                 src={products.images[3]}
                 className="h-full w-full object-cover object-center"
               />
@@ -128,17 +128,17 @@ const Productdetail = () => {
                 <h3 className="sr-only">Reviews</h3>
                 <div className="flex items-center">
                   <div className="flex items-center">
-                    {[0, 1, 2, 3, 4].map((rating) => (
+                    {products.reviews.map((review) => (
                       <StarIcon
-                        key={rating}
+                        key={review.index}
                         aria-hidden="true"
                         className={classNames(
-                          products.reviews
+                          review.rating
                         )}
                       />
                     ))}
                   </div>
-                  <p className="sr-only">{products.reviews} out of 5 stars</p>
+                  <p className="sr-only">{products.rating} out of 5 stars</p>
                   
                 </div>
               </div>
@@ -264,7 +264,7 @@ const Productdetail = () => {
                 <h2 className="text-sm font-medium text-gray-900">Details</h2>
 
                 <div className="mt-4 space-y-6">
-                  <p className="text-sm text-gray-600">{products.details}</p>
+                  <p className="text-sm text-gray-600">{products.description}</p>
                 </div>
               </div>
             </div>
