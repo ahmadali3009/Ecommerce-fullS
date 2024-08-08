@@ -13,6 +13,7 @@ import {
 import Cartpage from './pages/cartpage'
 import Cheakout from './pages/cheakout'
 import Producthistory from './pages/producthistory'
+import Protected from './features/auth/components/protected'
 
 function App() {
   const router = createBrowserRouter([
@@ -20,8 +21,10 @@ function App() {
       path: '/',
       element: (
         <>
+          <Protected>
           <Nav />
           <Home />
+          </Protected>
         </>
       ),
     },
@@ -29,8 +32,11 @@ function App() {
       path: '/signup',
       element: (
         <>
+          <Protected>
           <Nav />
           <Signupoage />
+          </Protected>
+
         </>
       ),
     },
@@ -47,8 +53,10 @@ function App() {
       path: '/cart',
       element: (
         <>
+          <Protected>
           <Nav />
           <Cartpage />
+          </Protected>
         </>
       ),
     },
@@ -56,8 +64,11 @@ function App() {
       path: '/checkout',
       element: (
         <>
+          <Protected>
           <Nav />
           <Cheakout />
+          </Protected>
+
         </>
       ),
     },
@@ -65,8 +76,10 @@ function App() {
       path: '/productdetail/:id',
       element: (
         <>
+          <Protected>
           <Nav />
           <Producthistory />
+          </Protected>
         </>
       ),
     },

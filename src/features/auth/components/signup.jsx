@@ -1,19 +1,20 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import { useForm } from "react-hook-form"
-import { useDispatch } from 'react-redux'
-import {createuseraync} from "../authSlice"
+import { useDispatch, useSelector } from 'react-redux'
+import {createuseraync , selectcreateuser} from "../authSlice"
+
 const Signup = () => {
   let dispatch =  useDispatch();
   const { register, handleSubmit, watch, formState: {errors}} = useForm()
   const userdata = (data) => console.log(data)
   console.log(errors)
 
-
+  const createuser = useSelector(selectcreateuser)
 
   return (
     <div>
- 
+      {createuser?.email}
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
