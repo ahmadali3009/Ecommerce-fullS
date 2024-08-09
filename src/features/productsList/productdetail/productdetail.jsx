@@ -4,7 +4,7 @@ import { StarIcon } from '@heroicons/react/20/solid'
 import { Radio, RadioGroup } from '@headlessui/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchproductdetailbyidaync, selectproductbyid } from '../prodectSlice'
-import { useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 
   let colors = [
     { name: 'White', class: 'bg-white', selectedClass: 'ring-gray-400' },
@@ -226,13 +226,14 @@ const Productdetail = () => {
                     </RadioGroup>
                   </fieldset>
                 </div>
-
+                <Link to="/cart">
                 <button
                   type="submit"
                   className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
-                  Add to bag
+                  Add to cart
                 </button>
+                </Link>
               </form>
             </div>
 
