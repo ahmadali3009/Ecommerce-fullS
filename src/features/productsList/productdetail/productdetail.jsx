@@ -5,6 +5,8 @@ import { Radio, RadioGroup } from '@headlessui/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchproductdetailbyidaync, selectproductbyid } from '../prodectSlice'
 import { Link, useParams } from 'react-router-dom'
+import { addtocartaync } from '../../cart/cartslice'
+import { selectcheckuser } from '../../auth/authSlice'
 
   let colors = [
     { name: 'White', class: 'bg-white', selectedClass: 'ring-gray-400' },
@@ -37,10 +39,19 @@ const Productdetail = () => {
     const dispatch = useDispatch()
 
     const products = useSelector(selectproductbyid);
+    const user = useSelector(selectcheckuser)
+    console.log("productdetail____user", user)
     console.log("productsindetail___________", products)
     const prams = useParams()
   const [selectedColor, setSelectedColor] = useState(colors[0])
   const [selectedSize, setSelectedSize] = useState(sizes[2])
+  
+
+  const carthandler = (e)=>
+    {
+      e.preventDefault()
+      dispatch(addtocartaync({...products, quantity:1 , user:user.id}))
+    }
 
   useEffect(()=>{
     dispatch(fetchproductdetailbyidaync(prams.id))
@@ -226,14 +237,13 @@ const Productdetail = () => {
                     </RadioGroup>
                   </fieldset>
                 </div>
-                <Link to="/cart">
                 <button
+                onClick={carthandler}
                   type="submit"
                   className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
                   Add to cart
                 </button>
-                </Link>
               </form>
             </div>
 
