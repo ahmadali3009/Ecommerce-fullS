@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+import {selectcart} from "./cartslice"
 
 const products = [
     {
@@ -31,7 +33,8 @@ const products = [
 
 const Cart = () => {
     const [open, setOpen] = useState(true)
-
+    let cartproduct = useSelector(selectcart)
+    console.log("cartproduct" , cartproduct)
     return (
         <div>
             <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -40,12 +43,12 @@ const Cart = () => {
                 <div className="mt-8">
                     <div className="flow-root">
                         <ul role="list" className="-my-6 divide-y divide-gray-200">
-                            {products.map((product) => (
+                            {cartproduct.map((product) => (
                                 <li key={product.id} className="flex py-6">
                                     <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                         <img
-                                            src={product.imageSrc}
-                                            alt={product.imageAlt}
+                                            src={product.thumbnail}
+                                            alt={product.title}
                                             className="h-full w-full object-cover object-center"
                                         />
                                     </div>
@@ -54,11 +57,11 @@ const Cart = () => {
                                         <div>
                                             <div className="flex justify-between text-base font-medium text-gray-900">
                                                 <h3>
-                                                    <a href={product.href}>{product.name}</a>
+                                                    <a href={product.href}>{product.title}</a>
                                                 </h3>
                                                 <p className="ml-4">{product.price}</p>
                                             </div>
-                                            <p className="mt-1 text-sm text-gray-500">{product.color}</p>
+                                            <p className="mt-1 text-sm text-gray-500">{product.category}</p>
                                         </div>
                                         <div className="flex flex-1 items-end justify-between text-sm mb-5">
                                             {/* {product.quantity} */}

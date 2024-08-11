@@ -13,3 +13,5 @@ export function addtocart(product){
     resolve({data})
     })
 }
+
+

@@ -2,6 +2,8 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Bars3Icon, ShoppingCartIcon, XMarkIcon } from '@heroicons/react/24/outline'
+import { selectcart } from '../cart/cartslice'
+import { useSelector } from 'react-redux'
 
 const navigation = [
   { name: 'Dashboard', href: '#', current: true },
@@ -14,6 +16,8 @@ function classNames(...classes) {
 }
 
 const Nav = () => {
+  let cartproduct = useSelector(selectcart)
+
   return (
     <div>
       <Disclosure as="nav" className="bg-gray-800">
@@ -68,6 +72,7 @@ const Nav = () => {
                 >
                   <span className="absolute -inset-1.5" />
                   <span className="sr-only">View notifications</span>
+                  <span className='inline'>{cartproduct.length}</span>
                   <ShoppingCartIcon className="h-6 w-6" aria-hidden="true" />
                 </button>
                 </Link>
