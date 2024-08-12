@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 import Loginpage from './pages/loginpage'
 import Signupoage from './pages/signupoage'
@@ -14,8 +14,22 @@ import Cartpage from './pages/cartpage'
 import Cheakout from './pages/cheakout'
 import Producthistory from './pages/producthistory'
 import Protected from './features/auth/components/protected'
+import { useDispatch, useSelector } from 'react-redux'
+import { selectcheckuser } from './features/auth/authSlice'
+import { fetchcartbyidaync } from './features/cart/cartslice'
 
 function App() {
+
+  let dispach = useDispatch()
+  let userid = useSelector(selectcheckuser)
+  console.log("app" , userid)
+  useEffect(()=>
+    {
+      if(userid){
+        dispach(fetchcartbyidaync(userid.id))
+      }
+    }, [dispach,userid])
+
   const router = createBrowserRouter([
     {
       path: '/',
@@ -92,6 +106,8 @@ function App() {
         
         <RouterProvider router={router} >
         </RouterProvider>
+
+        
     </>
   )
 }

@@ -1,8 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { addtocart } from './cartapi'
+import { addtocart , fetchproductbyuserid } from './cartapi'
 
 const initialState = {
     cartproduct : [],
+    cartbyid:[],
     status : "idle",
     error:null,
 
@@ -14,6 +15,16 @@ export const addtocartaync = createAsyncThunk(
         {
             console.log("product________" , product)
             const response = await addtocart(product)
+            return response.data
+        }
+  )
+
+  export const fetchcartbyidaync = createAsyncThunk(
+    "cart/fetchcartbyid",
+    async(userid) =>
+        {
+            console.log("userid________" , userid)
+            const response = await fetchproductbyuserid(userid)
             return response.data
         }
   )
@@ -37,12 +48,25 @@ export const addtocartaync = createAsyncThunk(
       .addCase(addtocartaync.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
+      }).addCase(fetchcartbyidaync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchcartbyidaync.fulfilled, (state, action) => {
+        console.log('action_______', action.payload);
+        state.status = 'idle';
+        state.cartbyid = action.payload ;
+      })
+      .addCase(fetchcartbyidaync.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
       });
 
 }
   })
 
   export const selectcart = (state) => state.cart.cartproduct;
+  export const selectcartbyid = (state) => state.cart.cartbyid;
+
 
 
 

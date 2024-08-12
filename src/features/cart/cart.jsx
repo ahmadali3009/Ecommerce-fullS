@@ -1,40 +1,17 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { Link } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-import {selectcart} from "./cartslice"
-
-const products = [
-    {
-        id: 1,
-        name: 'Throwback Hip Bag',
-        href: '#',
-        color: 'Salmon',
-        price: '$90.00',
-        quantity: 1,
-        imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-01.jpg',
-        imageAlt: 'Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt.',
-    },
-    {
-        id: 2,
-        name: 'Medium Stuff Satchel',
-        href: '#',
-        color: 'Blue',
-        price: '$32.00',
-        quantity: 1,
-        imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-02.jpg',
-        imageAlt:
-            'Front of satchel with blue canvas body, black straps and handle, drawstring top, and front zipper pouch.',
-    },
-    // More products...
-]
-
+import { useDispatch, useSelector } from 'react-redux'
+import {selectcart , selectcartbyid} from "./cartslice"
+import {selectcheckuser} from "../auth/authSlice"
 
 const Cart = () => {
     const [open, setOpen] = useState(true)
-    let cartproduct = useSelector(selectcart)
-    console.log("cartproduct" , cartproduct)
+    let cartproduct = useSelector(selectcartbyid)
+    console.log("cartproduct___________________---" , selectcartbyid)
+ 
+    let initialValue = 0 
     return (
         <div>
             <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -89,7 +66,12 @@ const Cart = () => {
                 <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
                     <div className="flex justify-between text-base font-medium text-gray-900">
                         <p>Subtotal</p>
-                        <p>$262.00</p>
+                        <p>{
+                            
+                            cartproduct.reduce((amount, product) => product.price * product.quantity + amount,
+                            initialValue,).toFixed(2)
+                            
+                            }</p>
                     </div>
                     <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
                     <div className="mt-6">
