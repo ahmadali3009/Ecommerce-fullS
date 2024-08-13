@@ -3,11 +3,21 @@ import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/re
 import { XMarkIcon } from '@heroicons/react/24/outline'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import {selectcart , selectcartbyid} from "./cartslice"
+import {deleteCartaync, selectcart , selectcartbyid, updateCartaync} from "./cartslice"
 import {selectcheckuser} from "../auth/authSlice"
+import { handler } from '@tailwindcss/aspect-ratio'
 
 const Cart = () => {
+    let dispatch =  useDispatch()
     const [open, setOpen] = useState(true)
+    const handlequnatity = (e, product)=>
+        {
+            dispatch(updateCartaync({...product , quantity: +e.target.value}))
+        }
+    const handledelete = (e, productid) =>
+    {
+        dispatch(deleteCartaync(productid))
+    }
     let cartproduct = useSelector(selectcartbyid)
     console.log("cartproduct___________________---" , selectcartbyid)
  
@@ -46,13 +56,17 @@ const Cart = () => {
                                                 <label htmlFor="quantity" className="inline text-sm font-medium leading-6 text-gray-900">
                                                     Qty
                                                 </label>
-                                                <select className='ml-3'>
+                                                <select onChange={(e)=>handlequnatity(e,product)} value={product.quantity} className='ml-3'>
                                                     <option value="1">1</option>
                                                     <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+
                                                 </select>
                                             </div>
                                             <div className="flex">
-                                                <button type="button" className="font-medium text-indigo-600 hover:text-indigo-500">
+                                                <button onClick={(e)=>handledelete(e , product.id)} type="button" className="font-medium text-indigo-600 hover:text-indigo-500">
                                                     Remove
                                                 </button>
                                             </div>

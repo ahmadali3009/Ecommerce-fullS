@@ -27,3 +27,42 @@ export function fetchproductbyuserid(userid)
 
     })
 }
+
+export function updateCart(update)
+{
+    console.log("cartapiupdate" , update)
+    return new Promise(async(resolve , reject)=>{
+   
+
+    const response = await fetch(`http://localhost:8080/cart/${update.id}`,{
+
+        method: "PATCH",
+        headers: {
+            "Content-Type" : "application/json"
+        },
+        body : JSON.stringify(update)
+    })
+    const data = await response.json()
+    console.log("dataapi" , data)
+    resolve({data})
+    })
+}
+
+export function deleteCart(productid)
+{
+    console.log("cartapiupdate" , productid)
+    return new Promise(async(resolve , reject)=>{
+   
+
+    const response = await fetch(`http://localhost:8080/cart/${productid}`,{
+
+        method: "DELETE",
+        headers: {
+            "Content-Type" : "application/json"
+        },
+    })
+    const data = await response.json()
+    console.log("dataapi" , data)
+    resolve({data:{id:productid}})
+    })
+}
