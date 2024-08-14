@@ -18,8 +18,8 @@ const Cart = () => {
     {
         dispatch(deleteCartaync(productid))
     }
-    let cartproduct = useSelector(selectcartbyid)
-    console.log("cartproduct___________________---" , selectcartbyid)
+    let cartproduct = useSelector(selectcart)
+    console.log("cartproduct___________________---" , selectcart)
  
     let initialValue = 0 
     return (

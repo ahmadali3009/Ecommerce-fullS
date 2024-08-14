@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { Bars3Icon, ShoppingCartIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import {  selectcartbyid } from '../cart/cartslice'
+import {  selectcartbyid , selectcart } from '../cart/cartslice'
 import { useSelector } from 'react-redux'
 
 const navigation = [
@@ -16,7 +16,7 @@ function classNames(...classes) {
 }
 
 const Nav = () => {
-  let cartproduct = useSelector(selectcartbyid)
+  let cartproduct = useSelector(selectcart)
 
   return (
     <div>

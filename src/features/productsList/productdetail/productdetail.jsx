@@ -50,7 +50,9 @@ const Productdetail = () => {
   const carthandler = (e)=>
     {
       e.preventDefault()
-      dispatch(addtocartaync({...products, quantity:1 , user:user.id}))
+      let newproduct = {...products, quantity:1 , user:user.id}
+      delete newproduct["id"]
+      dispatch(addtocartaync(newproduct))
     }
 
   useEffect(()=>{

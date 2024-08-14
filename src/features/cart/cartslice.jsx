@@ -74,7 +74,7 @@ export const addtocartaync = createAsyncThunk(
       .addCase(fetchcartbyidaync.fulfilled, (state, action) => {
         console.log('action_______', action.payload);
         state.status = 'idle';
-        state.cartbyid = action.payload ;
+        state.cartproduct = action.payload ;
       })
       .addCase(fetchcartbyidaync.rejected, (state, action) => {
         state.status = 'failed';
@@ -85,7 +85,7 @@ export const addtocartaync = createAsyncThunk(
       .addCase(updateCartaync.fulfilled, (state, action) => {
         console.log('action_______', action.payload);
         state.status = 'idle';
-        const index = cartproduct.findindex((product) => product.id === payload.action.id)
+        const index = state.cartproduct.findIndex((product) => product.id === action.payload.id)
         state.cartproduct[index] = action.payload ;
       })
       .addCase(updateCartaync.rejected, (state, action) => {
@@ -96,7 +96,7 @@ export const addtocartaync = createAsyncThunk(
       })
       .addCase(deleteCartaync.fulfilled, (state, action) => {
         console.log('action_______', action.payload);
-        const index = cartproduct.findindex((product) => product.id === payload.action.id)
+        const index = state.cartproduct.findIndex((product) => product.id === action.payload)
         state.cartproduct.splice(index,1) ;
       })
       .addCase(deleteCartaync.rejected, (state, action) => {
