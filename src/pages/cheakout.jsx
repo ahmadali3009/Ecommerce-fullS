@@ -1,30 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
 import { Link } from 'react-router-dom'
-const products = [
-    {
-        id: 1,
-        name: 'Throwback Hip Bag',
-        href: '#',
-        color: 'Salmon',
-        price: '$90.00',
-        quantity: 1,
-        imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-01.jpg',
-        imageAlt: 'Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt.',
-    },
-    {
-        id: 2,
-        name: 'Medium Stuff Satchel',
-        href: '#',
-        color: 'Blue',
-        price: '$32.00',
-        quantity: 1,
-        imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-02.jpg',
-        imageAlt:
-            'Front of satchel with blue canvas body, black straps and handle, drawstring top, and front zipper pouch.',
-    },
-    // More products...
-]
+import { useDispatch, useSelector } from 'react-redux'
+import { deleteCartaync, selectcart, updateCartaync } from '../features/cart/cartslice'
+import { useForm } from 'react-hook-form'
+import { selectcheckuser, updateUseraync } from '../features/auth/authSlice'
 
 const addresses = [
     {
@@ -48,49 +28,49 @@ const addresses = [
 ]
 
 const Cheakout = () => {
+  const { register, handleSubmit, watch, formState: {errors}} = useForm()
+  let dispatch =  useDispatch()
+  const [open, setOpen] = useState(true)
+  const handlequnatity = (e, product)=>
+      {
+          dispatch(updateCartaync({...product , quantity: +e.target.value}))
+      }
+  const handledelete = (e, productid) =>
+  {
+      dispatch(deleteCartaync(productid))
+  }
+  let cartproduct = useSelector(selectcart)
+  let user = useSelector(selectcheckuser)
+  console.log("cartproduct___________________---" , selectcart)
+
+  let initialValue = 0 
+
   return (
     <div>
     <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5 ">
     <div className='lg:col-span-3 bg-slate-100'>
-       <form className='mt-5 mx-10 '>
        <main className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-4">
       <div className="space-y-12">
-       
-
         <div className="border-b border-gray-900/10 pb-12">
           <h2 className="text-base font-semibold leading-7 text-gray-900">Personal Information</h2>
           <p className="mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p>
-
+          <form noValidate onSubmit={handleSubmit((data)=>(dispatch(updateUseraync({...user,addresses:[...user.addresses,data]}))))}>
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            <div className="sm:col-span-3">
+            <div className="sm:col-span-4">
               <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
-                First name
+                Full name
               </label>
               <div className="mt-2">
                 <input
                   type="text"
-                  name="first-name"
-                  id="first-name"
-                  autoComplete="given-name"
+                  {...register("fullname" , { required: "plz enter a full name" })}                  
+                  id="fullname"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
 
-            <div className="sm:col-span-3">
-              <label htmlFor="last-name" className="block text-sm font-medium leading-6 text-gray-900">
-                Last name
-              </label>
-              <div className="mt-2">
-                <input
-                  type="text"
-                  name="last-name"
-                  id="last-name"
-                  autoComplete="family-name"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
+          
 
             <div className="sm:col-span-4">
               <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
@@ -99,9 +79,8 @@ const Cheakout = () => {
               <div className="mt-2">
                 <input
                   id="email"
-                  name="email"
+                  {...register("email" , { required: "plz enter a vaild email" })}                  
                   type="email"
-                  autoComplete="email"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -109,19 +88,15 @@ const Cheakout = () => {
 
             <div className="sm:col-span-3">
               <label htmlFor="country" className="block text-sm font-medium leading-6 text-gray-900">
-                Country
+                Phone
               </label>
               <div className="mt-2">
-                <select
-                  id="country"
-                  name="country"
-                  autoComplete="country-name"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:max-w-xs sm:text-sm sm:leading-6"
-                >
-                  <option>United States</option>
-                  <option>Canada</option>
-                  <option>Mexico</option>
-                </select>
+                <input
+                  id="tel"
+                  {...register("tel" , { required: "plz enter a vaild phone-number" })}                  
+                  type="tel"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
               </div>
             </div>
 
@@ -132,9 +107,8 @@ const Cheakout = () => {
               <div className="mt-2">
                 <input
                   type="text"
-                  name="street-address"
-                  id="street-address"
-                  autoComplete="street-address"
+                  {...register("street" , { required: "plz enter a street address" })}                  
+                  id="street"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -147,9 +121,8 @@ const Cheakout = () => {
               <div className="mt-2">
                 <input
                   type="text"
-                  name="city"
+                  {...register("city" , { required: "plz enter a city name" })}                  
                   id="city"
-                  autoComplete="address-level2"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -162,9 +135,8 @@ const Cheakout = () => {
               <div className="mt-2">
                 <input
                   type="text"
-                  name="region"
+                  {...register("region" , { required: "plz enter a region" })}                  
                   id="region"
-                  autoComplete="address-level1"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
@@ -177,14 +149,15 @@ const Cheakout = () => {
               <div className="mt-2">
                 <input
                   type="text"
-                  name="postal-code"
-                  id="postal-code"
-                  autoComplete="postal-code"
+                  {...register("postal" , { required: "plz enter a postal code" })}                  
+                  id="postal"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               </div>
             </div>
+            <button className='bg-cyan-700' > save </button>
           </div>
+          </form>
         </div>
 
         <div className="border-b border-gray-900/10 pb-12">
@@ -194,29 +167,20 @@ const Cheakout = () => {
           </p>
             <div className='addresses'>
             <ul role="list" className="divide-y divide-gray-100">
-      {addresses.map((address) => (
+      {user?.addresses.map((address) => (
         <li key={address.email} className="flex justify-between gap-x-6 py-5">
           <div className="flex min-w-0 gap-x-4">
-            <img className="h-12 w-12 flex-none rounded-full bg-gray-50" src={address.imageUrl} alt="" />
             <div className="min-w-0 flex-auto">
-              <p className="text-sm font-semibold leading-6 text-gray-900">{address.name}</p>
+              <p className="text-sm font-semibold leading-6 text-gray-900">{address.fullname}</p>
               <p className="mt-1 truncate text-xs leading-5 text-gray-500">{address.email}</p>
             </div>
           </div>
           <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-            <p className="text-sm leading-6 text-gray-900">{address.role}</p>
-            {address.lastSeen ? (
-              <p className="mt-1 text-xs leading-5 text-gray-500">
-                Last seen <time dateTime={address.lastSeenDateTime}>{address.lastSeen}</time>
-              </p>
-            ) : (
-              <div className="mt-1 flex items-center gap-x-1.5">
-                <div className="flex-none rounded-full bg-emerald-500/20 p-1">
-                  <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                </div>
-                <p className="text-xs leading-5 text-gray-500">Online</p>
-              </div>
-            )}
+            <p className="text-sm leading-6 text-gray-900">{address.street}</p>
+            <p className="text-sm leading-6 text-gray-900">{address.city}</p>
+            <p className="text-sm leading-6 text-gray-900">{address.region}</p>
+
+            
           </div>
         </li>
       ))}
@@ -269,23 +233,23 @@ const Cheakout = () => {
         </button>
       </div>
       </main>
-    </form>
+    
     </div>
     <div className='lg:col-span-2'>
 
     <div>
-            <main className="mx-auto max-w-7xl px-0 sm:px-0 lg:px-0">
+            <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <h1 className="text-4xl font-bold tracking-tight text-gray-900 mt-9">Shopping Cart</h1>
 
-                <div className="mt-8 mr-6">
+                <div className="mt-8">
                     <div className="flow-root">
                         <ul role="list" className="-my-6 divide-y divide-gray-200">
-                            {products.map((product) => (
+                            {cartproduct.map((product) => (
                                 <li key={product.id} className="flex py-6">
                                     <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                         <img
-                                            src={product.imageSrc}
-                                            alt={product.imageAlt}
+                                            src={product.thumbnail}
+                                            alt={product.title}
                                             className="h-full w-full object-cover object-center"
                                         />
                                     </div>
@@ -294,11 +258,11 @@ const Cheakout = () => {
                                         <div>
                                             <div className="flex justify-between text-base font-medium text-gray-900">
                                                 <h3>
-                                                    <a href={product.href}>{product.name}</a>
+                                                    <a href={product.href}>{product.title}</a>
                                                 </h3>
                                                 <p className="ml-4">{product.price}</p>
                                             </div>
-                                            <p className="mt-1 text-sm text-gray-500">{product.color}</p>
+                                            <p className="mt-1 text-sm text-gray-500">{product.category}</p>
                                         </div>
                                         <div className="flex flex-1 items-end justify-between text-sm mb-5">
                                             {/* {product.quantity} */}
@@ -306,13 +270,17 @@ const Cheakout = () => {
                                                 <label htmlFor="quantity" className="inline text-sm font-medium leading-6 text-gray-900">
                                                     Qty
                                                 </label>
-                                                <select className='ml-3'>
+                                                <select onChange={(e)=>handlequnatity(e,product)} value={product.quantity} className='ml-3'>
                                                     <option value="1">1</option>
                                                     <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+
                                                 </select>
                                             </div>
                                             <div className="flex">
-                                                <button type="button" className="font-medium text-indigo-600 hover:text-indigo-500">
+                                                <button onClick={(e)=>handledelete(e , product.id)} type="button" className="font-medium text-indigo-600 hover:text-indigo-500">
                                                     Remove
                                                 </button>
                                             </div>
@@ -326,7 +294,12 @@ const Cheakout = () => {
                 <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
                     <div className="flex justify-between text-base font-medium text-gray-900">
                         <p>Subtotal</p>
-                        <p>$262.00</p>
+                        <p>{
+                            
+                            cartproduct.reduce((amount, product) => product.price * product.quantity + amount,
+                            initialValue,).toFixed(2)
+                            
+                            }</p>
                     </div>
                     <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
                     <div className="mt-6">
@@ -343,7 +316,7 @@ const Cheakout = () => {
                             <button
                                 type="button"
                                 className="font-medium text-indigo-600 hover:text-indigo-500"
-                                
+                                onClick={() => setOpen(false)}
                             >
                                 Continue Shopping
                                 <span aria-hidden="true"> &rarr;</span>

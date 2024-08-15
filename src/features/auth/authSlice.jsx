@@ -1,13 +1,12 @@
 import React from 'react'
-import { createuser , checkuser } from './authapi'
+import { createuser , checkuser, updateUser } from './authapi'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-    createusers : null,
+    createusers : [],
     checkuser : null,
     status : "idle",
     error:null,
-
 }
 
 export const createuseraync = createAsyncThunk(
@@ -28,7 +27,15 @@ export const createuseraync = createAsyncThunk(
             return response.data
         }
   )
-
+  export const updateUseraync = createAsyncThunk(
+    "cart/updateuser",
+    async(update) =>
+        {
+            console.log("userid________" , update)
+            const response = await updateUser(update)
+            return response.data
+        }
+  )
 
 export const authSlice = createSlice({
     name : "user",
@@ -58,6 +65,19 @@ export const authSlice = createSlice({
         state.checkuser = action.payload;
       })
       .addCase(checkuseraync.rejected, (state, action) => {
+        state.status = 'failed';
+        console.log("error" , action.error)
+        state.error = action.error;
+      }).addCase(updateUseraync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(updateUseraync.fulfilled, (state, action) => {
+        console.log('action_______', action.payload);
+        state.status = 'idle';
+        const index = state.createusers.findIndex((user) => user.id === action.payload.id)
+        state.createusers[index] = action.payload ;      
+      })
+      .addCase(updateUseraync.rejected, (state, action) => {
         state.status = 'failed';
         console.log("error" , action.error)
         state.error = action.error;

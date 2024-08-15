@@ -1928,17 +1928,30 @@
     {
       "id": "c4f3",
       "email": "entertainment.lover3009@gmail.com",
-      "password": "123"
+      "password": "123",
+      "addresses": [
+        {
+          "fullname": "ahmed",
+          "email": "entertainment.lover3009@gmail.com",
+          "tel": "03117693349",
+          "street": "main 2 street",
+          "city": "sialkot",
+          "region": "punjab",
+          "postal": "512903"
+        }
+      ]
     },
     {
       "id": "5366",
       "email": "ahmadbutt@gmail.com",
-      "password": "ahmad123@"
+      "password": "ahmad123@",
+      "addresses": []
     },
     {
       "id": "56f0",
-      "email": "abutt3009@gmail.com",
-      "password": "123"
+      "email": "abutt3008@gmail.com",
+      "password": "1234",
+      "addresses": []
     }
   ],
   "cart": [
@@ -2001,7 +2014,7 @@
         "https://cdn.dummyjson.com/products/images/beauty/Red%20Nail%20Polish/1.png"
       ],
       "thumbnail": "https://cdn.dummyjson.com/products/images/beauty/Red%20Nail%20Polish/thumbnail.png",
-      "quantity": 1,
+      "quantity": 4,
       "user": "c4f3"
     },
     {
