@@ -48,21 +48,59 @@ export function updateCart(update)
     })
 }
 
-export function deleteCart(productid)
+export function deleteCart(productid) {
+    console.log("cartapiupdate", productid);
+
+    return new Promise(async (resolve, reject) => {
+        try {
+            const response = await fetch(`http://localhost:8080/cart/${productid}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            });
+
+            if (!response.ok) {
+                // Handle cases where the response status is not 2xx
+                if (response.status === 404) {
+                    console.log(`Cart item with ID ${productid} not found`);
+                    resolve({ data: { id: productid, message: "Not Found" } });
+                } else {
+                    console.error(`Failed to delete cart item with ID ${productid}`);
+                    reject(new Error(`Failed to delete cart item with ID ${productid}`));
+                }
+            } else {
+                // Try to parse the response as JSON
+                let data;
+                try {
+                    data = await response.json();
+                    console.log("dataapi", data);
+                } catch (error) {
+                    console.log("Response is not in JSON format");
+                    data = { message: "Deleted successfully but no JSON response" };
+                }
+                resolve({ data: { id: productid, ...data } });
+            }
+        } catch (error) {
+            console.error('Error deleting cart item:', error);
+            reject(error);
+        }
+    });
+}
+
+
+export function resetCart(userid)
 {
-    console.log("cartapiupdate" , productid)
     return new Promise(async(resolve , reject)=>{
-   
+       let response = await fetchproductbyuserid(userid)
 
-    const response = await fetch(`http://localhost:8080/cart/${productid}`,{
+       let products = response.data
+        console.log("resetCart", products)
+       for(let product of products)
+       {
+        await deleteCart(product.id)
+       }
 
-        method: "DELETE",
-        headers: {
-            "Content-Type" : "application/json"
-        },
-    })
-    const data = await response.json()
-    console.log("dataapi" , data)
-    resolve({data:{id:productid}})
+    resolve({status:"success"})
     })
 }

@@ -17,6 +17,7 @@ import Protected from './features/auth/components/protected'
 import { useDispatch, useSelector } from 'react-redux'
 import { selectcheckuser } from './features/auth/authSlice'
 import { fetchcartbyidaync } from './features/cart/cartslice'
+import Orderpage from './pages/orderpage'
 
 function App() {
 
@@ -81,6 +82,18 @@ function App() {
           <Protected>
           <Nav />
           <Cheakout />
+          </Protected>
+
+        </>
+      ),
+    },
+    {
+      path: '/orderpage',
+      element: (
+        <>
+          <Protected>
+          <Nav />
+          <Orderpage />
           </Protected>
 
         </>
