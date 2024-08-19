@@ -18,6 +18,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import { selectcheckuser } from './features/auth/authSlice'
 import { fetchcartbyidaync } from './features/cart/cartslice'
 import Orderpage from './pages/orderpage'
+import Userorder from './features/user/components/Userorder'
+import { fetchuserinfoAync } from './features/user/userSlice'
+import Userprofilepage from './pages/Userprofilepage'
 
 function App() {
 
@@ -28,6 +31,7 @@ function App() {
     {
       if(userid){
         dispach(fetchcartbyidaync(userid.id))
+        dispach(fetchuserinfoAync(userid.id))
       }
     }, [dispach,userid])
 
@@ -83,7 +87,6 @@ function App() {
           <Nav />
           <Cheakout />
           </Protected>
-
         </>
       ),
     },
@@ -96,6 +99,29 @@ function App() {
           <Orderpage />
           </Protected>
 
+        </>
+      ),
+    },
+    {
+      path: '/userorder',
+      element: (
+        <>
+          <Protected>
+          <Nav />
+          <Userorder />
+          </Protected>
+{/* add this userorder page in page section later  */}
+        </>
+      ),
+    },
+    {
+      path: '/userprofile',
+      element: (
+        <>
+          <Protected>
+          <Nav />
+          <Userprofilepage />
+          </Protected>
         </>
       ),
     },

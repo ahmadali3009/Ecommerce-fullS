@@ -9,6 +9,11 @@ import { createorderaync } from '../features/order/orderSlice'
 
 
 const Cheakout = () => {
+  let totalamount = (cartproduct)=>
+    {
+      return cartproduct.reduce((amount, product) => product.price * product.quantity + amount,
+                          initialValue,).toFixed(2)
+    }
   const { register, handleSubmit, watch, reset, formState: {errors}} = useForm()
   let [paymentmethod , setpaymentmethod] = useState("")
   let dispatch =  useDispatch()
@@ -32,11 +37,11 @@ const Cheakout = () => {
   const handleOrder = (e)=>
     {
       // e.preventDefault()
-      let orderdata = {productlist:cartproduct , userdetail:user , paymentway: paymentmethod, date: new Date().toISOString()}
+      let orderdata = {totalprice : totalamount(cartproduct) , productlist:cartproduct , userdetail:user , paymentway: paymentmethod, date: new Date().toISOString()}
       dispatch(createorderaync(orderdata))
       console.log(e.target.value)
     }
-
+   
   let initialValue = 0 
 
 
@@ -288,8 +293,7 @@ const Cheakout = () => {
                         <p>Subtotal</p>
                         <p>{
                             
-                            cartproduct.reduce((amount, product) => product.price * product.quantity + amount,
-                            initialValue,).toFixed(2)
+                            totalamount
                             
                             }</p>
                     </div>
