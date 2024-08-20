@@ -75,8 +75,9 @@ export const authSlice = createSlice({
         console.log('action_______', action.payload);
         state.status = 'idle';
         const index = state.createusers.findIndex((user) => user.id === action.payload.id)
-        state.createusers[index] = action.payload ;      
-      })
+        if (index !== -1) {
+          state.createusers[index].addresses = action.payload.addresses;
+      }      })
       .addCase(updateUseraync.rejected, (state, action) => {
         state.status = 'failed';
         console.log("error" , action.error)

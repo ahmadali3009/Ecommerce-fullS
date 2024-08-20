@@ -17,3 +17,4 @@ export function fetchuserinfo(loginuser){
     resolve({data})
     })
 }
+
