@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { featchorderbyuserid, fetchuserinfo } from './userapi'
+import { featchorderbyuserid, fetchuserinfo, updateUserprofile } from './userapi'
 
 const initialState = {
     userOrder : [],
@@ -24,6 +24,15 @@ export const featchorderbyuseridaAync = createAsyncThunk(
         {
             console.log("product________" , id)
             const response = await fetchuserinfo(id)
+            return response.data
+        }
+  )
+  export const updateUserprofileAync = createAsyncThunk(
+    "user/updateUser",
+    async(update) =>
+        {
+            console.log("userprofile" , update)
+            const response = await updateUserprofile(update)
             return response.data
         }
   )
@@ -56,6 +65,20 @@ export const featchorderbyuseridaAync = createAsyncThunk(
         console.log('action_______', action.payload);
         state.status = 'idle';
         state.userinfo = action.payload;
+      }).addCase(updateUserprofileAync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(updateUserprofileAync.fulfilled, (state, action) => {
+        console.log('action_______updateUserprofileAync', action.payload);
+        state.status = 'idle';
+        const index = state.userinfo.findIndex((user) => user.id === action.payload.id)
+        if (index !== -1) {
+          state.userinfo[index].addresses = action.payload.addresses;
+      }      })
+      .addCase(updateUserprofileAync.rejected, (state, action) => {
+        state.status = 'failed';
+        console.log("error" , action.error)
+        state.error = action.error;
       });
 
 }
