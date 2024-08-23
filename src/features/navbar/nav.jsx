@@ -6,8 +6,9 @@ import {  selectcartbyid , selectcart } from '../cart/cartslice'
 import { useSelector } from 'react-redux'
 
 const navigation = [
-  { name: 'Dashboard', href: '#', current: true },
-  { name: 'Team', href: '#', current: false },
+  { name: 'home', to: '/', current: true },
+  { name: 'admin', to: '/admin/home', current: true },
+  { name: 'Team', to: '#', current: false },
   
 ]
 

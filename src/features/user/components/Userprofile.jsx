@@ -185,6 +185,8 @@ const Userprofile = () => {
                         <div>
                             <h2 className="text-xl font-semibold text-gray-800">Full Name: {userinfo[currentIndex].addresses[0]?.fullname}</h2>
                             <p className="text-gray-700">Email: {userinfo[currentIndex].email}</p>
+                            <p className="text-gray-700">role: {userinfo[currentIndex].role}</p>
+
                         </div>
 
                         <div className="mt-6">

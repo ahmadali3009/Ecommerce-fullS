@@ -1929,6 +1929,7 @@
       "id": "c4f3",
       "email": "entertainment.lover3009@gmail.com",
       "password": "123",
+      "role": "user",
       "addresses": [
         {
           "fullname": "ahmed",
@@ -1945,45 +1946,15 @@
       "id": "5366",
       "email": "ahmadbutt@gmail.com",
       "password": "ahmad123@",
+      "role": "user",
       "addresses": []
     },
     {
-      "id": "56f0",
-      "email": "abutt3008@gmail.com",
-      "password": "1234",
+      "id": "3280",
+      "email": "ahmadNight123@gmail.com",
+      "password": "123",
+      "role": "admin",
       "addresses": []
-    },
-    {
-      "id": "c4f3",
-      "email": "entertainment.lover3009@gmail.com",
-      "password": "123",
-      "addresses": [
-        {
-          "fullname": "ahmed",
-          "email": "entertainment.lover3009@gmail.com",
-          "tel": "03117694349",
-          "street": "main 2 street",
-          "city": "sialkot",
-          "region": "punjab",
-          "postal": "512903"
-        }
-      ]
-    },
-    {
-      "id": "c4f3",
-      "email": "entertainment.lover3009@gmail.com",
-      "password": "123",
-      "addresses": [
-        {
-          "fullname": "ahmed",
-          "email": "entertainment.lover3009@gmail.com",
-          "tel": "03117694349",
-          "street": "main 2 street",
-          "city": "sialkot",
-          "region": "punjab",
-          "postal": "512903"
-        }
-      ]
     }
   ],
   "cart": [

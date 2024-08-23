@@ -21,6 +21,9 @@ import Orderpage from './pages/orderpage'
 import Userorder from './features/user/components/Userorder'
 import { fetchuserinfoAync } from './features/user/userSlice'
 import Userprofilepage from './pages/Userprofilepage'
+import Adminproductlist from './features/admin/Adminproductlist/adminproductlist'
+import Adminprotected from './features/admin/adminauth/Adminprotected'
+import Adminproductdetail from './features/admin/Adminproductlist/Adminproductdetail/Adminproductdetail'
 
 function App() {
 
@@ -122,6 +125,28 @@ function App() {
           <Nav />
           <Userprofilepage />
           </Protected>
+        </>
+      ),
+    },
+    {
+      path: '/admin/home',
+      element: (
+        <>
+          <Adminprotected>
+          <Nav />
+          <Adminproductlist />
+          </Adminprotected>
+        </>
+      ),
+    },
+    {
+      path: '/admin/adminproductdetail',
+      element: (
+        <>
+          <Adminprotected>
+          <Nav />
+          <Adminproductdetail />
+          </Adminprotected>
         </>
       ),
     },
