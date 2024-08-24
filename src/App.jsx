@@ -21,9 +21,11 @@ import Orderpage from './pages/orderpage'
 import Userorder from './features/user/components/Userorder'
 import { fetchuserinfoAync } from './features/user/userSlice'
 import Userprofilepage from './pages/Userprofilepage'
-import Adminproductlist from './features/admin/Adminproductlist/adminproductlist'
 import Adminprotected from './features/admin/adminauth/Adminprotected'
-import Adminproductdetail from './features/admin/Adminproductlist/Adminproductdetail/Adminproductdetail'
+import Adminhome from './pages/adminhome'
+import Adminproducthistory from './pages/adminproducthistory'
+import Addproductform from './features/admin/Adminproductlist/Addproductform'
+import { fetchallproductsAycn } from './features/productsList/prodectSlice'
 
 function App() {
 
@@ -35,6 +37,7 @@ function App() {
       if(userid){
         dispach(fetchcartbyidaync(userid.id))
         dispach(fetchuserinfoAync(userid.id))
+        dispach(fetchallproductsAycn())
       }
     }, [dispach,userid])
 
@@ -134,18 +137,30 @@ function App() {
         <>
           <Adminprotected>
           <Nav />
-          <Adminproductlist />
+          <Adminhome />
           </Adminprotected>
         </>
       ),
     },
     {
-      path: '/admin/adminproductdetail',
+      path: '/admin/addproduct',
       element: (
         <>
           <Adminprotected>
           <Nav />
-          <Adminproductdetail />
+          <Addproductform />
+          </Adminprotected>
+          {/* pagemissing */}
+        </>
+      ),
+    },
+    {
+      path: '/admin/adminproductdetail/:id',
+      element: (
+        <>
+          <Adminprotected>
+          <Nav />
+          <Addproductform />
           </Adminprotected>
         </>
       ),

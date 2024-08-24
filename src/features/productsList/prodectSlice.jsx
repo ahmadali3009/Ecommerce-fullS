@@ -1,5 +1,5 @@
 import React from 'react'
-import {  fetchallproductscategories , fetchbrands , fetchcategories , fetchproductdetailbyid} from './productapi'
+import {  createproduct, fetchallproducts, fetchallproductscategories , fetchbrands , fetchcategories , fetchproductdetailbyid, updateproduct} from './productapi'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 
@@ -11,14 +11,14 @@ const initialState = {
     status : "idle"
 }
 
-// export const fetchallproductsAycn = createAsyncThunk(
-//     "products/fetchallproducts",
-//     async() =>
-//         {
-//             const response = await fetchallproducts()
-//             return response.data
-//         }
-// )
+export const fetchallproductsAycn = createAsyncThunk(
+    "products/fetchallproducts",
+    async() =>
+        {
+            const response = await fetchallproducts()
+            return response.data
+        }
+)
 
 export const fetchallproductscategoriesaync = createAsyncThunk(
   "products/fetchallproductscategories",
@@ -58,6 +58,23 @@ export const fetchproductdetailbyidaync = createAsyncThunk(
       }
 )
 
+export const createproductAync = createAsyncThunk(
+  "products/createproduct",
+  async(product) =>
+      {
+          const response = await createproduct(product)
+          return response.data
+      }
+)
+export const updateproductaync = createAsyncThunk(
+  "products/updateproduct",
+  async(update) =>
+      {
+          console.log("product_______" , update)
+          const response = await updateproduct(update)
+          return response.data
+      }
+)
 export const productSlice = createSlice({
     name : "products",
     initialState,
@@ -66,17 +83,17 @@ export const productSlice = createSlice({
     },
  extraReducers: (builder) => {
     builder
-      // .addCase(fetchallproductsAycn.pending, (state) => {
-      //   state.status = 'loading';
-      // })
-      // .addCase(fetchallproductsAycn.fulfilled, (state, action) => {
-      //   state.status = 'idle';
-      //   state.products = action.payload;
-      // })
-      // .addCase(fetchallproductsAycn.rejected, (state, action) => {
-      //   state.status = 'failed';
-      //   state.error = action.error.message;
-      // }) 
+      .addCase(fetchallproductsAycn.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchallproductsAycn.fulfilled, (state, action) => {
+        state.status = 'idle';
+        state.products = action.payload;
+      })
+      .addCase(fetchallproductsAycn.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      }) 
       .addCase(fetchallproductscategoriesaync.pending, (state) => {
         state.status = 'loading';
       })
@@ -119,6 +136,30 @@ export const productSlice = createSlice({
         state.productdetail = action.payload;
       })
       .addCase(fetchproductdetailbyidaync.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      }).addCase(createproductAync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(createproductAync.fulfilled, (state, action) => {
+        console.log('action_______', action.payload);
+        state.status = 'idle';
+        state.products.push(action.payload);
+      })
+      .addCase(createproductAync.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      }).addCase(updateproductaync.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(updateproductaync.fulfilled, (state, action) => {
+        console.log('action_______', action.payload);
+        state.status = 'idle';
+        const index = state.products.findIndex((product) => product.id === action.payload.id)
+        if (index !== -1) {
+          state.products[index] = action.payload;
+      }      })
+      .addCase(updateproductaync.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
       });

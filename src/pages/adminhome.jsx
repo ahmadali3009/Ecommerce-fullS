@@ -1,7 +1,7 @@
 import React from 'react'
 import Adminproductlist from '../features/admin/Adminproductlist/adminproductlist'
 
-const Home = () => {
+const Adminhome = () => {
   return (
     <div>
         <Adminproductlist/>
@@ -9,4 +9,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export default Adminhome

@@ -53,7 +53,7 @@ const Adminproductlist = () => {
         },
     ]
     var limit = 10;
-    var total_product = 30;
+    var total_product = 40;
     const dispatch = useDispatch();
 
     let [filter, setfilter] = useState({})
@@ -305,12 +305,12 @@ const Adminproductlist = () => {
 
                                     <div className="bg-white">
                                         <div className="mx-auto max-w-2xl px-4 py-0 sm:px-6 sm:py-0 lg:max-w-7xl lg:px-8">
-
+                                              <Link to="/admin/addproduct">  <button className='mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'>ADD New Product</button></Link>
                                             <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
 
                                                 {products.map((product) => (
                                                     <div>
-                                                    <Link to={`/productdetail/${product.id}`} key={product.id}>
+                                                    <Link to={`/admin/adminproductdetail/${product.id}`} key={product.id}>
                                                         <div  className=" group relative border-solid border-2 p-2 border-gray-200">
                                                             <div className="min-h60 aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-60">
                                                                 <img
@@ -340,8 +340,9 @@ const Adminproductlist = () => {
 
                                                             </div>
                                                         </div>
+                                                        <button className='mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'>Edit</button>
+
                                                     </Link>
-                                                    <button className='mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'>Edit</button>
                                                     </div>
                                                 ))}
                                             </div>

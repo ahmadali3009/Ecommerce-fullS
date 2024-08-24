@@ -1,13 +1,13 @@
-// export function fetchallproducts() 
-// {
-//     //TODO: we will not hard-code server URL here
-//         return new Promise (async (resolve)=>
-//             {
-//                 const response = await fetch("http://localhost:8080/products");
-//                 const data = await response.json();
-//                 resolve({data})
-//             })
-// }
+export function fetchallproducts() 
+{
+    //TODO: we will not hard-code server URL here
+        return new Promise (async (resolve)=>
+            {
+                const response = await fetch("http://localhost:8080/products");
+                const data = await response.json();
+                resolve({data})
+            })
+}
 
 export function fetchallproductscategories(filter , Sort , pagenation) 
 {  
@@ -68,4 +68,41 @@ export function fetchproductdetailbyid(id)
                 const data = await response.json();
                 resolve({data})
             })
+}
+
+export function createproduct(product){
+  return new Promise(async(resolve)=>{
+      const response = await fetch("http://localhost:8080/products",{
+
+      method: "POST",
+      headers: {
+          "Content-Type" : "application/json"
+      },
+      body : JSON.stringify(product)
+  })
+  const data = await response.json()
+  console.log("dataapi" , data)
+  resolve({data})
+  })
+}
+
+
+export function updateproduct(update)
+{
+    console.log("productapiupdate" , update)
+    return new Promise(async(resolve , reject)=>{
+   
+
+    const response = await fetch(`http://localhost:8080/user/`+update.id,{
+
+        method: "PATCH",
+        headers: {
+            "Content-Type" : "application/json"
+        },
+        body : JSON.stringify(update)
+    })
+    const data = await response.json()
+    console.log("dataapi" , data)
+    resolve({data})
+    })
 }

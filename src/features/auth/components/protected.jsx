@@ -6,7 +6,7 @@ function Protected ({children}){
     const loginuser = useSelector(selectcreateuser)
     if(!loginuser)
         {
-            <Navigate to="/login" ></Navigate>
+          return  <Navigate to="/login" replace={true}></Navigate>
         }
         return children;
 }

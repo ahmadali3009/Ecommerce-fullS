@@ -1,7 +1,7 @@
 import React from 'react'
 import Adminproductdetail from '../features/admin/Adminproductlist/Adminproductdetail/Adminproductdetail'
 
-const Producthistory = () => {
+const Adminproducthistory = () => {
   return (
     <div>
       <Adminproductdetail></Adminproductdetail>
@@ -9,4 +9,4 @@ const Producthistory = () => {
   )
 }
 
-export default Producthistory
+export default Adminproducthistory
