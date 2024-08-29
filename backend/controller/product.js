@@ -54,30 +54,38 @@ async function handleAllproductquery(req, res) {
 
 }
 
-async function handlefetchbrands(req, res) {
+async function handlefetchproductbyid(req, res) {
 
-    let response = productmodel.findOne({brand})
-    console.log(response)
-    if(response)
-        {    
-            res.status(200).json({"response" : response})
+    try {
+        let id = req.params.id  
+        let response = await productmodel.findById(id)      
+        if (response) {
+            return res.status(200).json({ "response": response });
+        } else {
+            return res.status(404).json({ "message": "No categories found" });
         }
-        return res.status(400)
-
+    } catch (error) {
+        console.error("Error fetching categories:", error);
+        return res.status(500).json({ "error": error.message });
+    }
 }
 
-async function handlefetchcategory(req, res) {
+async function handleupdateproductbyid(req, res) {
 
-    let response = await productmodel.find({category})
-    console.log(response)
-    if(response)
-        {    
-            res.status(200).json({"response" : response})
+    try {
+        let id = req.params.id  
+        let response = await productmodel.findByIdAndUpdate(id , req.body ,{new:true} )      
+        if (response) {
+            return res.status(200).json({ "response": response });
+        } else {
+            return res.status(404).json({ "message": "No categories found" });
         }
-        return res.status(400)
-
+    } catch (error) {
+        console.error("Error fetching categories:", error);
+        return res.status(500).json({ "error": error.message });
+    }
 }
 
 
 
-module.exports = { handlecreateproduct, handleAllproductquery , handlefetchbrands , handlefetchcategory }
+module.exports = {handlecreateproduct, handleAllproductquery , handlefetchproductbyid , handleupdateproductbyid}

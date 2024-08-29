@@ -1,11 +1,13 @@
 let express = require("express");
 let productrouter = express.Router()
-let {handlecreateproduct , handleAllproductquery , handlefetchbrands , handlefetchcategory} = require('../controller/product')
+let {handlecreateproduct , handleAllproductquery , handlefetchproductbyid , handleupdateproductbyid} = require('../controller/product')
 
 productrouter.post("/products" , handlecreateproduct)
-productrouter.get("/category" , handlefetchcategory)
-productrouter.get("/brand" , handlefetchbrands)
 productrouter.get("/products" , handleAllproductquery)
+productrouter.get("/products/:id" , handlefetchproductbyid)
+productrouter.patch("/products/:id" , handleupdateproductbyid)
+
+
 
 
 
