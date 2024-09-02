@@ -9,7 +9,7 @@ export function addtocart(product){
         body : JSON.stringify(product)
     })
     const data = await response.json()
-    console.log("dataapi" , data)
+    console.log("addtocartdatacheck" , data)
     resolve({data})
     })
 }

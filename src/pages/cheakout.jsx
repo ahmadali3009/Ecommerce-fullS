@@ -11,7 +11,7 @@ import { createorderaync } from '../features/order/orderSlice'
 const Cheakout = () => {
   let totalamount = (cartproduct)=>
     {
-      return cartproduct.reduce((amount, product) => product.price * product.quantity + amount,
+      return cartproduct.reduce((amount, products) => products.product.price * products.product.quantity + amount,
                           initialValue,).toFixed(2)
     }
   const { register, handleSubmit, watch, reset, formState: {errors}} = useForm()
@@ -37,7 +37,7 @@ const Cheakout = () => {
   const handleOrder = (e)=>
     {
       // e.preventDefault()
-      let orderdata = {totalprice : totalamount(cartproduct) , productlist:cartproduct , userdetail:user , paymentway: paymentmethod, date: new Date().toISOString()}
+      let orderdata = {totalprice : totalamount(cartproduct) , productlist:cartproduct.product, userdetail:user , paymentway: paymentmethod, date: new Date().toISOString()}
       dispatch(createorderaync(orderdata))
       console.log(e.target.value)
     }
@@ -241,12 +241,12 @@ const Cheakout = () => {
                 <div className="mt-8">
                     <div className="flow-root">
                         <ul role="list" className="-my-6 divide-y divide-gray-200">
-                            {cartproduct.map((product) => (
-                                <li key={product.id} className="flex py-6">
+                            {cartproduct.map((products) => (
+                                <li key={products.product.id} className="flex py-6">
                                     <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                         <img
-                                            src={product.thumbnail}
-                                            alt={product.title}
+                                            src={products.product.thumbnail}
+                                            alt={products.product.title}
                                             className="h-full w-full object-cover object-center"
                                         />
                                     </div>
@@ -255,11 +255,11 @@ const Cheakout = () => {
                                         <div>
                                             <div className="flex justify-between text-base font-medium text-gray-900">
                                                 <h3>
-                                                    <a href={product.href}>{product.title}</a>
+                                                    <a href={products.product.href}>{products.product.title}</a>
                                                 </h3>
-                                                <p className="ml-4">{product.price}</p>
+                                                <p className="ml-4">{products.product.price}</p>
                                             </div>
-                                            <p className="mt-1 text-sm text-gray-500">{product.category}</p>
+                                            <p className="mt-1 text-sm text-gray-500">{products.product.category}</p>
                                         </div>
                                         <div className="flex flex-1 items-end justify-between text-sm mb-5">
                                             {/* {product.quantity} */}
@@ -267,7 +267,7 @@ const Cheakout = () => {
                                                 <label htmlFor="quantity" className="inline text-sm font-medium leading-6 text-gray-900">
                                                     Qty
                                                 </label>
-                                                <select onChange={(e)=>handlequnatity(e,product)} value={product.quantity} className='ml-3'>
+                                                <select onChange={(e)=>handlequnatity(e,productd)} value={products.product.quantity} className='ml-3'>
                                                     <option value="1">1</option>
                                                     <option value="2">2</option>
                                                     <option value="3">3</option>
@@ -277,7 +277,7 @@ const Cheakout = () => {
                                                 </select>
                                             </div>
                                             <div className="flex">
-                                                <button onClick={(e)=>handledelete(e , product.id)} type="button" className="font-medium text-indigo-600 hover:text-indigo-500">
+                                                <button onClick={(e)=>handledelete(e , products.product.id)} type="button" className="font-medium text-indigo-600 hover:text-indigo-500">
                                                     Remove
                                                 </button>
                                             </div>

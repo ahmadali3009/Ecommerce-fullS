@@ -2,17 +2,11 @@ let category = require("../model/category")
 
 async function handlefetchcategory(req, res) {
     try {
-        const response = await category.find({});
-        
-        if (response) {
-            return res.status(200).json({ "response": response });
-        } else {
-            return res.status(404).json({ "message": "No categories found" });
-        }
-    } catch (error) {
-        console.error("Error fetching categories:", error);
-        return res.status(500).json({ "error": error.message });
-    }
+        const categories = await category.find({}).exec();
+        res.status(200).json(categories);
+      } catch (err) {
+        res.status(400).json(err);
+      }
 }
 
 async function handlecreatecategory(req, res) {

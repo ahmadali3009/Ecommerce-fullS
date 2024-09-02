@@ -15,7 +15,9 @@ import { XMarkIcon } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon, StarIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import {  selectAllProducts, fetchallproductscategoriesaync, selectAllcategories , selectAllbrand, fetchbrandsaync, fetchcategoriesaync } from "../productsList/prodectSlice"
+import {
+    selectAllProducts, fetchallproductscategoriesaync, selectAllcategories, selectAllbrand, fetchbrandsaync, fetchcategoriesaync, selectTotalItems,
+} from "../productsList/prodectSlice"
 
 const sortOptions = [
     { name: "Best Rating", sort: "-rating", current: false },
@@ -35,8 +37,13 @@ function classNames(...classes) {
 
 const Productlist = () => {
     const products = useSelector(selectAllProducts);
+    console.log("important alert hhek", products)
     const brand = useSelector(selectAllbrand);
+    console.log("brand?>>>>>>>>" ,brand)
     const categories = useSelector(selectAllcategories);
+    const totalItems = useSelector(selectTotalItems);
+    console.log("very very important totalitems" , totalItems)
+
     console.log("useseletorhookbrand", brand)
     const filters = [
         {
@@ -44,21 +51,22 @@ const Productlist = () => {
             name: 'brand',
             options: brand,
         },
-    
-    
+
+
         {
             id: 'category',
             name: 'category',
-            options:categories,
+            options: categories,
         },
     ]
+    console.log("fileters>>>>>>>>>>>>>>>" , filters)
     var limit = 10;
-    var total_product = 30;
+    var total_product = totalItems;
     const dispatch = useDispatch();
 
     let [filter, setfilter] = useState({})
     let [Sort, setSort] = useState({})
-    let [pagee , setpage] = useState(1)
+    let [pagee, setpage] = useState(1)
 
     const filterhandler = (e, section, option) => {
         console.log(e.target.checked)
@@ -82,10 +90,11 @@ const Productlist = () => {
         const sort = { _sort: option.sort };
         setSort(sort);
     };
-    
-    const pagenationhandler = (e , index) => {
-         setpage(index);
+
+    const pagenationhandler = (e, index) => {
+        setpage(index);
     };
+  
     // const sorthandler = (e, option)=>
     //     {
     //         console.log("option", option)
@@ -95,15 +104,17 @@ const Productlist = () => {
     //     }
 
     useEffect(() => {
-        const pagenation = { _page: pagee , per_page: limit  };
-        dispatch(fetchallproductscategoriesaync({ filter, Sort , pagenation }))
-    }, [dispatch, filter, Sort , pagee])
+        const pagenation = { _page: pagee, per_page: limit };
+        dispatch(fetchallproductscategoriesaync({ filter, Sort, pagenation }))
+    }, [dispatch, filter, Sort, pagee])
 
-    useEffect(()=>{
+    useEffect(() => {
         dispatch(fetchbrandsaync())
         dispatch(fetchcategoriesaync())
     }, [])
-
+    useEffect(() => {
+        setpage(1);
+      }, [totalItems, Sort]);
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
 
     return (
@@ -158,7 +169,7 @@ const Productlist = () => {
                                                     </h3>
                                                     <DisclosurePanel className="pt-6">
                                                         <div className="space-y-6">
-                                                            {section.options.map((option, optionIdx) => (
+                                                            {section && section.options.map((option, optionIdx) => (
                                                                 <div key={option.value} className="flex items-center">
                                                                     <input
                                                                         id={`filter-mobile-${section.id}-${optionIdx}`}
@@ -273,7 +284,7 @@ const Productlist = () => {
                                                     </h3>
                                                     <DisclosurePanel className="pt-6">
                                                         <div className="space-y-4">
-                                                            {section.options.map((option, optionIdx) => (
+                                                            {section && section.options.map((option, optionIdx) => (
                                                                 <div key={option.value} className="flex items-center">
                                                                     <input
                                                                         id={`filter-${section.id}-${optionIdx}`}
@@ -310,7 +321,7 @@ const Productlist = () => {
 
                                                 {products.map((product) => (
                                                     <Link to={`/productdetail/${product.id}`} key={product.id}>
-                                                        <div  className=" group relative border-solid border-2 p-2 border-gray-200">
+                                                        <div className=" group relative border-solid border-2 p-2 border-gray-200">
                                                             <div className="min-h60 aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-60">
                                                                 <img
                                                                     src={product.thumbnail}
@@ -361,25 +372,25 @@ const Productlist = () => {
                                     <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
                                         <div>
                                             <p className="text-sm text-gray-700">
-                                                Showing <span className="font-medium">{(pagee-1)*limit}</span> to <span className="font-medium">{pagee*limit}</span> of{' '}
+                                                Showing <span className="font-medium">{(pagee - 1) * limit}</span> to <span className="font-medium">{pagee * limit}</span> of{' '}
                                                 <span className="font-medium">{total_product}</span> results
                                             </p>
                                         </div>
                                         <div>
                                             <nav aria-label="Pagination" className="isolate inline-flex -space-x-px rounded-md shadow-sm">
-                                               {
-                                                Array.from({length : Math.ceil(total_product/limit)}).map(
-                                                    (pages , index)=>
-                                                     <p
-                                                        onClick={(e)=>pagenationhandler(e, index+1)}
-                                                    aria-current="page"
-                                                    className="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                                    >
-                                                    {index+1}
-                                                    </p>
+                                                {
+                                                    Array.from({ length: Math.ceil(total_product / limit) }).map(
+                                                        (pages, index) =>
+                                                            <p
+                                                                onClick={(e) => pagenationhandler(e, index + 1)}
+                                                                aria-current="page"
+                                                                className="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                                            >
+                                                                {index + 1}
+                                                            </p>
                                                     )
-                                               }
-                                         
+                                                }
+
                                                 {/* Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" */}
                                                 <a
                                                     href="#"

@@ -5,7 +5,7 @@ import { Radio, RadioGroup } from '@headlessui/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchproductdetailbyidaync, selectproductbyid } from '../prodectSlice'
 import { Link, useParams } from 'react-router-dom'
-import { addtocartaync } from '../../cart/cartslice'
+import { addtocartaync , selectcart } from '../../cart/cartslice'
 import { selectcheckuser } from '../../auth/authSlice'
 
   let colors = [
@@ -39,24 +39,53 @@ const Productdetail = () => {
     const dispatch = useDispatch()
 
     const products = useSelector(selectproductbyid);
+    const cartproduct = useSelector(selectcart)
     const user = useSelector(selectcheckuser)
-    console.log("productdetail____user", user)
+
+    console.log("productdetail____user", cartproduct)
     console.log("productsindetail___________", products)
     const prams = useParams()
   const [selectedColor, setSelectedColor] = useState(colors[0])
   const [selectedSize, setSelectedSize] = useState(sizes[2])
   
 
-  const carthandler = (e)=>
-    {
-      e.preventDefault()
-      let newproduct = {...products, quantity:1 , user:user.id}
-      delete newproduct["id"]
-      dispatch(addtocartaync(newproduct))
+  const carthandler = (e) => {
+    e.preventDefault();
+    const currentuser = user;
+
+    // Check if the cart is empty or not initialized
+    if (!cartproduct || cartproduct.length === 0) {
+        console.log("Cart is empty or not initialized. Creating a new cart...");
+
+        let newCartProduct = {
+            product: products.id,  // Only pass the product ID
+            quantity: 1,           // Set the initial quantity
+            user: currentuser?.id  // Pass the current user ID
+        };
+
+        // Dispatch an action to create a new cart with the product
+        dispatch(addtocartaync(newCartProduct));
+        return;
     }
 
+    // If the cart already exists, check if the product is in the cart
+    const productIndex = cartproduct.findIndex(item => item.product?.id === products.id);
+
+    if (productIndex < 0) {
+        // If the product is not in the cart, add it
+        let newproduct = {
+            product: products.id,   // Only pass the product ID
+            quantity: 1,            // Set the initial quantity
+            user: currentuser?.id   // Pass the current user ID
+        };
+
+        dispatch(addtocartaync(newproduct));
+    }
+};
+
+
   useEffect(()=>{
-    dispatch(fetchproductdetailbyidaync(prams.id))
+    dispatch(fetchproductdetailbyidaync(prams.id)) 
 }, [dispatch , prams.id])
   return (
     <div>

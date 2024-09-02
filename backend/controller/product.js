@@ -23,50 +23,52 @@ async function handlecreateproduct(req, res) {
 
 }
 async function handleAllproductquery(req, res) {
+    let query = productmodel.find({});
+    let totalProductsQuery = productmodel.find({});
+  
+    if (req.query.category) {
+      query = query.find({ category: req.query.category });
+      totalProductsQuery = totalProductsQuery.find({
+        category: req.query.category,
+      });
+    }
+    if (req.query.brand) {
+      query = query.find({ brand: req.query.brand });
+      totalProductsQuery = totalProductsQuery.find({ brand: req.query.brand });
+    }
+    //TODO : How to get sort on discounted Price not on Actual price
+    if (req.query._sort && req.query._order) {
+      query = query.sort({ [req.query._sort]: req.query._order });
+    }
+  
+    const totalDocs = await totalProductsQuery.countDocuments().exec();
+    console.log({ totalDocs });
+  
+    if (req.query._page && req.query.per_page) {
+      const pageSize = req.query.per_page;
+      const page = req.query._page;
+      query = query.skip(pageSize * (page - 1)).limit(pageSize);
+    }
+  
     try {
-        let query =  productmodel.find({})
-
-        if (req.query.category) {
-            query = query.find({ category: req.query.category })
-        }
-        if (req.query.brand) {
-            query = query.find({ brand: req.query.brand })
-        }
-        if (req.query._sort && req.query._order) {
-            query = query.sort({ [req.query._sort]: req.query._order })
-        }
-        const countproduct = await query.clone().countDocuments();
-        console.log(countproduct)
-        if (req.query._page && req.query._limit) {
-            const pageSize = req.query._limit
-            const page = req.query._page
-            query = query.skip(pageSize * (page - 1)).limit(pageSize)
-        }
-
-        const results = await query.exec();  // Execute the query
-
-        res.status(200).json({"success" : results , "totalproduct" : countproduct})
-
+      const docs = await query.exec();
+      res.set('X-Total-Count', totalDocs);
+      res.status(200).json(docs);
+    } catch (err) {
+      res.status(400).json(err);
     }
-    catch (error) {
-        res.status(400).json({ "error": error.message })
-    }
-
 }
+
 
 async function handlefetchproductbyid(req, res) {
 
+    const { id } = req.params;
+
     try {
-        let id = req.params.id  
-        let response = await productmodel.findById(id)      
-        if (response) {
-            return res.status(200).json({ "response": response });
-        } else {
-            return res.status(404).json({ "message": "No categories found" });
-        }
-    } catch (error) {
-        console.error("Error fetching categories:", error);
-        return res.status(500).json({ "error": error.message });
+      const product = await productmodel.findById(id);
+      res.status(200).json(product);
+    } catch (err) {
+      res.status(400).json(err);
     }
 }
 

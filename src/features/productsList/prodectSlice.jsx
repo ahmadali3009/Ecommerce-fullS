@@ -8,6 +8,7 @@ const initialState = {
     brand:[],
     categories:[],
     productdetail:null,
+    totalItems:0,
     status : "idle"
 }
 
@@ -98,9 +99,10 @@ export const productSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(fetchallproductscategoriesaync.fulfilled, (state, action) => {
-        console.log('action_______', action.payload);
+        console.log('allqury_______', action.payload);
         state.status = 'idle';
-        state.products = action.payload.data;
+        state.products = action.payload.products;
+        state.totalItems = action.payload.totalItems || 0; // Safely accessing totalItems
       })
       .addCase(fetchallproductscategoriesaync.rejected, (state, action) => {
         state.status = 'failed';
@@ -170,6 +172,7 @@ export const selectAllProducts = (state) => state.product.products;
 export const selectAllbrand = (state) => state.product.brand;
 export const selectAllcategories = (state) => state.product.categories;
 export const selectproductbyid = (state) => state.product.productdetail;
+export const selectTotalItems = (state) => state.product.totalItems;
 
 
 

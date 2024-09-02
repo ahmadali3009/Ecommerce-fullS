@@ -60,7 +60,7 @@ export const authSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(checkuseraync.fulfilled, (state, action) => {
-        console.log('action_______', action.payload);
+        console.log('loginuser_______', action.payload);
         state.status = 'idle';
         state.checkuser = action.payload;
       })

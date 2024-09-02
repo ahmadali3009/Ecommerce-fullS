@@ -5,8 +5,4 @@ let {handlefetchuserbyid, updateUser} = require('../controller/user')
 
 userrouter.get("/:id" , handlefetchuserbyid).patch("/:id" , updateUser)
 
-
-
-
-
 module.exports = {userrouter}

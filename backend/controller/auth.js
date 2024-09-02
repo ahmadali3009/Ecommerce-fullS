@@ -1,3 +1,4 @@
+const { useRouteLoaderData } = require("react-router-dom");
 let user = require("../model/user");
 
 async function handlecreateuser(req, res) {
@@ -28,34 +29,23 @@ async function handlecreateuser(req, res) {
 }
 
 async function handleloginuser(req, res) {
-    try {
-        let userdata = req.body;
-
-        if (userdata) {
-                let response = await user.findOne(
-                    { email: userdata.email },        // Filter object
-                    'id email addresses'              // Projection string to select specific fields
-                );
-                if(userdata.password === response.password){
-
-                    res.status(200).json({
-                        id: response.id,
-                        email: response.email,
-                        addresses: response.addresses
-                    });}
-                else{
-                    return res.status(404).send("invaild candentials")
-                } 
-            }
-         else {
-            console.log("User data not provided");
-            res.status(400).send("User data not provided");
+        try {
+          const userdata = await user.findOne(
+            { email: req.body.email },
+          ).exec();
+          // TODO: this is just temporary, we will use strong password auth
+          console.log({userdata})
+          if (!useRouteLoaderData) {
+            res.status(401).json({ message: 'no such user email' });
+          } else if (userdata.password === req.body.password) {
+              // TODO: We will make addresses independent of login
+            res.status(200).json({id:userdata.id, email:userdata.email, name:userdata.name,addresses:userdata.addresses});
+          } else {
+            res.status(401).json({ message: 'invalid credentials' });
+          }
+        } catch (err) {
+          res.status(400).json(err);
         }
-    }
-     catch (error) {
-        console.error("Error creating user:", error);
-        res.status(500).json({ "error": error.message });
-    }
 
 }
 module.exports = { handlecreateuser , handleloginuser };

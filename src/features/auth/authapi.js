@@ -14,30 +14,27 @@ export function createuser(user){
     })
 }
 
-export function checkuser(loginuser){
-    return new Promise(async(resolve , reject)=>{
-        let email = loginuser.email
-        let password = loginuser.password
-
-        const response = await fetch(`http://localhost:8080/user?email=${email}`)
-    const data = await response.json()
-    console.log("dataapi" , data)
-    if(data.length)
-        {
-            if(password === data[0].password)
-              {console.log("insideapiif" , data[0])
-                resolve({data:data[0]})}
-            else
-            {
-                reject({message:"worng credentials"})
-            }
+export function checkuser(loginuser) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const response = await fetch('http://localhost:8080/auth/login', {
+          method: 'POST',
+          body: JSON.stringify(loginuser),
+          headers: { 'content-type': 'application/json' },
+        });
+        if (response.ok) {
+          const data = await response.json();
+          resolve({ data });
+        } else {
+          const error = await response.text();
+          reject(error);
         }
-        else
-        {
-            reject({message:"user not found"})
-        }
-    })
-}
+      } catch (error) {
+        reject( error );
+      }
+  
+    });
+  }
 
 export function updateUser(update)
 {
