@@ -49,7 +49,7 @@ export function updateCart(update)
 }
 
 export function deleteCart(productid) {
-    console.log("cartapiupdate", productid);
+    console.log("cartapidelete", productid);
 
     return new Promise(async (resolve, reject) => {
         try {

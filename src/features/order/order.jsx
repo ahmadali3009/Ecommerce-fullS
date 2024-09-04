@@ -6,15 +6,17 @@ import { resetOrder, selectorder } from './orderSlice';
 import { selectcheckuser } from '../auth/authSlice';
 import { resetCartaync } from '../cart/cartslice';
 const Order = () => {
-  let order = useSelector(selectorder)
-  console.log("order", order)
+
   let dispatch = useDispatch()
   let user = useSelector(selectcheckuser)
   useEffect(()=>
     {
       dispatch(resetCartaync(user.id))
       dispatch(resetOrder())
-    }, [dispatch , user])
+    }, [dispatch])
+
+    let order = useSelector(selectorder)
+    console.log("order", order)
   return (
     <>
     {order && <div className="flex items-center justify-center min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -33,9 +35,10 @@ const Order = () => {
                 Order Details
             </h3>
             <div className="mt-6 text-sm text-gray-600">
-                <p><strong>Order Number:</strong> #{order?.id}</p>
-                <p><strong>Order Date:</strong> {order?.date}</p>
-                <p><strong>Payment Method:</strong>{order?.paymentway} </p>
+                <p><strong>Order Number:</strong> #{order?.response.id}</p>
+                <p><strong>Total Amount:</strong> #{order?.response.totalAmount}</p>
+                <p><strong>Order status:</strong> {order?.response.status}</p>
+                <p><strong>Payment Method:</strong>{order?.response.paymentMethod} </p>
             </div>
             <div className="mt-6">
                 <Link

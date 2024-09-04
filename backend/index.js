@@ -7,6 +7,7 @@ let {brandrouter} = require('./routes/brand')
 let {authrouter} = require('./routes/auth')
 let {userrouter} = require('./routes/user')
 let {cartrouter} = require('./routes/cart')
+let { orderrouter } = require('./routes/order')
 
 
 
@@ -41,6 +42,8 @@ server.use("/" , brandrouter)
 server.use("/auth" , authrouter)
 server.use("/users" , userrouter)
 server.use("/cart" , cartrouter)
+server.use("/order" , orderrouter)
+
 
 
 

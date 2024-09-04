@@ -9,11 +9,16 @@ import { createorderaync } from '../features/order/orderSlice'
 
 
 const Cheakout = () => {
-  let totalamount = (cartproduct)=>
-    {
-      return cartproduct.reduce((amount, products) => products.product.price * products.product.quantity + amount,
-                          initialValue,).toFixed(2)
-    }
+  let cartproduct = useSelector(selectcart)
+  console.log("cartproduct in checkout" , cartproduct)
+  let totalamount = (cartproduct) => {
+    return cartproduct.reduce((amount, products) => 
+        products.product.price * products.quantity + amount,
+        0 // initialValue should be 0
+    ).toFixed(2);
+};
+
+console.log("ammountcheckingg", totalamount(cartproduct));
   const { register, handleSubmit, watch, reset, formState: {errors}} = useForm()
   let [paymentmethod , setpaymentmethod] = useState("")
   let dispatch =  useDispatch()
@@ -26,7 +31,7 @@ const Cheakout = () => {
   {
       dispatch(deleteCartaync(productid))
   }
-  let cartproduct = useSelector(selectcart)
+  
   let user = useSelector(selectcheckuser)
   console.log("cartproduct___________________---" , selectcart)
 
@@ -37,9 +42,16 @@ const Cheakout = () => {
   const handleOrder = (e)=>
     {
       // e.preventDefault()
-      let orderdata = {totalprice : totalamount(cartproduct) , productlist:cartproduct.product, userdetail:user , paymentway: paymentmethod, date: new Date().toISOString()}
-      dispatch(createorderaync(orderdata))
-      console.log(e.target.value)
+      let orderdata = {
+        products: cartproduct, // Match with the "products" field in the schema
+        totalAmount: totalamount(cartproduct),
+        user: user.id, // Match with the "user" field in the schema
+        paymentMethod: paymentmethod, // Match with the "paymentMethod" field in the schema
+        status: "pending", // Optional if you want to set a default status
+        selectedAddress: user.addresses, // Make sure to provide this if it's required
+    };      
+    dispatch(createorderaync(orderdata))
+    console.log(e.target.value)
     }
    
   let initialValue = 0 
