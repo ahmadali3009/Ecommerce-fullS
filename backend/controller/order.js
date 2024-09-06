@@ -17,4 +17,25 @@ let { order } =  require("../model/order");
         }
     }
 
-    module.exports = {handleOrderdata}
+    async function handlefetchuserorderbyid(req, res) {
+
+        try {
+            let userid = req.query.user
+            console.log("userid in order" , userid)
+            let response = await order.findOne({ user: userid })
+            .populate({
+              path: 'products',
+              select: 'name price' // Adjust fields to avoid deep nesting
+            });
+            if (response) {
+                return res.status(200).json({ "response": response });
+            } else {
+                return res.status(404).json({ "message": "No categories found" });
+            }
+        } catch (error) {
+            console.error("Error fetching categories:", error);
+            return res.status(500).json({ "error": error.message });
+        }
+    }
+
+    module.exports = {handleOrderdata , handlefetchuserorderbyid}
