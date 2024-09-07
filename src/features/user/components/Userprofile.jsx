@@ -1,28 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectuserinfo, fetchuserinfoAync, updateUserprofileAync } from '../userSlice';
-import { checkuseraync, selectcheckuser, updateUseraync } from '../../auth/authSlice';
+import {  updateUserprofileAync } from '../userSlice';
+import {  selectcheckuser } from '../../auth/authSlice';
 import { useForm } from 'react-hook-form';
 
 const Userprofile = () => {
     const dispatch = useDispatch();
     const [editIndex, setEditIndex] = useState(null);  // Track the address being edited
     const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm();
-    const userinfo = useSelector(selectuserinfo);
+    // const currentuser = useSelector(selectcurrentuser);
     const currentuser = useSelector(selectcheckuser)
-    console.log("userinfo in userprofile ", userinfo)
+    console.log("currentuser in userprofile ", currentuser)
     
-    let currentIndex = userinfo ? userinfo.findIndex(user => user.id === currentuser.id) : -1;
-    console.log("currentIndex in profiler user" , currentIndex)
+
         
-    if (currentIndex === -1) {
+    if (currentuser === -1) {
         return <div>Loading...</div>;  // Show loading or handle the case where the user is not found
     }
 
 
     const handleEditAddress = (index) => {
         setEditIndex(index);  // Set the index of the address being edited
-        const address = userinfo[currentIndex]?.addresses[index];
+        const address = currentuser?.addresses[index];
         setValue("fullname", address.fullname);
         setValue("email", address.email);
         setValue("tel", address.tel);
@@ -33,20 +32,20 @@ const Userprofile = () => {
     };
 
     const handleRemoveAddress = (index) => {
-        const updatedAddresses = userinfo.addresses.filter((_, addrIndex) => addrIndex !== index);
-        const updatedUser = { ...userinfo, addresses: updatedAddresses };
+        // const updatedAddresses = currentuser.addresses.filter((_, addrIndex) => addrIndex !== index);
+        // const updatedUser = { ...currentuser, addresses: updatedAddresses };
         // dispatch(updateUserprofileAync(updatedUser));
     };
 
     const onSubmit = (data) => {
-        const updatedAddresses = [...userinfo[currentIndex].addresses];
+        const updatedAddresses = [...currentuser[currentIndex].addresses];
         
         // Update the address at the specified index
         if (editIndex !== null) {
             updatedAddresses[editIndex] = data;
         }
 
-        const updatedUser = { ...userinfo[currentIndex], addresses: updatedAddresses };
+        const updatedUser = { ...currentuser[currentIndex], addresses: updatedAddresses };
         dispatch(updateUserprofileAync(updatedUser));
         reset();
         setEditIndex(null);  // Reset the edit index after submission
@@ -180,19 +179,19 @@ const Userprofile = () => {
             <div className="p-6 mt-10 bg-gray-50 shadow-inner rounded-lg">
                 <h1 className="text-2xl font-bold mb-4 text-gray-900">Your Profile</h1>
 
-                {userinfo && (
+                {currentuser && (
                     <div className="space-y-4">
                         <div>
-                            <h2 className="text-xl font-semibold text-gray-800">Full Name: {userinfo[currentIndex].addresses[0]?.fullname}</h2>
-                            <p className="text-gray-700">Email: {userinfo[currentIndex].email}</p>
-                            <p className="text-gray-700">role: {userinfo[currentIndex].role}</p>
+                            <h2 className="text-xl font-semibold text-gray-800">Full Name: {currentuser.addresses[0].fullname}</h2>
+                            <p className="text-gray-700">Email: {currentuser.email}</p>
+                            <p className="text-gray-700">role: {currentuser.role}</p>
 
                         </div>
 
                         <div className="mt-6">
                             <h3 className="text-lg font-semibold mb-2 text-gray-800">Addresses</h3>
                             <div className="space-y-4">
-                                {userinfo[currentIndex].addresses?.map((address, index) => (
+                                {currentuser.addresses?.map((address, index) => (
                                     <div key={index} className="border p-4 rounded-md bg-white shadow-sm">
                                         <p><strong>Full Name:</strong> {address.fullname}</p>
                                         <p><strong>Email:</strong> {address.email}</p>

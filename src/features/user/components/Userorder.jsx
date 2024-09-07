@@ -29,16 +29,16 @@ const Userorder = () => {
                         <div key={idx} className="flex mb-4 last:mb-0">
                             <img
                                 className="w-24 h-24 object-cover rounded-md"
-                                src={product.thumbnail} // Adjust as needed
-                                alt={product.title} // Adjust as needed
+                                src={product.product.thumbnail} // Adjust as needed
+                                alt={product.product.title} // Adjust as needed
                             />
                             <div className="ml-4 flex flex-col justify-between">
                                 <div>
-                                    <p className="text-sm font-medium text-gray-900">{product.title}</p>
-                                    <p className="text-sm text-gray-600">{product.brand}</p>
+                                    <p className="text-sm font-medium text-gray-900">{product.product.title}</p>
+                                    <p className="text-sm text-gray-600">{product.product.brand}</p>
                                 </div>
                                 <p className="text-sm text-gray-600">Quantity: {product.quantity}</p>
-                                <p className="text-sm text-gray-600">Price: ${product.price}</p>
+                                <p className="text-sm text-gray-600">Price: ${product.product.price}</p>
                             </div>
                         </div>
                     ))}
