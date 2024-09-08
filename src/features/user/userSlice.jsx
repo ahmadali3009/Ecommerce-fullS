@@ -62,7 +62,7 @@ export const featchorderbyuseridaAync = createAsyncThunk(
         state.status = 'loading';
       })
       .addCase(fetchuserinfoAync.fulfilled, (state, action) => {
-        console.log('action_______', action.payload);
+        console.log('fetchuserinfoAync//////////', action.payload);
         state.status = 'idle';
         state.userinfo = action.payload;
       }).addCase(updateUserprofileAync.pending, (state) => {
@@ -71,10 +71,8 @@ export const featchorderbyuseridaAync = createAsyncThunk(
       .addCase(updateUserprofileAync.fulfilled, (state, action) => {
         console.log('action_______updateUserprofileAync', action.payload);
         state.status = 'idle';
-        const index = state.userinfo.findIndex((user) => user.id === action.payload.id)
-        if (index !== -1) {
-          state.userinfo[index].addresses = action.payload.addresses;
-      }      })
+          state.userinfo.addresses = action.payload.addresses;
+         })
       .addCase(updateUserprofileAync.rejected, (state, action) => {
         state.status = 'failed';
         console.log("error" , action.error)

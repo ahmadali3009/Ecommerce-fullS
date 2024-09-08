@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {  updateUserprofileAync } from '../userSlice';
+import {  fetchuserinfoAync, updateUserprofileAync } from '../userSlice';
 import {  selectcheckuser } from '../../auth/authSlice';
 import { useForm } from 'react-hook-form';
+import { updateUser } from '../../auth/authapi';
 
 const Userprofile = () => {
     const dispatch = useDispatch();
@@ -38,15 +39,20 @@ const Userprofile = () => {
     };
 
     const onSubmit = (data) => {
-        const updatedAddresses = [...currentuser[currentIndex].addresses];
-        
-        // Update the address at the specified index
-        if (editIndex !== null) {
-            updatedAddresses[editIndex] = data;
-        }
+        const updatedAddresses = currentuser?.addresses ? [...currentuser.addresses] : [];
 
-        const updatedUser = { ...currentuser[currentIndex], addresses: updatedAddresses };
-        dispatch(updateUserprofileAync(updatedUser));
+if (editIndex !== null) {
+    updatedAddresses[editIndex] = { ...data };  // Ensure data structure is correct
+}
+const updatedUser = {
+    id: currentuser.id,
+    email: currentuser.email,
+    name: currentuser.name,
+    addresses: updatedAddresses
+};
+console.log("updateuseraddressers", updatedUser)
+     dispatch(updateUserprofileAync(updatedUser));
+     dispatch(fetchuserinfoAync(currentuser.id))
         reset();
         setEditIndex(null);  // Reset the edit index after submission
     };

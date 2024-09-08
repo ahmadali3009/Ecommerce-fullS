@@ -23,8 +23,8 @@ server.use(express.urlencoded({extended : false}))
 server.use(express.json())
 server.use(cors(
     { origin: 'http://localhost:5173', // Allow only this domain
-    methods: 'GET,POST,PUT,DELETE', // Allow only specific HTTP methods
-    credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], // Include PATCH in allowed methods
+        credentials: true, // Allow credentials (cookies, authorization headers, etc.)
     allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
     exposedHeaders: ['X-Total-Count'] // Include X-Total-Count here
     }));
@@ -40,7 +40,7 @@ server.use("/" , productrouter)
 server.use("/" , categoryrouter)
 server.use("/" , brandrouter)
 server.use("/auth" , authrouter)
-server.use("/users" , userrouter)
+server.use("/user" , userrouter)
 server.use("/cart" , cartrouter)
 server.use("/order" , orderrouter)
 
