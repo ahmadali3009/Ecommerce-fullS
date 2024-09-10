@@ -1,6 +1,6 @@
 export function createuser(user){
     return new Promise(async(resolve)=>{
-        const response = await fetch("http://localhost:8080/user",{
+        const response = await fetch("http://localhost:8080/auth/signup",{
 
         method: "POST",
         headers: {

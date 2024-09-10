@@ -3,7 +3,9 @@ import { createuser , checkuser, updateUser } from './authapi'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
-    createusers : [],
+    createusers :{
+      addresses : [],
+    } ,
     checkuser : null,
     status : "idle",
     error:null,
@@ -70,15 +72,27 @@ export const authSlice = createSlice({
         state.error = action.error;
       }).addCase(updateUseraync.pending, (state) => {
         state.status = 'loading';
-      })
-      .addCase(updateUseraync.fulfilled, (state, action) => {
+      }) .addCase(updateUseraync.fulfilled, (state, action) => {
         console.log('action_______', action.payload);
         state.status = 'idle';
-        const index = state.createusers.findIndex((user) => user.id === action.payload.id)
-        if (index !== -1) {
-          state.createusers[index].addresses = action.payload.addresses;
-      }      })
-      .addCase(updateUseraync.rejected, (state, action) => {
+    
+        // Update createusers addresses
+        state.createusers.addresses = [...state.createusers.addresses, ...action.payload.addresses];
+    
+        // Check if checkuser is null, if so initialize it
+        if (state.checkuser === null) {
+            state.checkuser = {
+                addresses: [...action.payload.addresses],
+                // Add any other properties from action.payload if needed
+            };
+        } else {
+            // Merge the addresses into the existing checkuser object
+            state.checkuser = {
+                ...state.checkuser,
+                addresses: [...state.checkuser.addresses, ...action.payload.addresses],
+            };
+        }
+    }).addCase(updateUseraync.rejected, (state, action) => {
         state.status = 'failed';
         console.log("error" , action.error)
         state.error = action.error;

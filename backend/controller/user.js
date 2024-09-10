@@ -6,7 +6,7 @@ async function handlefetchuserbyid(req, res) {
         let {id} = req.params 
         let response = await user.findById(id).select('-password');
         if (response) {
-            return res.status(200).json({ "response": response });
+            return res.status(200).json( response );
         } else {
             return res.status(404).json({ "message": "No categories found" });
         }

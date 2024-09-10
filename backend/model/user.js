@@ -4,7 +4,6 @@ let userSchema = new Schema(
   {
     name: {
       type: String,
-      required: true,  // Corrected from `require` to `required`
     },
     email: {
       type: String,
