@@ -10,10 +10,8 @@ let userSchema = new Schema(
       required: true,  // Corrected from `require` to `required`
       unique: true
     },
-    password: {
-      type: String,
-      required: true,  // Corrected from `require` to `required`
-    },
+    password: { type: Buffer, required: true },
+
     role: {
       type: String,
       default: "user"
@@ -21,6 +19,8 @@ let userSchema = new Schema(
     addresses: {
       type: [Schema.Types.Mixed],
     },
+    salt: Buffer,
+
   },
   { timestamps: true }
 );
