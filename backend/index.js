@@ -14,6 +14,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const user = require('./model/user')
+const { sanitizeUser } = require('./services/common')
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 
@@ -31,7 +32,8 @@ server.use(
     })
   );
   server.use(passport.authenticate('session'));
-
+  server.use(passport.initialize());  // Add this middleware
+  server.use(passport.session()); 
 
 connect("mongodb://127.0.0.1:27017/FullEcommerce").then(()=>{console.log("connection connected")}).catch((err)=>{console.log(err)})
 
@@ -48,7 +50,7 @@ server.use(express.urlencoded({extended : true}))
 server.use(express.json())
 server.use(cors(
     {
-        // origin: 'http://localhost:5173', // Allow only this domain
+        origin: 'http://localhost:5173', // Allow only this domain
         methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], // Include PATCH in allowed methods
         credentials: true, // Allow credentials (cookies, authorization headers, etc.)
     allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
@@ -106,7 +108,7 @@ passport.use(
     new JwtStrategy(opts, async function (jwt_payload, done) {
       console.log({ jwt_payload });
       try {
-        const User = await user.findOne({ id: jwt_payload.sub });
+        const User = await user.findOne({ id: jwt_payload.id });
         if (User) {
           return done(null, sanitizeUser(User)); // this calls serializer
         } else {
