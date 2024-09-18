@@ -3,7 +3,7 @@ let user = require("../model/user");
 async function handlefetchuserbyid(req, res) {
 
     try {
-        let {id} = req.params 
+        const { id } = req.user;
         let response = await user.findById(id).select('-password');
         if (response) {
             return res.status(200).json( response );
@@ -17,8 +17,8 @@ async function handlefetchuserbyid(req, res) {
 }
 
 const updateUser = async (req, res) => {
-  const { id } = req.params;
-  const updateData = req.body;
+    const { id } = req.user;
+    const updateData = req.body;
 
   try {
       // Using `{ new: true }` to return the updated document

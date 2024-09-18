@@ -14,7 +14,9 @@ const LocalStrategy = require('passport-local').Strategy;
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const user = require('./model/user')
-const { sanitizeUser } = require('./services/common')
+const { sanitizeUser , isAuth , cookieExtractor } = require('./services/common')
+const cookieParser = require('cookie-parser');
+
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 
@@ -41,7 +43,9 @@ connect("mongodb://127.0.0.1:27017/FullEcommerce").then(()=>{console.log("connec
 const SECRET_KEY = 'SECRET_KEY';
 // JWT options
 const opts = {};
-opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+// opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+opts.jwtFromRequest = cookieExtractor;
+
 opts.secretOrKey = SECRET_KEY; // TODO: should not be in code;
 
 
@@ -94,7 +98,7 @@ passport.use(
               return done(null, false, { message: 'invalid credentials' });
             }
             const token = jwt.sign(sanitizeUser(User), SECRET_KEY);
-            done(null, token); // this lines sends to serializer
+            done(null, {token}); // this lines sends to serializer
           }
         );
       } catch (err) {
@@ -108,7 +112,7 @@ passport.use(
     new JwtStrategy(opts, async function (jwt_payload, done) {
       console.log({ jwt_payload });
       try {
-        const User = await user.findOne({ id: jwt_payload.id });
+        const User = await User.findById(jwt_payload.id);
         if (User) {
           return done(null, sanitizeUser(User)); // this calls serializer
         } else {

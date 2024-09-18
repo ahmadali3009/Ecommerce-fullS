@@ -20,9 +20,9 @@ let { order } =  require("../model/order");
     async function handlefetchuserorderbyid(req, res) {
 
         try {
-            let userid = req.query.user
-            console.log("userid in order" , userid)
-            let response = await order.findOne({ user: userid })
+            const { id } = req.user;
+            console.log("userid in order" , id)
+            let response = await order.findOne({ user: id })
             .populate({
               path: 'products',
               select: 'name price' // Adjust fields to avoid deep nesting

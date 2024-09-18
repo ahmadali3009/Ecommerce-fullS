@@ -38,18 +38,10 @@ async function handlecreateuser(req, res) {
 };
 
 async function handleloginuser(req, res) {
-  try {
-    console.log("User object attached by passport:", req.user);
-    
-    if (!req.user) {
-      return res.status(400).json({ message: "No user found in request" });
-    }
-
-    res.json(req.user);
-  } catch (err) {
-    console.error("Error in handleloginuser:", err);
-    res.status(400).json({ error: err.message });
-  }
+  res.cookie('jwt', req.user.token, {
+      expires: new Date(Date.now() + 3600000),
+      httpOnly: true,
+    }).status(201).json(req.user.token);
 }
 
 module.exports = { handlecreateuser , handleloginuser , checkUser };

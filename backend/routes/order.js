@@ -4,7 +4,7 @@ const { handleOrderdata , handlefetchuserorderbyid } = require('../controller/or
 const orderrouter = express.Router();
 //  /products is already added in base path
 orderrouter.post('/', handleOrderdata)
-orderrouter.get('/', handlefetchuserorderbyid)
+orderrouter.get('/own', handlefetchuserorderbyid)
 
 
 module.exports = {orderrouter}
