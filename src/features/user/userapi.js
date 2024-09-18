@@ -1,6 +1,6 @@
 export function featchorderbyuserid(id){
     return new Promise(async(resolve)=>{
-        const response = await fetch(`http://localhost:8080/order?user=${id}`)
+        const response = await fetch(`http://localhost:8080/own`)
     const data = await response.json()
     console.log("dataapi" , data)
     resolve({data})
@@ -11,7 +11,7 @@ export function featchorderbyuserid(id){
 export function fetchuserinfo(loginuser){
     return new Promise(async(resolve)=>{
         console.log("loginuser///////////////",loginuser)
-        const response = await fetch(`http://localhost:8080/user/${loginuser}`)
+        const response = await fetch(`http://localhost:8080/own`)
     const data = await response.json()
     console.log("dataapiuserapi" , data)
     resolve({data})

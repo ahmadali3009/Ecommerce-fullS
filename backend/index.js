@@ -1,4 +1,5 @@
 let express = require('express')
+let server = express()
 let cors = require("cors")
 let connect = require('./connection')
 let {productrouter} = require('./routes/product')
@@ -24,7 +25,6 @@ const ExtractJwt = require('passport-jwt').ExtractJwt;
 
 
 let PORT = process.env.PORT || 8080;
-server = express()
 
 server.use(
     session({
@@ -33,7 +33,6 @@ server.use(
       saveUninitialized: false, // don't create session until something stored
     })
   );
-  server.use(passport.authenticate('session'));
   server.use(passport.initialize());  // Add this middleware
   server.use(passport.session()); 
 
@@ -48,16 +47,19 @@ opts.jwtFromRequest = cookieExtractor;
 
 opts.secretOrKey = SECRET_KEY; // TODO: should not be in code;
 
+server.use(express.static('dist'))
+server.use(cookieParser());
+server.use(passport.authenticate('session'));
 
 // server.use(cheakAuthenticationUser('token'))
 server.use(express.urlencoded({extended : true}))
 server.use(express.json())
 server.use(cors(
     {
-        origin: 'http://localhost:5173', // Allow only this domain
-        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], // Include PATCH in allowed methods
-        credentials: true, // Allow credentials (cookies, authorization headers, etc.)
-    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
+    //     origin: 'http://localhost:5173', // Allow only this domain
+    //     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], // Include PATCH in allowed methods
+    //     credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+    // allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
     exposedHeaders: ['X-Total-Count'] // Include X-Total-Count here
     }));
 
@@ -79,10 +81,12 @@ server.use("/order" , orderrouter)
 
 passport.use(
     'local',
-    new LocalStrategy(async function (username, password, done) {
+    new LocalStrategy(
+      { usernameField: 'email' },  // Set usernameField to 'email'
+      async function (email, password, done) {
       // by default passport uses username
       try {
-        const User = await user.findOne({ email: username });
+        const User = await user.findOne({ email });
         console.log("in passport authen",User);
         if (!User) {
           return done(null, false, { message: 'invalid credentials' }); // for safety
@@ -112,7 +116,7 @@ passport.use(
     new JwtStrategy(opts, async function (jwt_payload, done) {
       console.log({ jwt_payload });
       try {
-        const User = await User.findById(jwt_payload.id);
+        const User = await user.findById(jwt_payload.id);
         if (User) {
           return done(null, sanitizeUser(User)); // this calls serializer
         } else {
