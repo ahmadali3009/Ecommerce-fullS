@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {  fetchuserinfoAync, selectuserinfo, updateUserprofileAync } from '../userSlice';
+import {   selectuserinfo, updateUserprofileAync } from '../userSlice';
 import {  selectcheckuser } from '../../auth/authSlice';
 import { useForm } from 'react-hook-form';
 import { updateUser  } from '../../auth/authapi';
@@ -13,12 +13,6 @@ const Userprofile = () => {
     console.log("userinfooooooooooo" , userinfo)
     const currentuser = useSelector(selectcheckuser)
     console.log("currentuser in userprofile ", currentuser)
-    useEffect(()=>
-        {
-            dispatch(fetchuserinfoAync(currentuser.id))
-        },[dispatch , currentuser])
-
-        
     if (userinfo === -1) {
         return <div>Loading...</div>;  // Show loading or handle the case where the user is not found
     }
@@ -56,7 +50,6 @@ const updatedUser = {
 };
 console.log("updateuseraddressers", updatedUser)
      dispatch(updateUserprofileAync(updatedUser));
-     dispatch(fetchuserinfoAync(userinfo.id))
         reset();
         setEditIndex(null);  // Reset the edit index after submission
     };
@@ -192,9 +185,9 @@ console.log("updateuseraddressers", updatedUser)
                 {userinfo && (
                     <div className="space-y-4">
                         <div>
-                            <h2 className="text-xl font-semibold text-gray-800">Full Name: {userinfo.addresses[0].fullname}</h2>
-                            <p className="text-gray-700">Email: {userinfo.email}</p>
-                            <p className="text-gray-700">role: {userinfo.role}</p>
+                            <h2 className="text-xl font-semibold text-gray-800">Full Name: {userinfo.addresses[0]?.fullname}</h2>
+                            <p className="text-gray-700">Email: {userinfo?.email}</p>
+                            <p className="text-gray-700">role: {userinfo?.role}</p>
 
                         </div>
 

@@ -30,16 +30,15 @@ import { fetchallproductsAycn } from './features/productsList/prodectSlice'
 function App() {
 
   let dispach = useDispatch()
-  let userid = useSelector(selectcheckuser)
-  console.log("app" , userid)
+  let user = useSelector(selectcheckuser)
+  console.log("app" , user)
   useEffect(()=>
     {
-      if(userid){
-        dispach(fetchcartbyidaync(userid.id))
-        dispach(fetchuserinfoAync(userid.id))
+      if(user){
+        dispach(fetchuserinfoAync())
         dispach(fetchallproductsAycn())
       }
-    }, [dispach,userid])
+    }, [dispach,user])
 
   const router = createBrowserRouter([
     {

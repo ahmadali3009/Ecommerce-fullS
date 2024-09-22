@@ -42,7 +42,7 @@ export function updateUser(update)
     return new Promise(async(resolve , reject)=>{
    
 
-    const response = await fetch(`http://localhost:8080/user/`+update.id,{
+    const response = await fetch(`http://localhost:8080/users`,{
 
         method: "PATCH",
         headers: {

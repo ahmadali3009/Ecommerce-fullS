@@ -1,5 +1,7 @@
 let express = require('express')
 let server = express()
+const path = require('path');
+
 let cors = require("cors")
 let connect = require('./connection')
 let {productrouter} = require('./routes/product')
@@ -33,7 +35,6 @@ server.use(
       saveUninitialized: false, // don't create session until something stored
     })
   );
-  server.use(passport.initialize());  // Add this middleware
   server.use(passport.session()); 
 
 connect("mongodb://127.0.0.1:27017/FullEcommerce").then(()=>{console.log("connection connected")}).catch((err)=>{console.log(err)})
@@ -46,8 +47,6 @@ const opts = {};
 opts.jwtFromRequest = cookieExtractor;
 
 opts.secretOrKey = SECRET_KEY; // TODO: should not be in code;
-
-server.use(express.static('dist'))
 server.use(cookieParser());
 server.use(passport.authenticate('session'));
 
@@ -64,20 +63,25 @@ server.use(cors(
     }));
 
 // server.use(express.static(path.resolve("./public")))
+// server.use(express.static(path.join(__dirname, 'dist'))); // Adjust as necessary
 
 server.get('/' , async (req , res)=>
 {
    res.json({status : "success"})
 })
 
-server.use("/" , productrouter)
-server.use("/" , categoryrouter)
-server.use("/" , brandrouter)
-server.use("/auth" , authrouter)
-server.use("/user" , userrouter)
-server.use("/cart" , cartrouter)
-server.use("/order" , orderrouter)
 
+server.use("/" ,isAuth(), productrouter)
+server.use("/" ,isAuth(), categoryrouter)
+server.use("/" ,isAuth(), brandrouter)
+server.use("/auth" , authrouter)
+server.use("/users",isAuth() , userrouter)
+server.use("/cart" ,isAuth(), cartrouter)
+server.use("/order",isAuth() , orderrouter)
+
+// server.get('*', (req, res) =>
+//   res.sendFile(path.resolve('dist', 'index.html'))
+// );
 
 passport.use(
     'local',
@@ -114,7 +118,7 @@ passport.use(
   passport.use(
     'jwt',
     new JwtStrategy(opts, async function (jwt_payload, done) {
-      console.log({ jwt_payload });
+      console.log("in use-passport-JWT",{ jwt_payload });
       try {
         const User = await user.findById(jwt_payload.id);
         if (User) {

@@ -1,20 +1,19 @@
 let user = require("../model/user");
 
-async function handlefetchuserbyid(req, res) {
-
-    try {
-        const { id } = req.user;
-        let response = await user.findById(id).select('-password');
-        if (response) {
-            return res.status(200).json( response );
-        } else {
-            return res.status(404).json({ "message": "No categories found" });
-        }
-    } catch (error) {
-        console.error("Error fetching categories:", error);
-        return res.status(500).json({ "error": error.message });
+const handlefetchuserbyid = async (req, res) => {
+    console.log(req.user); // Check if req.user is populated
+    if (!req.user) {
+        return res.status(400).json({ error: 'No user found in request' });
     }
-}
+    const { id } = req.user;
+  console.log(id)
+  try {
+    const User = await user.findById(id);
+    res.status(200).json({id:User.id,addresses:User.addresses,email:User.email,role:User.role});
+  } catch (err) {
+    res.status(400).json(err);
+  }
+  };
 
 const updateUser = async (req, res) => {
     const { id } = req.user;

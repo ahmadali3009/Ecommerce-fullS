@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { featchorderbyuserid, fetchuserinfo, updateUserprofile } from './userapi'
+import { featchorderbyuserid, fetchuserinfo, updateUser, updateUserprofile } from './userapi'
 
 const initialState = {
     userOrder : [],
@@ -20,10 +20,9 @@ export const featchorderbyuseridaAync = createAsyncThunk(
   )
   export const fetchuserinfoAync = createAsyncThunk(
     "user/fetchuserinfo",
-    async(id) =>
+    async() =>
         {
-            console.log("product________" , id)
-            const response = await fetchuserinfo(id)
+            const response = await fetchuserinfo()
             return response.data
         }
   )
@@ -37,7 +36,15 @@ export const featchorderbyuseridaAync = createAsyncThunk(
         }
   )
 
- 
+  export const updateUseraync = createAsyncThunk(
+    "cart/updateuser",
+    async(update) =>
+        {
+            console.log("userid________" , update)
+            const response = await updateUser(update)
+            return response.data
+        }
+  )
 
   export const userSlice = createSlice({
     name : "user",
@@ -74,6 +81,32 @@ export const featchorderbyuseridaAync = createAsyncThunk(
           state.userinfo.addresses = action.payload.addresses;
          })
       .addCase(updateUserprofileAync.rejected, (state, action) => {
+        state.status = 'failed';
+        console.log("error" , action.error)
+        state.error = action.error;
+      }).addCase(updateUseraync.pending, (state) => {
+        state.status = 'loading';
+      }) .addCase(updateUseraync.fulfilled, (state, action) => {
+        console.log('action_______', action.payload);
+        state.status = 'idle';
+    
+        // Update createusers addresses
+        state.userinfo.addresses = [...state.userinfo.addresses, ...action.payload.addresses];
+    
+        // Check if checkuser is null, if so initialize it
+        if (state.checkuser === null) {
+            state.userinfo = {
+                addresses: [...action.payload.addresses],
+                // Add any other properties from action.payload if needed
+            };
+        } else {
+            // Merge the addresses into the existing checkuser object
+            state.userinfo = {
+                ...state.userinfo,
+                addresses: [...state.userinfo.addresses, ...action.payload.addresses],
+            };
+        }
+    }).addCase(updateUseraync.rejected, (state, action) => {
         state.status = 'failed';
         console.log("error" , action.error)
         state.error = action.error;

@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteCartaync, selectcart, updateCartaync } from '../features/cart/cartslice'
 import { useForm } from 'react-hook-form'
-import { selectcheckuser, updateUseraync } from '../features/auth/authSlice'
 import { createorderaync } from '../features/order/orderSlice'
+import { selectuserinfo, updateUseraync } from '../features/user/userSlice'
 
 
 const Cheakout = () => {
@@ -32,8 +32,8 @@ console.log("ammountcheckingg", totalamount(cartproduct));
       dispatch(deleteCartaync(productid))
   }
   
-  let user = useSelector(selectcheckuser)
-  console.log("cartproduct___________________---" , selectcart)
+  let user = useSelector(selectuserinfo)
+  console.log("usercheckincheckout---" , user)
 
   const handlepayment = (e)=>{
     console.log(e.target.id)
@@ -53,6 +53,8 @@ console.log("ammountcheckingg", totalamount(cartproduct));
     dispatch(createorderaync(orderdata))
     console.log(e.target.value)
     }
+
+  
    
   let initialValue = 0 
 
@@ -66,7 +68,11 @@ console.log("ammountcheckingg", totalamount(cartproduct));
         <div className="border-b border-gray-900/10 pb-12">
           <h2 className="text-base font-semibold leading-7 text-gray-900">Personal Information</h2>
           <p className="mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p>
-          <form noValidate onSubmit={handleSubmit((data)=>{dispatch(updateUseraync({...user,addresses:[...user.addresses,data]}))
+          <form noValidate onSubmit={handleSubmit((data)=>{
+             dispatch(updateUseraync({
+              ...user,
+              addresses: [...(user.addresses || []), data],
+            }));
           reset()}
         )}>
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
@@ -179,8 +185,8 @@ console.log("ammountcheckingg", totalamount(cartproduct));
          
             <div className='addresses'>
             <ul role="list" className="divide-y divide-gray-100">
-      {user?.addresses.map((address) => (
-        <li key={address.email} className="flex justify-between gap-x-6 py-5">
+      {user?.addresses?.map((address) => (
+        <li key={address?.email} className="flex justify-between gap-x-6 py-5">
           <div className="flex min-w-0 gap-x-4">
             <div className="min-w-0 flex-auto">
               <p className="text-sm font-semibold leading-6 text-gray-900">{address.fullname}</p>
@@ -279,7 +285,7 @@ console.log("ammountcheckingg", totalamount(cartproduct));
                                                 <label htmlFor="quantity" className="inline text-sm font-medium leading-6 text-gray-900">
                                                     Qty
                                                 </label>
-                                                <select onChange={(e)=>handlequnatity(e,productd)} value={products.product.quantity} className='ml-3'>
+                                                <select onChange={(e)=>handlequnatity(e,products)} value={products.product.quantity} className='ml-3'>
                                                     <option value="1">1</option>
                                                     <option value="2">2</option>
                                                     <option value="3">3</option>

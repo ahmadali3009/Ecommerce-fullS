@@ -13,6 +13,7 @@ exports.cookieExtractor = function (req) {
   if (req && req.cookies) {
     token = req.cookies['jwt']; // Extract token from the 'jwt' cookie
   }
+  console.log("extracted token " , token)
 
   // Use hardcoded token only if no token is found in the cookies (for testing)
   if (!token) {

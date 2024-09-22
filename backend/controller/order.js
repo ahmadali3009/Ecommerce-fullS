@@ -38,4 +38,17 @@ let { order } =  require("../model/order");
         }
     }
 
-    module.exports = {handleOrderdata , handlefetchuserorderbyid}
+    async function handleshoworder(req, res) {
+        try {
+            
+            let response = req.body
+            console.log(req.body)
+
+        } catch (error) {
+            console.error("Error fetching categories:", error);
+            return res.status(500).json({ "error": error.message });
+        }
+    }
+
+
+    module.exports = {handleOrderdata , handlefetchuserorderbyid , handleshoworder}

@@ -29,15 +29,7 @@ export const createuseraync = createAsyncThunk(
             return response.data
         }
   )
-  export const updateUseraync = createAsyncThunk(
-    "cart/updateuser",
-    async(update) =>
-        {
-            console.log("userid________" , update)
-            const response = await updateUser(update)
-            return response.data
-        }
-  )
+
 
 export const authSlice = createSlice({
     name : "user",
@@ -62,7 +54,7 @@ export const authSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(checkuseraync.fulfilled, (state, action) => {
-        console.log('loginuser_______', action.payload);
+        console.log('checkuserfullfilledloginuser_______', action.payload);
         state.status = 'idle';
         state.checkuser = action.payload;
       })
@@ -70,33 +62,7 @@ export const authSlice = createSlice({
         state.status = 'failed';
         console.log("error" , action.error)
         state.error = action.error;
-      }).addCase(updateUseraync.pending, (state) => {
-        state.status = 'loading';
-      }) .addCase(updateUseraync.fulfilled, (state, action) => {
-        console.log('action_______', action.payload);
-        state.status = 'idle';
-    
-        // Update createusers addresses
-        state.createusers.addresses = [...state.createusers.addresses, ...action.payload.addresses];
-    
-        // Check if checkuser is null, if so initialize it
-        if (state.checkuser === null) {
-            state.checkuser = {
-                addresses: [...action.payload.addresses],
-                // Add any other properties from action.payload if needed
-            };
-        } else {
-            // Merge the addresses into the existing checkuser object
-            state.checkuser = {
-                ...state.checkuser,
-                addresses: [...state.checkuser.addresses, ...action.payload.addresses],
-            };
-        }
-    }).addCase(updateUseraync.rejected, (state, action) => {
-        state.status = 'failed';
-        console.log("error" , action.error)
-        state.error = action.error;
-      });
+      })
     }
 
 })
