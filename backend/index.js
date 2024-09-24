@@ -1,6 +1,7 @@
 let express = require('express')
 let server = express()
 const path = require('path');
+const stripe = require('stripe')('sk_test_51Q22khFoe1OIUX47QUaQBCGT0YWfiB9VbrZvvpgxAXaDvKgAA7XNZ9iB9UTQoj0bcAVSk3p7zPtnJwnlQB2MQiw800rBff4JeY');
 
 let cors = require("cors")
 let connect = require('./connection')
@@ -148,7 +149,26 @@ passport.use(
       return cb(null, User);
     });
   });
+// Stripe payment way
+server.post("/create-payment-intent", async (req, res) => {
+  const { totalAmount } = req.body;
 
+  // Create a PaymentIntent with the order amount and currency
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: totalAmount * 100, // for decimal compensation
+    currency: "aed",
+    // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
+    automatic_payment_methods: {
+      enabled: true,
+    },
+  });
+
+  res.send({
+    clientSecret: paymentIntent.client_secret,
+    // [DEV]: For demo purposes only, you should avoid exposing the PaymentIntent ID in the client-side code.
+    dpmCheckerLink: `https://dashboard.stripe.com/settings/payment_methods/review?transaction_id=${paymentIntent.id}`,
+  });
+});
 
 
 server.listen(PORT ,()  => {

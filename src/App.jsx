@@ -26,6 +26,7 @@ import Adminhome from './pages/adminhome'
 import Adminproducthistory from './pages/adminproducthistory'
 import Addproductform from './features/admin/Adminproductlist/Addproductform'
 import { fetchallproductsAycn } from './features/productsList/prodectSlice'
+import StripeCheckout from './pages/stripepage'
 
 function App() {
 
@@ -126,6 +127,17 @@ function App() {
           <Protected>
           <Nav />
           <Userprofilepage />
+          </Protected>
+        </>
+      ),
+    },
+    {
+      path: '/stripe-checkout',
+      element: (
+        <>
+          <Protected>
+          <Nav />
+          <StripeCheckout />
           </Protected>
         </>
       ),

@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteCartaync, selectcart, updateCartaync } from '../features/cart/cartslice'
 import { useForm } from 'react-hook-form'
-import { createorderaync } from '../features/order/orderSlice'
+import { createorderaync, selectorder } from '../features/order/orderSlice'
 import { selectuserinfo, updateUseraync } from '../features/user/userSlice'
 
 
@@ -33,6 +33,8 @@ console.log("ammountcheckingg", totalamount(cartproduct));
   }
   
   let user = useSelector(selectuserinfo)
+  let currentOrder = useSelector(selectorder)
+
   console.log("usercheckincheckout---" , user)
 
   const handlepayment = (e)=>{
@@ -52,6 +54,7 @@ console.log("ammountcheckingg", totalamount(cartproduct));
     };      
     dispatch(createorderaync(orderdata))
     console.log(e.target.value)
+
     }
 
   
@@ -61,6 +64,18 @@ console.log("ammountcheckingg", totalamount(cartproduct));
 
   return (
     <div>
+
+{!cartproduct.length && <Navigate to="/" replace={true}></Navigate>}
+      {currentOrder && currentOrder.paymentMethod === 'COD' && (
+        <Navigate
+          to={`/orderpage`}
+          replace={true}
+        ></Navigate>
+      )}
+      {currentOrder && currentOrder.paymentMethod === 'COC' && (
+        <Navigate to={`/stripe-checkout`} replace={true}></Navigate>
+      )}
+
     <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5 ">
     <div className='lg:col-span-3 bg-slate-100'>
        <main className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-4">
@@ -317,13 +332,14 @@ console.log("ammountcheckingg", totalamount(cartproduct));
                     </div>
                     <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
                     <div className="mt-6">
-                        <Link
-                            onClick={(e)=>handleOrder(e)}
-                            to="/orderpage"
-                            className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
-                        >
-                            OrderNow
-                        </Link>
+                        
+                    <div
+                    onClick={handleOrder}
+                    className="flex cursor-pointer items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
+                  >
+                    Order Now
+                  </div>
+                        
                     </div>
                     <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
                         <p>
