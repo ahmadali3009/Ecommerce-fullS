@@ -35,7 +35,7 @@ console.log("ammountcheckingg", totalamount(cartproduct));
   let user = useSelector(selectuserinfo)
   let currentOrder = useSelector(selectorder)
 
-  console.log("usercheckincheckout---" , user)
+  console.log("currentordercheckincheckout---" , currentOrder)
 
   const handlepayment = (e)=>{
     console.log(e.target.id)
@@ -66,13 +66,13 @@ console.log("ammountcheckingg", totalamount(cartproduct));
     <div>
 
 {!cartproduct.length && <Navigate to="/" replace={true}></Navigate>}
-      {currentOrder && currentOrder.paymentMethod === 'COD' && (
+      {currentOrder && currentOrder.response.paymentMethod === 'COD' && (
         <Navigate
           to={`/orderpage`}
           replace={true}
         ></Navigate>
       )}
-      {currentOrder && currentOrder.paymentMethod === 'COC' && (
+      {currentOrder && currentOrder.response.paymentMethod === 'COC' && (
         <Navigate to={`/stripe-checkout`} replace={true}></Navigate>
       )}
 
