@@ -27,6 +27,7 @@ import Adminproducthistory from './pages/adminproducthistory'
 import Addproductform from './features/admin/Adminproductlist/Addproductform'
 import { fetchallproductsAycn } from './features/productsList/prodectSlice'
 import StripeCheckout from './pages/stripepage'
+import OrderSuccessPage from './pages/OrderSuccessPage'
 
 function App() {
 
@@ -106,6 +107,14 @@ function App() {
           </Protected>
 
         </>
+      ),
+    },
+    {
+      path: '/order-success/:id',
+      element: (
+        <Protected>
+          <OrderSuccessPage></OrderSuccessPage>{' '}
+        </Protected>
       ),
     },
     {

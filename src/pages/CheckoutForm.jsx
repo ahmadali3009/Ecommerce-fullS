@@ -4,11 +4,13 @@ import {
   useStripe,
   useElements
 } from "@stripe/react-stripe-js";
+import { useSelector } from "react-redux";
+import { selectorder } from "../features/order/orderSlice";
 
 export default function CheckoutForm({dpmCheckerLink}) {
   const stripe = useStripe();
   const elements = useElements();
-
+  const currentOrder = useSelector(selectorder)
   const [message, setMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -27,7 +29,7 @@ export default function CheckoutForm({dpmCheckerLink}) {
       elements,
       confirmParams: {
         // Make sure to change this to your payment completion page
-        return_url: "http://localhost:8080/orderpage",
+        return_url: `http://localhost:5173/order-success/${currentOrder.id}`,
       },
     });
 

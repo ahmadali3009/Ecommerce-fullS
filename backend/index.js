@@ -151,15 +151,18 @@ passport.use(
   });
 // Stripe payment way
 server.post("/create-payment-intent", async (req, res) => {
-  const { totalAmount , id} = req.body;
+  const { totalAmount , orderId} = req.body;
 
   // Create a PaymentIntent with the order amount and currency
   const paymentIntent = await stripe.paymentIntents.create({
-    amount: totalAmount * 100, // for decimal compensation
+    amount: totalAmount, // for decimal compensation
     currency: "aed",
     // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
     automatic_payment_methods: {
       enabled: true,
+    },
+    metadata: {
+      orderId,
     },
   });
 

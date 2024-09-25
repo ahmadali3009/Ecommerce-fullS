@@ -17,13 +17,14 @@ export default function StripeCheckout() {
     console.log("stripepaymentorder" , currentOrder)
   const [clientSecret, setClientSecret] = useState("");
   const [dpmCheckerLink, setDpmCheckerLink] = useState("");
+  const totalAmountInCents = Math.round(currentOrder.response.totalAmount * 100);
 
   useEffect(() => {
     // Create PaymentIntent as soon as the page loads
     fetch("http://localhost:8080/create-payment-intent", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({  totalAmount: currentOrder.response.totalAmount, orderId:currentOrder.response.id  }),
+      body: JSON.stringify({  totalAmount: totalAmountInCents, orderId:currentOrder.response.id  }),
     })
       .then((res) => res.json())
       .then((data) => { 
