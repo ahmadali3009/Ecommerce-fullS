@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {   selectuserinfo, updateUserprofileAync } from '../userSlice';
 import {  selectcheckuser } from '../../auth/authSlice';
 import { useForm } from 'react-hook-form';
-import { updateUser  } from '../../auth/authapi';
+// import { updateUser  } from '../../auth/authapi';
 
 const Userprofile = () => {
     const dispatch = useDispatch();

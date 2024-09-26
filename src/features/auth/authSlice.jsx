@@ -1,5 +1,5 @@
 import React from 'react'
-import { createuser , checkuser, updateUser } from './authapi'
+import { createuser , checkuser, checkAuth } from './authapi'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
@@ -8,6 +8,7 @@ const initialState = {
     } ,
     checkuser : null,
     status : "idle",
+    userChecked : false,
     error:null,
 }
 
@@ -30,6 +31,17 @@ export const createuseraync = createAsyncThunk(
         }
   )
 
+  export const checkAuthAsync = createAsyncThunk(
+    'user/checkAuth',
+    async () => {
+      try {
+        const response = await checkAuth();
+        return response.data;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  );
 
 export const authSlice = createSlice({
     name : "user",
@@ -62,13 +74,25 @@ export const authSlice = createSlice({
         state.status = 'failed';
         console.log("error" , action.error)
         state.error = action.error;
+      }).addCase(checkAuthAsync.pending, (state) => {
+        state.status = 'loading';
       })
+      .addCase(checkAuthAsync.fulfilled, (state, action) => {
+        state.status = 'idle';
+        state.checkuser = action.payload;
+        state.userChecked = true;
+      })
+      .addCase(checkAuthAsync.rejected, (state, action) => {
+        state.status = 'idle';
+        state.userChecked = true;
+      });
     }
 
 })
 export const selectcreateuser = (state) => state.user.createusers;
 export const selectcheckuser = (state) => state.user.checkuser;
 export const selecterror = (state) => state.user.error;
+export const selectUserChecked = (state) => state.user.userChecked;
 
 
 

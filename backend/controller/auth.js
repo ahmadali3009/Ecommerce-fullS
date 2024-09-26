@@ -44,4 +44,13 @@ async function handleloginuser(req, res) {
     }).status(201).json(req.user.token);
 }
 
-module.exports = { handlecreateuser , handleloginuser , checkUser };
+async function checkAuth(req, res){
+  if(req.user){
+    res.json(req.user);
+  } else{
+    res.sendStatus(401);
+  }
+};
+
+
+module.exports = { handlecreateuser , handleloginuser , checkUser , checkAuth};

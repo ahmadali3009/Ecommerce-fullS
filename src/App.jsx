@@ -15,7 +15,7 @@ import Cheakout from './pages/cheakout'
 import Producthistory from './pages/producthistory'
 import Protected from './features/auth/components/protected'
 import { useDispatch, useSelector } from 'react-redux'
-import { selectcheckuser } from './features/auth/authSlice'
+import { checkAuthAsync, selectcheckuser, selectUserChecked } from './features/auth/authSlice'
 import { fetchcartbyidaync } from './features/cart/cartslice'
 import Orderpage from './pages/orderpage'
 import Userorder from './features/user/components/Userorder'
@@ -34,6 +34,12 @@ function App() {
   let dispach = useDispatch()
   let user = useSelector(selectcheckuser)
   console.log("app" , user)
+
+  const userChecked = useSelector(selectUserChecked);
+  useEffect(()=>{
+    dispach(checkAuthAsync())
+  },[dispach])
+
   useEffect(()=>
     {
       if(user){
@@ -203,8 +209,8 @@ function App() {
 
     <>
         
-        <RouterProvider router={router} >
-        </RouterProvider>
+        {userChecked && <RouterProvider router={router} >
+        </RouterProvider>}
 
         
     </>
