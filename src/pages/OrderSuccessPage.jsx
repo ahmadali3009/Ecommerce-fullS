@@ -7,7 +7,6 @@ import { resetOrder } from "../features/order/orderSlice";
 function OrderSuccessPage() {
    const params = useParams() 
    const dispatch = useDispatch();
-   
    useEffect(()=>{
     // reset cart
     dispatch(resetCartaync())

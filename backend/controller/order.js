@@ -22,13 +22,13 @@ let { order } =  require("../model/order");
         try {
             const { id } = req.user;
             console.log("userid in order" , id)
-            let response = await order.findOne({ user: id })
+            let response = await order.find({user : id})
             .populate({
               path: 'products',
               select: 'name price' // Adjust fields to avoid deep nesting
             });
             if (response) {
-                return res.status(200).json({ "response": response });
+                return res.status(200).json({response});
             } else {
                 return res.status(404).json({ "message": "No categories found" });
             }

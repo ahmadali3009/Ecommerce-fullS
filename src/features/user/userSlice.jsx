@@ -11,10 +11,9 @@ const initialState = {
 
 export const featchorderbyuseridaAync = createAsyncThunk(
     "user/featchorderbyuserid",
-    async(id) =>
+    async() =>
         {
-            console.log("product________" , id)
-            const response = await featchorderbyuserid(id)
+            const response = await featchorderbyuserid()
             return response.data
         }
   )
@@ -58,7 +57,7 @@ export const featchorderbyuseridaAync = createAsyncThunk(
         state.status = 'loading';
       })
       .addCase(featchorderbyuseridaAync.fulfilled, (state, action) => {
-        console.log('action_______', action.payload);
+        console.log('action_______orderarraydata', action.payload);
         state.status = 'idle';
         state.userOrder = action.payload;
       })
