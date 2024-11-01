@@ -3,6 +3,7 @@ export function createuser(user){
         const response = await fetch("http://localhost:8080/auth/signup",{
 
         method: "POST",
+        credentials: 'include', // Include credentials (cookies)
         headers: {
             "Content-Type" : "application/json"
         },

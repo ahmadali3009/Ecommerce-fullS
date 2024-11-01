@@ -6,7 +6,10 @@ const SECRET_KEY = 'SECRET_KEY';
 const jwt = require('jsonwebtoken');
 async function handlecreateuser(req, res) {
   try {
-    console.log(req.body)
+    console.log("signupchecking", req.body)
+    if (!req.body) {
+      return res.status(400).json({ error: "Password is required" });
+    }
     const salt = crypto.randomBytes(16);
     crypto.pbkdf2(
       req.body.password,
@@ -22,8 +25,19 @@ async function handlecreateuser(req, res) {
           if (err) {
             res.status(400).json(err);
           } else {
+            console.log("User document:", doc);
+            const sanitizedUser = sanitizeUser(doc);
+            console.log("Sanitized user:", sanitizedUser);
+            console.log("Secret key:", SECRET_KEY);
             const token = jwt.sign(sanitizeUser(doc), SECRET_KEY);
-            res.status(201).json(token);
+            console.log("Generated token:", token);
+            res.cookie('jwt', token, { 
+              httpOnly: true, 
+              secure: false, // Set to true in production with HTTPS
+              sameSite: 'Lax', // Adjust if needed
+              path: '/' // Ensure this path is correct
+          });
+                      res.status(201).json(token);
           }
         });
       }
@@ -33,24 +47,24 @@ async function handlecreateuser(req, res) {
   }
 };
 
-  let checkUser = async (req, res) => {
-    res.json({status:'success',user: req.user});
+let checkUser = async (req, res) => {
+  res.json({ status: 'success', user: req.user });
 };
 
 async function handleloginuser(req, res) {
   res.cookie('jwt', req.user.token, {
-      expires: new Date(Date.now() + 3600000),
-      httpOnly: true,
-    }).status(201).json(req.user.token);
+    expires: new Date(Date.now() + 3600000),
+    httpOnly: true,
+  }).status(201).json(req.user.token);
 }
 
-async function checkAuth(req, res){
-  if(req.user){
+async function checkAuth(req, res) {
+  if (req.user) {
     res.json(req.user);
-  } else{
+  } else {
     res.sendStatus(401);
   }
 };
 
 
-module.exports = { handlecreateuser , handleloginuser , checkUser , checkAuth};
+module.exports = { handlecreateuser, handleloginuser, checkUser, checkAuth };

@@ -28,7 +28,18 @@ const ExtractJwt = require('passport-jwt').ExtractJwt;
 
 
 let PORT = process.env.PORT || 8080;
+// JWT options
+const opts = {};
+// opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+opts.jwtFromRequest = cookieExtractor;
+const SECRET_KEY = 'SECRET_KEY';
+opts.secretOrKey = SECRET_KEY; // TODO: should not be in code;
 
+
+//Middleware
+// server.use(express.static(path.resolve("./public")))
+server.use(express.static(path.join(__dirname, 'dist'))); // Adjust as necessary
+server.use(cookieParser());
 server.use(
     session({
       secret: 'keyboard cat',
@@ -37,46 +48,29 @@ server.use(
     })
   );
   server.use(passport.session()); 
-
-connect("mongodb://127.0.0.1:27017/FullEcommerce").then(()=>{console.log("connection connected")}).catch((err)=>{console.log(err)})
-
-
-const SECRET_KEY = 'SECRET_KEY';
-// JWT options
-const opts = {};
-// opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-opts.jwtFromRequest = cookieExtractor;
-
-opts.secretOrKey = SECRET_KEY; // TODO: should not be in code;
-server.use(cookieParser());
-server.use(passport.authenticate('session'));
-
-// server.use(cheakAuthenticationUser('token'))
-server.use(express.urlencoded({extended : true}))
-server.use(express.json())
-server.use(cors(
+  server.use(passport.authenticate('session'));
+  server.use(cors(
     {
-    //     origin: 'http://localhost:5173', // Allow only this domain
-    //     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], // Include PATCH in allowed methods
-    //     credentials: true, // Allow credentials (cookies, authorization headers, etc.)
-    // allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
+        origin: 'http://localhost:5173', // Allow only this domain
+        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], // Include PATCH in allowed methods
+        credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
     exposedHeaders: ['X-Total-Count'] // Include X-Total-Count here
     }));
+    server.use(express.json())
 
-// server.use(express.static(path.resolve("./public")))
-// server.use(express.static(path.join(__dirname, 'dist'))); // Adjust as necessary
 
 server.get('/' , async (req , res)=>
 {
    res.json({status : "success"})
 })
+server.use("/auth" , authrouter)
 
 
+server.use("/users", isAuth(), userrouter)
 server.use("/" ,isAuth(), productrouter)
 server.use("/" ,isAuth(), categoryrouter)
 server.use("/" ,isAuth(), brandrouter)
-server.use("/auth" , authrouter)
-server.use("/users",isAuth() , userrouter)
 server.use("/cart" ,isAuth(), cartrouter)
 server.use("/order",isAuth() , orderrouter)
 
@@ -90,6 +84,7 @@ passport.use(
       { usernameField: 'email' },  // Set usernameField to 'email'
       async function (email, password, done) {
       // by default passport uses username
+      console.log("email" , email)
       try {
         const User = await user.findOne({ email });
         console.log("in passport authen",User);
@@ -107,7 +102,7 @@ passport.use(
               return done(null, false, { message: 'invalid credentials' });
             }
             const token = jwt.sign(sanitizeUser(User), SECRET_KEY);
-            done(null, {token}); // this lines sends to serializer
+            return done(null, { ...sanitizeUser, token }); // Send sanitized user data and token
           }
         );
       } catch (err) {
@@ -172,6 +167,8 @@ server.post("/create-payment-intent", async (req, res) => {
     dpmCheckerLink: `https://dashboard.stripe.com/settings/payment_methods/review?transaction_id=${paymentIntent.id}`,
   });
 });
+
+connect("mongodb://127.0.0.1:27017/FullEcommerce").then(()=>{console.log("connection connected")}).catch((err)=>{console.log(err)})
 
 
 server.listen(PORT ,()  => {
