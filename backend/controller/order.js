@@ -41,14 +41,16 @@ let { order } =  require("../model/order");
     async function handleshoworder(req, res) {
         try {
             
-            let response = req.body
-            console.log(req.body)
+            const orderId = req.params.id;
+            // Backend logic to handle the order, e.g., fetch from database
+            res.json({ message: `Order ${orderId} processed successfully!` });
 
         } catch (error) {
             console.error("Error fetching categories:", error);
             return res.status(500).json({ "error": error.message });
         }
     }
+
 
 
     module.exports = {handleOrderdata , handlefetchuserorderbyid , handleshoworder}

@@ -38,7 +38,7 @@ opts.secretOrKey = SECRET_KEY; // TODO: should not be in code;
 
 //Middleware
 // server.use(express.static(path.resolve("./public")))
-server.use(express.static(path.join(__dirname, 'dist'))); // Adjust as necessary
+// server.use(express.static(path.join(__dirname, 'dist'))); // Adjust as necessary
 server.use(cookieParser());
 server.use(
     session({
@@ -72,12 +72,11 @@ server.use("/" ,isAuth(), productrouter)
 server.use("/" ,isAuth(), categoryrouter)
 server.use("/" ,isAuth(), brandrouter)
 server.use("/cart" ,isAuth(), cartrouter)
-server.use("/order",isAuth() , orderrouter)
+server.use("/",isAuth() , orderrouter)
 
-// server.get('*', (req, res) =>
-//   res.sendFile(path.resolve('dist', 'index.html'))
-// );
-
+// server.get('*', (req, res) => {
+//   res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+// });
 passport.use(
     'local',
     new LocalStrategy(

@@ -10,14 +10,16 @@ import { handler } from '@tailwindcss/aspect-ratio'
 const Cart = () => {
     let dispatch = useDispatch()
     const [open, setOpen] = useState(true)
-    const handlequnatity = (e, product) => {
-        dispatch(updateCartaync({ ...product, quantity: +e.target.value }))
+    let cartproduct = useSelector(selectcart)
+    console.log("cartproduct___________________---", cartproduct)
+    const handlequnatity = (e, cartID) => {
+        console.log("productID", cartID)
+        dispatch(updateCartaync({ id:cartID, quantity: +e.target.value, user: cartproduct[0].user }))
     }
     const handledelete = (e, productid) => {
         dispatch(deleteCartaync(productid))
     }
-    let cartproduct = useSelector(selectcart)
-    console.log("cartproduct___________________---", cartproduct)
+
 
     let initialValue = 0
     return (
@@ -53,7 +55,7 @@ const Cart = () => {
                                                 <label htmlFor="quantity" className="inline text-sm font-medium leading-6 text-gray-900">
                                                     Qty
                                                 </label>
-                                                <select onChange={(e) => handlequnatity(e, cartItem)} value={cartItem.quantity} className='ml-3'>
+                                                <select onChange={(e) => handlequnatity(e, cartItem.id)} value={cartItem.quantity} className='ml-3'>
                                                     <option value="1">1</option>
                                                     <option value="2">2</option>
                                                     <option value="3">3</option>

@@ -3,6 +3,6 @@ let userrouter = express.Router()
 let {handlefetchuserbyid, updateUser} = require('../controller/user')
 
 
-userrouter.get("/self" , handlefetchuserbyid).patch("/" , updateUser)
+userrouter.get("/:id" , handlefetchuserbyid).patch("/:id" , updateUser)
 
 module.exports = {userrouter}

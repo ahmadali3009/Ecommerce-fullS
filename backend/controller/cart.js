@@ -34,10 +34,11 @@ async function deleteFromCart(req, res) {
 
 async function updateCart(req, res) {
   const { id } = req.params;
+  console.log("req.body in cart update", req.body);
   try {
     const cart = await Cart.findByIdAndUpdate(id, req.body, {
       new: true,
-    });
+    }).populate('product');
     res.status(200).json(cart);
   } catch (err) {
     res.status(400).json(err);

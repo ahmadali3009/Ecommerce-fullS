@@ -12,10 +12,10 @@ authrouter.post('/signup', handlecreateuser)
   .get('/checkAuth', passport.authenticate('jwt', { session: false }), checkAuth);
 
 // Error handling middleware (if needed)
-authrouter.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send('Something broke!');
-});
+// authrouter.use((err, req, res, next) => {
+//   console.error(err.stack);
+//   res.status(500).send('Something broke!');
+// });
 
 
 module.exports = {authrouter}

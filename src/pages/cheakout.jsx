@@ -23,9 +23,10 @@ console.log("ammountcheckingg", totalamount(cartproduct));
   let [paymentmethod , setpaymentmethod] = useState("")
   let dispatch =  useDispatch()
   const [open, setOpen] = useState(true)
-  const handlequnatity = (e, product)=>
+  const handlequnatity = (e, productID)=>
       {
-          dispatch(updateCartaync({...product , quantity: +e.target.value}))
+        console.log("productid", productID)
+          dispatch(updateCartaync({id : productID , quantity: +e.target.value ,user: cartproduct[0].user}))
       }
   const handledelete = (e, productid) =>
   {
@@ -53,7 +54,6 @@ console.log("ammountcheckingg", totalamount(cartproduct));
         selectedAddress: user.addresses, // Make sure to provide this if it's required
     };      
     dispatch(createorderaync(orderdata))
-    console.log(e.target.value)
 
     }
 
@@ -300,7 +300,7 @@ console.log("ammountcheckingg", totalamount(cartproduct));
                                                 <label htmlFor="quantity" className="inline text-sm font-medium leading-6 text-gray-900">
                                                     Qty
                                                 </label>
-                                                <select onChange={(e)=>handlequnatity(e,products)} value={products.product.quantity} className='ml-3'>
+                                                <select onChange={(e)=>handlequnatity(e,products.id)} value={products.product.quantity} className='ml-3'>
                                                     <option value="1">1</option>
                                                     <option value="2">2</option>
                                                     <option value="3">3</option>
@@ -310,7 +310,7 @@ console.log("ammountcheckingg", totalamount(cartproduct));
                                                 </select>
                                             </div>
                                             <div className="flex">
-                                                <button onClick={(e)=>handledelete(e , products.product.id)} type="button" className="font-medium text-indigo-600 hover:text-indigo-500">
+                                                <button onClick={(e)=>handledelete(e , products.id)} type="button" className="font-medium text-indigo-600 hover:text-indigo-500">
                                                     Remove
                                                 </button>
                                             </div>
