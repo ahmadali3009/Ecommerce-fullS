@@ -300,7 +300,7 @@ console.log("ammountcheckingg", totalamount(cartproduct));
                                                 <label htmlFor="quantity" className="inline text-sm font-medium leading-6 text-gray-900">
                                                     Qty
                                                 </label>
-                                                <select onChange={(e)=>handlequnatity(e,products.id)} value={products.product.quantity} className='ml-3'>
+                                                <select onChange={(e)=>handlequnatity(e,products.id)} value={products.quantity} className='ml-3'>
                                                     <option value="1">1</option>
                                                     <option value="2">2</option>
                                                     <option value="3">3</option>
@@ -326,7 +326,7 @@ console.log("ammountcheckingg", totalamount(cartproduct));
                         <p>Subtotal</p>
                         <p>{
                             
-                            totalamount
+                            totalamount(cartproduct)
                             
                             }</p>
                     </div>
