@@ -2,11 +2,11 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { useForm } from "react-hook-form"
 import { useDispatch, useSelector } from 'react-redux'
-import {createuseraync , selectcreateuser} from "../authSlice"
-
+import { createuseraync, selectcreateuser } from "../authSlice"
+import { ToastContainer, toast } from "react-toastify"
 const Signup = () => {
-  let dispatch =  useDispatch();
-  const { register, handleSubmit, watch, formState: {errors}} = useForm()
+  let dispatch = useDispatch();
+  const { register, handleSubmit, watch, formState: { errors } } = useForm()
   const userdata = (data) => console.log(data)
   console.log(errors)
 
@@ -28,7 +28,10 @@ const Signup = () => {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form noValidate className="space-y-6" onSubmit={handleSubmit((data)=>{dispatch(createuseraync({email:data.email , password:data.password , role:"user", addresses: data.addresses || [] }))})}>
+          <form noValidate className="space-y-6" onSubmit={handleSubmit((data) => {
+            dispatch(createuseraync({ email: data.email, password: data.password, role: "user", addresses: data.addresses || [] }))
+            toast.success("user created successfully")
+          })}>
             <div>
               <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                 Email address
@@ -36,7 +39,7 @@ const Signup = () => {
               <div className="mt-2">
                 <input
                   id="email"
-                  {...register("email" , { required: "plz enter a vaild email" })}                  
+                  {...register("email", { required: "plz enter a vaild email" })}
                   type="email"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
@@ -55,7 +58,7 @@ const Signup = () => {
               <div className="mt-2">
                 <input
                   id="password"
-                  {...register("password", { required: "passwoed is required" })}                  
+                  {...register("password", { required: "passwoed is required" })}
                   type="password"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
@@ -73,7 +76,7 @@ const Signup = () => {
               <div className="mt-2">
                 <input
                   id="Confirmpassword"
-                  {...register("Confirmpassword", { required: "confirmpassword is required" })}                  
+                  {...register("Confirmpassword", { required: "confirmpassword is required" })}
                   type="password"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
@@ -89,6 +92,19 @@ const Signup = () => {
               >
                 Sign up
               </button>
+              <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick={false}
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+                transition={Bounce}
+              />
             </div>
           </form>
 

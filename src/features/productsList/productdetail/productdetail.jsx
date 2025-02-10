@@ -5,92 +5,117 @@ import { Radio, RadioGroup } from '@headlessui/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchproductdetailbyidaync, selectproductbyid } from '../prodectSlice'
 import { Link, useParams } from 'react-router-dom'
-import { addtocartaync , selectcart } from '../../cart/cartslice'
+import { addtocartaync, selectcart } from '../../cart/cartslice'
 import { selectcheckuser } from '../../auth/authSlice'
+import { Bounce, toast, ToastContainer } from 'react-toastify'
 
-  let colors = [
-    { name: 'White', class: 'bg-white', selectedClass: 'ring-gray-400' },
-    { name: 'Gray', class: 'bg-gray-200', selectedClass: 'ring-gray-400' },
-    { name: 'Black', class: 'bg-gray-900', selectedClass: 'ring-gray-900' },
-  ]
- let sizes =  [
-    { name: 'XXS', inStock: false },
-    { name: 'XS', inStock: true },
-    { name: 'S', inStock: true },
-    { name: 'M', inStock: true },
-    { name: 'L', inStock: true },
-    { name: 'XL', inStock: true },
-    { name: '2XL', inStock: true },
-    { name: '3XL', inStock: true },
-  ]
-  
-  let highlights =  [
-    'Hand cut and sewn locally',
-    'Dyed with our proprietary colors',
-    'Pre-washed & pre-shrunk',
-    'Ultra-soft 100% cotton',
-  ]
+let colors = [
+  { name: 'White', class: 'bg-white', selectedClass: 'ring-gray-400' },
+  { name: 'Gray', class: 'bg-gray-200', selectedClass: 'ring-gray-400' },
+  { name: 'Black', class: 'bg-gray-900', selectedClass: 'ring-gray-900' },
+]
+let sizes = [
+  { name: 'XXS', inStock: false },
+  { name: 'XS', inStock: true },
+  { name: 'S', inStock: true },
+  { name: 'M', inStock: true },
+  { name: 'L', inStock: true },
+  { name: 'XL', inStock: true },
+  { name: '2XL', inStock: true },
+  { name: '3XL', inStock: true },
+]
+
+let highlights = [
+  'Hand cut and sewn locally',
+  'Dyed with our proprietary colors',
+  'Pre-washed & pre-shrunk',
+  'Ultra-soft 100% cotton',
+]
 
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 const Productdetail = () => {
-    const dispatch = useDispatch()
+  const dispatch = useDispatch()
 
-    const products = useSelector(selectproductbyid);
-    const cartproduct = useSelector(selectcart)
-    const user = useSelector(selectcheckuser)
+  const products = useSelector(selectproductbyid);
+  const cartproduct = useSelector(selectcart)
+  const user = useSelector(selectcheckuser)
 
-    console.log("productdetail____user", cartproduct)
-    console.log("productsindetail___________", products)
-    const prams = useParams()
+  console.log("productdetail____user", cartproduct)
+  console.log("productsindetail___________", products)
+  const prams = useParams()
   const [selectedColor, setSelectedColor] = useState(colors[0])
   const [selectedSize, setSelectedSize] = useState(sizes[2])
-  
+
 
   const carthandler = (e) => {
     e.preventDefault();
+    setTimeout(() => toast.dismiss(), 2000);
+
+    toast.success(`✔️ ${products.brand} added to cart!`, {
+      position: "top-center",
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      icon: () => <span></span>, // Removes default big tick
+      style: {
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "10px",
+        backgroundColor: "#e7f6e9",
+        color: "#256029",
+        padding: "10px 20px",
+        borderRadius: "8px",
+        fontWeight: "bold",
+      },
+    });
+    
+
     const currentuser = user;
 
     // Check if the cart is empty or not initialized
     if (!cartproduct || cartproduct.length === 0) {
-        console.log("Cart is empty or not initialized. Creating a new cart...");
+      console.log("Cart is empty or not initialized. Creating a new cart...");
 
-        let newCartProduct = {
-            product: products.id,  // Only pass the product ID
-            quantity: 1,           // Set the initial quantity
-            user: currentuser?.id  // Pass the current user ID
-        };
+      let newCartProduct = {
+        product: products.id,  // Only pass the product ID
+        quantity: 1,           // Set the initial quantity
+        user: currentuser?.id  // Pass the current user ID
+      };
 
-        // Dispatch an action to create a new cart with the product
-        dispatch(addtocartaync(newCartProduct));
-        return;
+      // Dispatch an action to create a new cart with the product
+      dispatch(addtocartaync(newCartProduct));
+      return;
     }
 
     // If the cart already exists, check if the product is in the cart
     const productIndex = cartproduct.findIndex(item => item.product?.id === products.id);
 
     if (productIndex < 0) {
-        // If the product is not in the cart, add it
-        let newproduct = {
-            product: products.id,   // Only pass the product ID
-            quantity: 1,            // Set the initial quantity
-            user: currentuser?.id   // Pass the current user ID
-        };
+      // If the product is not in the cart, add it
+      let newproduct = {
+        product: products.id,   // Only pass the product ID
+        quantity: 1,            // Set the initial quantity
+        user: currentuser?.id   // Pass the current user ID
+      };
 
-        dispatch(addtocartaync(newproduct));
+      dispatch(addtocartaync(newproduct));
     }
-};
+  };
 
 
-  useEffect(()=>{
-    dispatch(fetchproductdetailbyidaync(prams.id)) 
-}, [dispatch , prams.id])
+  useEffect(() => {
+    dispatch(fetchproductdetailbyidaync(prams.id))
+  }, [dispatch, prams.id])
   return (
     <div>
       <div className="bg-white">
-      {products &&  <div className="pt-6">
+        {products && <div className="pt-6">
           <nav aria-label="Breadcrumb">
             <ol role="list" className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
               {/* {breadcrumbs && breadcrumbs.map((breadcrumb) => (
@@ -181,7 +206,7 @@ const Productdetail = () => {
                     ))}
                   </div>
                   <p className="sr-only">{products.rating} out of 5 stars</p>
-                  
+
                 </div>
               </div>
 
@@ -269,13 +294,37 @@ const Productdetail = () => {
                   </fieldset>
                 </div>
                 <button
-                onClick={carthandler}
+                  onClick={carthandler}
                   type="submit"
                   className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 >
                   Add to cart
                 </button>
-              </form>
+                <ToastContainer
+  position="top-center"
+  autoClose={4000}
+  hideProgressBar={false}
+  newestOnTop={false}
+  closeOnClick
+  pauseOnFocusLoss
+  draggable
+  pauseOnHover={false}
+  theme="light"
+  toastStyle={{
+    display: "flex",
+    Icons : false,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "10px",
+    backgroundColor: "#e7f6e9", // Light green background
+    color: "#256029", // Dark green text
+    padding: "10px 20px",
+    borderRadius: "8px",
+    fontWeight: "bold",
+  }}
+/>
+
+                </form>
             </div>
 
             <div className="py-10 lg:col-span-2 lg:col-start-1 lg:border-r lg:border-gray-200 lg:pb-16 lg:pr-8 lg:pt-6">

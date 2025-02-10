@@ -3,6 +3,7 @@ import { Link, Navigate } from 'react-router-dom'
 import { checkuseraync , selectcheckuser , selecterror } from '../authSlice'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
+import { Bounce, toast, ToastContainer } from 'react-toastify'
 const Login = () => {
   const { register, handleSubmit, watch, formState: {errors}} = useForm()
   const dispatch = useDispatch()
@@ -25,7 +26,9 @@ const Login = () => {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" onSubmit={handleSubmit((data)=>{dispatch(checkuseraync({email:data.email , password:data.password }))})}>
+          <form className="space-y-6" onSubmit={handleSubmit((data)=>{dispatch(checkuseraync({email:data.email , password:data.password }))
+                    toast.success("user created successfully")
+        })}>
           <div>
               <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                 Email address
@@ -67,6 +70,19 @@ const Login = () => {
               >
                 Log in
               </button>
+              <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick={false}
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+                transition={Bounce}
+              />
             </div>
           </form>
 
