@@ -1,12 +1,16 @@
-import React from 'react'
-import Productlist from '../features/productsList/productlist'
+import React from 'react';
+import Productlist from '../features/productsList/productlist';
+import Hero from '../features/productsList/Hero';
 
 const Home = () => {
   return (
-    <div>
-        <Productlist/>
+    <div className="min-h-screen flex flex-col">
+        <Hero />
+      <div className="flex-grow bg-white py-4">
+        <Productlist />
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

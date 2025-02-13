@@ -313,96 +313,85 @@ const Productlist = () => {
 
                                 {/* Product grid */}
                                 <div className="lg:col-span-3">
-
-                                    <div className="bg-white">
-                                        <div className="mx-auto max-w-2xl px-4 py-0 sm:px-6 sm:py-0 lg:max-w-7xl lg:px-8">
-
-                                            <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-
-                                                {products.map((product) => (
-                                                    <Link to={`/productdetail/${product.id}`} key={product.id}>
-                                                        <div className=" group relative border-solid border-2 p-2 border-gray-200">
-                                                            <div className="min-h60 aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-60">
-                                                                <img
-                                                                    src={product.thumbnail}
-                                                                    alt={product.imageAlt}
-                                                                    className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-                                                                />
-                                                            </div>
-                                                            <div className="mt-4 flex justify-between">
-                                                                <div>
-                                                                    <h3 className="text-sm text-gray-700">
-                                                                        <a href={product.thumbnail}>
-                                                                            <span aria-hidden="true" className="absolute inset-0" />
-                                                                            {product.title}
-                                                                        </a>
-                                                                    </h3>
-                                                                    <StarIcon className='w-6 h-6 inline'></StarIcon>
-                                                                    <span className='align-bottom text-sm text-gray-500'>{product.rating}</span>
-
-                                                                </div>
-                                                                <div>
-                                                                    <p className="text-sm block font-medium text-gray-900">${Math.round(product.price * (1 - product.discountPercentage / 100))}</p>
-                                                                    <p className="text-sm line-through block font-medium text-gray-400 ">${product.price}</p>
-
-                                                                </div>
-
-
-                                                            </div>
-                                                        </div>
-                                                    </Link>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="flex flex-1  sm:hidden justify-between">
-                                        <a
-                                            href="#"
-                                            className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                                        >
-                                            Previous
+    <div className="bg-white">
+        <div className="mx-auto max-w-2xl px-4 py-0 sm:px-6 sm:py-0 lg:max-w-7xl lg:px-8">
+            <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 xl:gap-x-10">
+                {products.map((product) => (
+                    <Link to={`/productdetail/${product.id}`} key={product.id}>
+                        <div className="group relative border-solid border-2 p-4 border-gray-200 rounded-lg shadow-md transition-transform duration-300 hover:scale-105 hover:shadow-lg">
+                            <div className="relative min-h-72 aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-90 lg:h-72">
+                                <img
+                                    src={product.thumbnail}
+                                    alt={product.imageAlt}
+                                    className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+                                />
+                                {product.discountPercentage > 0 && (
+                                    <span className="absolute top-2 right-2  lg:bg-red-500 text-white text-xs px-2 py-1 rounded-full w-auto inline-block">
+                                        -{Math.round(product.discountPercentage)}% OFF
+                                    </span>
+                                )}
+                            </div>
+                            <div className="mt-4 flex justify-between items-center">
+                                <div>
+                                    <h3 className="text-sm font-semibold text-gray-700">
+                                        <a href={product.thumbnail} className="hover:underline">
+                                            {product.title}
                                         </a>
-                                        <a
-                                            href="#"
-                                            className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                                        >
-                                            Next
-                                        </a>
-                                    </div>
-                                    <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
-                                        <div>
-                                            <p className="text-sm text-gray-700">
-                                                Showing <span className="font-medium">{(pagee - 1) * limit}</span> to <span className="font-medium">{pagee * limit}</span> of{' '}
-                                                <span className="font-medium">{total_product}</span> results
-                                            </p>
-                                        </div>
-                                        <div>
-                                            <nav aria-label="Pagination" className="isolate inline-flex -space-x-px rounded-md shadow-sm">
-                                                {
-                                                    Array.from({ length: Math.ceil(total_product / limit) }).map(
-                                                        (pages, index) =>
-                                                            <p
-                                                                onClick={(e) => pagenationhandler(e, index + 1)}
-                                                                aria-current="page"
-                                                                className="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                                            >
-                                                                {index + 1}
-                                                            </p>
-                                                    )
-                                                }
-
-                                                {/* Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" */}
-                                                <a
-                                                    href="#"
-                                                    className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
-                                                >
-                                                    <span className="sr-only">Next</span>
-                                                    <ChevronRightIcon aria-hidden="true" className="h-5 w-5" />
-                                                </a>
-                                            </nav>
-                                        </div>
-                                    </div>
+                                    </h3>
+                                    <StarIcon className='w-5 h-5 inline text-yellow-400' />
+                                    <span className='align-bottom text-sm text-gray-500 ml-1'>{product.rating}</span>
                                 </div>
+                                <div className="text-right">
+                                    <p className="text-sm font-bold text-gray-900">${Math.round(product.price * (1 - product.discountPercentage / 100))}</p>
+                                    <p className="text-sm line-through text-gray-400">${product.price}</p>
+                                </div>
+                            </div>
+                            <button className="mt-2 w-full bg-indigo-600 text-white py-2 text-sm font-medium rounded-md transition-colors hover:bg-indigo-500">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </Link>
+                ))}
+            </div>
+        </div>
+    </div>
+    <div className="flex flex-1 sm:hidden justify-between mt-4">
+        <button className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+            &larr; Prev
+        </button>
+        <button className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+            Next &rarr;
+        </button>
+    </div>
+    <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between mt-4">
+        <div>
+            <p className="text-sm text-gray-700">
+                Showing <span className="font-medium">{(pagee - 1) * limit + 1}</span> to <span className="font-medium">{Math.min(pagee * limit, total_product)}</span> of{' '}
+                <span className="font-medium">{total_product}</span> results
+            </p>
+        </div>
+        <nav aria-label="Pagination" className="isolate inline-flex -space-x-px rounded-md shadow-sm">
+            {Array.from({ length: Math.ceil(total_product / limit) }).map((_, index) => (
+                <button
+                    key={index}
+                    onClick={(e) => pagenationhandler(e, index + 1)}
+                    className={`relative z-10 inline-flex items-center px-4 py-2 text-sm font-semibold ${pagee === index + 1 ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-200'}`}
+                >
+                    {index + 1}
+                </button>
+            ))}
+            <button
+                onClick={() => pagenationhandler(null, pagee + 1)}
+                disabled={pagee >= Math.ceil(total_product / limit)}
+                className="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0"
+            >
+                <ChevronRightIcon aria-hidden="true" className="h-5 w-5" />
+            </button>
+        </nav>
+    </div>
+</div>
+
+
 
 
 
