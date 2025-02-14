@@ -6,10 +6,11 @@
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  background-color: grey;
+  background-color: whitesmoke;
 }
 
 html, body, #root {
+  padding-top: 28px;
   height: 100%;
 }
 

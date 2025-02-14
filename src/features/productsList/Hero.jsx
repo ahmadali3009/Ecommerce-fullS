@@ -11,10 +11,10 @@ const Hero = () => {
       slidesPerView={1}
       loop={true}
       autoplay={{ delay: 3000, disableOnInteraction: false }}
-      className="w-full h-[500px] relative"
+      className="w-full h-[650px] relative"
     >
       <SwiperSlide>
-        <div className="relative w-full h-[500px]">
+        <div className="relative w-full h-[650px]">
           <img
             src="/src/assets/eyes.jpg"
             alt="Banner 1"
@@ -33,7 +33,7 @@ const Hero = () => {
       </SwiperSlide>
 
       <SwiperSlide>
-        <div className="relative w-full h-[500px]">
+        <div className="relative w-full h-[650px]">
           <img
             src="/src/assets/fragrance.jpg"
             alt="Banner 2"
