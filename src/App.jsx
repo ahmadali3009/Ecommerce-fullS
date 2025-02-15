@@ -44,7 +44,7 @@ function App() {
     {
       if(user){
         dispach(fetchuserinfoAync())
-        dispach(fetchallproductsAycn())
+        // dispach(fetchallproductsAycn())
       }
     }, [dispach,user])
 
