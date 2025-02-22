@@ -28,6 +28,7 @@ import Addproductform from './features/admin/Adminproductlist/Addproductform'
 import { fetchallproductsAycn } from './features/productsList/prodectSlice'
 import StripeCheckout from './pages/stripepage'
 import OrderSuccessPage from './pages/OrderSuccessPage'
+import Dashboard from './features/admin/adminDashboard/Dashboard'
 
 function App() {
 
@@ -175,6 +176,18 @@ function App() {
           <Adminprotected>
           <Nav />
           <Addproductform />
+          </Adminprotected>
+          {/* pagemissing */}
+        </>
+      ),
+    },
+    {
+      path: '/admin/dashboard',
+      element: (
+        <>
+          <Adminprotected>
+          <Nav />
+          <Dashboard />
           </Adminprotected>
           {/* pagemissing */}
         </>
