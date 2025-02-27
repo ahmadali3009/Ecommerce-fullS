@@ -1,13 +1,24 @@
-import React from 'react';
-// import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
-// import DashboardHome from './DashboardHome';
-// import Orders from './Orders';
-// import Products from './Products';
-// import Settings from './Settings';
+import { Link, Outlet } from "react-router-dom";
 
 const Dashboard = () => {
   return (
-   <h1>Dashbord</h1>
+    <div className="flex h-screen">
+      {/* Sidebar */}
+      <aside className="w-64 bg-gray-900 text-white p-5">
+        <h2 className="text-2xl font-bold mb-5">Admin Dashboard</h2>
+        <nav className="flex flex-col space-y-2">
+          <Link to="orderStatus" className="p-2 bg-gray-800 rounded hover:bg-gray-700">Order Status</Link>
+          <Link to="TorderC" className="p-2 bg-gray-800 rounded hover:bg-gray-700">Total Order info</Link>
+          <Link to="TincomeC" className="p-2 bg-gray-800 rounded hover:bg-gray-700">TOTAL INCOME INFO</Link>
+          <Link to="TuserC" className="p-2 bg-gray-800 rounded hover:bg-gray-700">Total user info</Link>
+        </nav>
+      </aside>
+
+      {/* Main Content */}
+      <main className="flex-1 p-5">
+        <Outlet />
+      </main>
+    </div>
   );
 };
 

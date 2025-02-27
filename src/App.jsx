@@ -29,6 +29,10 @@ import { fetchallproductsAycn } from './features/productsList/prodectSlice'
 import StripeCheckout from './pages/stripepage'
 import OrderSuccessPage from './pages/OrderSuccessPage'
 import Dashboard from './features/admin/adminDashboard/Dashboard'
+import Adminorderstatus from './pages/adminorderstatus'
+import AdminTorderC from './pages/adminTorderC'
+import AdminTincomeC from './pages/adminTincomeC'
+import AdminTotaluserC from './pages/adminTotaluserC'
 
 function App() {
 
@@ -181,18 +185,18 @@ function App() {
         </>
       ),
     },
-    {
-      path: '/admin/dashboard',
-      element: (
-        <>
-          <Adminprotected>
-          <Nav />
-          <Dashboard />
-          </Adminprotected>
-          {/* pagemissing */}
-        </>
-      ),
-    },
+    // {
+    //   path: '/admin/dashboard',
+    //   element: (
+    //     <>
+    //       <Adminprotected>
+    //       <Nav />
+    //       <Dashboard />
+    //       </Adminprotected>
+    //       {/* pagemissing */}
+    //     </>
+    //   ),
+    // },
     {
       path: '/admin/adminproductdetail/:id',
       element: (
@@ -215,7 +219,23 @@ function App() {
         </>
       ),
     },
+    {
+      path: "/admin/dashboard",
+      element:  (<Adminprotected>
+      <Nav />
+      <Dashboard />
+      </Adminprotected>),
+      children: [
+        { path: "orderStatus", element: <Adminorderstatus /> },
+        { path: "TorderC", element: <AdminTorderC /> },
+        { path: "TincomeC", element: <AdminTincomeC /> },
+        { path: "TuserC", element: <AdminTotaluserC /> },
+      ],
+    },
+
   ]);
+
+  
 
 
   return (
