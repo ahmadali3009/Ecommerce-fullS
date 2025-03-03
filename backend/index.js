@@ -11,6 +11,7 @@ let {brandrouter} = require('./routes/brand')
 let {authrouter} = require('./routes/auth')
 let {userrouter} = require('./routes/user')
 let {cartrouter} = require('./routes/cart')
+let {adminorderrouter} = require('./routes/adminorder')
 let { orderrouter } = require('./routes/order')
 const session = require('express-session');
 const passport = require('passport');
@@ -72,6 +73,7 @@ server.use("/" ,isAuth(), productrouter)
 server.use("/" ,isAuth(), categoryrouter)
 server.use("/" ,isAuth(), brandrouter)
 server.use("/cart" ,isAuth(), cartrouter)
+server.use("/" ,isAuth(), adminorderrouter)
 server.use("/",isAuth() , orderrouter)
 
 // server.get('*', (req, res) => {

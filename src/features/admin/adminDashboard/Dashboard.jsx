@@ -1,6 +1,16 @@
 import { Link, Outlet } from "react-router-dom";
+import { fectchAllOrderStatusasync } from "./AdminOrderStatus/AdorderSSlice";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
 
 const Dashboard = () => {
+
+  let dispach = useDispatch()
+
+  useEffect(() => {
+      dispach(fectchAllOrderStatusasync())
+    }, [dispach])
+  
   return (
     <div className="flex h-screen">
       {/* Sidebar */}
