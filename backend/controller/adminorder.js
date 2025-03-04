@@ -3,7 +3,6 @@ let {order} = require('../model/order')
 async function handlefetchAllorder(req, res) {
     try {
         let response = await order.find()
-        console.log("response in adminorderstatus",response)
         if (response) {
             return res.status(200).json({response});
         } else {
