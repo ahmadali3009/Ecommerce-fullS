@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
+import { Disclosure, Menu } from '@headlessui/react';
 import { Bars3Icon, ShoppingCartIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useSelector } from 'react-redux';
 import { selectcart } from '../cart/cartslice';
@@ -11,10 +11,6 @@ const navigation = [
   { name: 'Shop', to: '/shop', current: false },
   { name: 'Contact', to: '/contact', current: false },
 ];
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
 
 const Nav = () => {
   const cartProduct = useSelector(selectcart);
@@ -30,16 +26,27 @@ const Nav = () => {
 
   return (
     <nav
-    className={`fixed top-0 left-0 w-full transition-all duration-300 z-50 ${
-      scrolling ? 'bg-white/30 backdrop-blur-lg shadow-lg' : 'bg-transparent'
-    }`}
-  >
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+      className={`fixed top-0 left-0 w-full transition-all duration-300 z-50 ${
+        scrolling 
+          ? 'bg-white/80 backdrop-blur-lg shadow-lg' 
+          : 'bg-gradient-to-r from-purple-900/90 to-indigo-900/90 backdrop-blur-sm'
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3">
-            <img className="h-10 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500" alt="Logo" />
-            <span className="text-white text-xl font-bold tracking-wide">My Store</span>
+          <Link to="/" className="flex items-center space-x-3 group">
+            <div className="relative">
+              <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg blur opacity-25 group-hover:opacity-75 transition duration-200"></div>
+              <img 
+                className="relative h-10 w-auto" 
+                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500" 
+                alt="Logo" 
+              />
+            </div>
+            <span className={`text-xl font-bold tracking-wide ${scrolling ? 'text-gray-900' : 'text-white'} group-hover:text-indigo-400 transition-colors duration-200`}>
+              My Store
+            </span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -48,22 +55,26 @@ const Nav = () => {
               <Link
                 key={item.name}
                 to={item.to}
-                className={classNames(
-                  item.current ? 'text-indigo-400' : 'text-black hover:text-indigo-400 transition',
-                  'text-lg font-medium'
-                )}
+                className={`relative text-lg font-medium group ${
+                  scrolling 
+                    ? 'text-gray-900 hover:text-indigo-600' 
+                    : 'text-gray-100 hover:text-white'
+                }`}
               >
                 {item.name}
+                <span className="absolute inset-x-0 bottom-0 h-0.5 bg-indigo-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
               </Link>
             ))}
           </div>
 
           {/* Cart & Profile */}
           <div className="flex items-center space-x-6">
-            <Link to="/cart" className="relative">
-              <ShoppingCartIcon className="h-7 w-7 text-black hover:text-indigo-400 transition" />
+            <Link to="/cart" className="relative group">
+              <ShoppingCartIcon className={`h-7 w-7 transition-colors duration-200 ${
+                scrolling ? 'text-gray-900 group-hover:text-indigo-600' : 'text-white group-hover:text-indigo-300'
+              }`} />
               {cartProduct.length > 0 && (
-                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-2">
+                <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center animate-pulse">
                   {cartProduct.length}
                 </span>
               )}
@@ -71,36 +82,39 @@ const Nav = () => {
 
             {/* Profile Menu */}
             <Menu as="div" className="relative">
-              <MenuButton className="flex items-center">
-                <img
-                  className="h-9 w-9 rounded-full border-2 border-indigo-400"
-                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                  alt="User"
-                />
-              </MenuButton>
-              <MenuItems className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg py-2">
-                <MenuItem>
+              <Menu.Button className="flex items-center group">
+                <div className="relative">
+                  <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full blur opacity-25 group-hover:opacity-75 transition duration-200"></div>
+                  <img
+                    className="relative h-9 w-9 rounded-full object-cover border-2 border-indigo-500 group-hover:border-indigo-400 transition-colors duration-200"
+                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                    alt="User"
+                  />
+                </div>
+              </Menu.Button>
+              <Menu.Items className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 ring-1 ring-black ring-opacity-5 focus:outline-none transform opacity-0 scale-95 transition-all duration-200 ease-out origin-top-right">
+                <Menu.Item>
                   {({ active }) => (
-                    <Link to="/userprofile" className={`block px-4 py-2 text-gray-700 ${active ? 'bg-gray-100' : ''}`}>
+                    <Link to="/userprofile" className={`block px-4 py-2 text-sm ${active ? 'bg-indigo-50 text-indigo-600' : 'text-gray-700'}`}>
                       Your Profile
                     </Link>
                   )}
-                </MenuItem>
-                <MenuItem>
+                </Menu.Item>
+                <Menu.Item>
                   {({ active }) => (
-                    <Link to="/userorder" className={`block px-4 py-2 text-gray-700 ${active ? 'bg-gray-100' : ''}`}>
+                    <Link to="/userorder" className={`block px-4 py-2 text-sm ${active ? 'bg-indigo-50 text-indigo-600' : 'text-gray-700'}`}>
                       Your Orders
                     </Link>
                   )}
-                </MenuItem>
-                <MenuItem>
+                </Menu.Item>
+                <Menu.Item>
                   {({ active }) => (
-                    <Link to="/login" className={`block px-4 py-2 text-gray-700 ${active ? 'bg-gray-100' : ''}`}>
+                    <Link to="/login" className={`block px-4 py-2 text-sm ${active ? 'bg-indigo-50 text-indigo-600' : 'text-gray-700'}`}>
                       Sign Out
                     </Link>
                   )}
-                </MenuItem>
-              </MenuItems>
+                </Menu.Item>
+              </Menu.Items>
             </Menu>
           </div>
 
@@ -108,22 +122,28 @@ const Nav = () => {
           <Disclosure as="div" className="md:hidden">
             {({ open }) => (
               <>
-                <DisclosureButton className="text-white">
-                  {open ? <XMarkIcon className="h-8 w-8" /> : <Bars3Icon className="h-8 w-8" />}
-                </DisclosureButton>
-                <DisclosurePanel className="absolute top-20 left-0 w-full bg-gray-800 shadow-lg">
-                  <div className="px-4 py-3 space-y-2">
+                <Disclosure.Button className={`p-2 rounded-lg ${
+                  scrolling ? 'text-gray-900 hover:bg-gray-100' : 'text-white hover:bg-white/10'
+                }`}>
+                  {open ? (
+                    <XMarkIcon className="h-6 w-6" />
+                  ) : (
+                    <Bars3Icon className="h-6 w-6" />
+                  )}
+                </Disclosure.Button>
+                <Disclosure.Panel className="absolute top-full left-0 w-full bg-white shadow-lg rounded-b-xl">
+                  <div className="px-4 pt-2 pb-3 space-y-1">
                     {navigation.map((item) => (
                       <Link
                         key={item.name}
                         to={item.to}
-                        className="block text-white text-lg py-2 px-4 hover:bg-gray-700 rounded-md"
+                        className="block px-3 py-2 rounded-lg text-base font-medium text-gray-900 hover:bg-indigo-50 hover:text-indigo-600 transition-colors duration-200"
                       >
                         {item.name}
                       </Link>
                     ))}
                   </div>
-                </DisclosurePanel>
+                </Disclosure.Panel>
               </>
             )}
           </Disclosure>
