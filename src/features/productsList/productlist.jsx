@@ -346,7 +346,7 @@ const Productlist = () => {
                                     <p className="text-sm line-through text-gray-400">${product.price}</p>
                                 </div>
                             </div>
-                            <button className="mt-2 w-full bg-indigo-600 text-white py-2 text-sm font-medium rounded-md transition-colors hover:bg-indigo-500">
+                            <button className="mt-2 h-7 w-full text-sm font-medium rounded-md bg-stone-600 text-stone-100 hover:bg-stone-800 transition-colors duration-200 ">
                                 Add to Cart
                             </button>
                         </div>

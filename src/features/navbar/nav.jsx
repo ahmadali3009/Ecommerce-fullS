@@ -28,8 +28,8 @@ const Nav = () => {
     <nav
       className={`fixed top-0 left-0 w-full transition-all duration-300 z-50 ${
         scrolling 
-          ? 'bg-white/80 backdrop-blur-lg shadow-lg' 
-          : 'bg-gradient-to-r from-purple-900/90 to-indigo-900/90 backdrop-blur-sm'
+          ? 'bg-stone-600 backdrop-blur-lg shadow-lg' 
+          : 'bg-stone-800' // Changed to match footer
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -44,7 +44,7 @@ const Nav = () => {
                 alt="Logo" 
               />
             </div>
-            <span className={`text-xl font-bold tracking-wide ${scrolling ? 'text-gray-900' : 'text-white'} group-hover:text-indigo-400 transition-colors duration-200`}>
+            <span className={`text-xl font-bold tracking-wide ${scrolling ? 'text-white' : 'text-white'} group-hover:text-indigo-400 transition-colors duration-200`}>
               My Store
             </span>
           </Link>

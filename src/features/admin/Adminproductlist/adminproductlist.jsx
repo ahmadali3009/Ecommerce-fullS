@@ -15,7 +15,7 @@ import { XMarkIcon } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon, StarIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import {  selectAllProducts, fetchallproductscategoriesaync, selectAllcategories , selectAllbrand, fetchbrandsaync, fetchcategoriesaync } from "../../productsList/prodectSlice"
+import { selectAllProducts, fetchallproductscategoriesaync, selectAllcategories, selectAllbrand, fetchbrandsaync, fetchcategoriesaync } from "../../productsList/prodectSlice"
 
 const sortOptions = [
     { name: "Best Rating", sort: "-rating", current: false },
@@ -44,12 +44,12 @@ const Adminproductlist = () => {
             name: 'brand',
             options: brand,
         },
-    
-    
+
+
         {
             id: 'category',
             name: 'category',
-            options:categories,
+            options: categories,
         },
     ]
     var limit = 10;
@@ -58,7 +58,7 @@ const Adminproductlist = () => {
 
     let [filter, setfilter] = useState({})
     let [Sort, setSort] = useState({})
-    let [pagee , setpage] = useState(1)
+    let [pagee, setpage] = useState(1)
 
     const filterhandler = (e, section, option) => {
         console.log(e.target.checked)
@@ -82,9 +82,9 @@ const Adminproductlist = () => {
         const sort = { _sort: option.sort };
         setSort(sort);
     };
-    
-    const pagenationhandler = (e , index) => {
-         setpage(index);
+
+    const pagenationhandler = (e, index) => {
+        setpage(index);
     };
     // const sorthandler = (e, option)=>
     //     {
@@ -95,11 +95,11 @@ const Adminproductlist = () => {
     //     }
 
     useEffect(() => {
-        const pagenation = { _page: pagee , per_page: limit  };
-        dispatch(fetchallproductscategoriesaync({ filter, Sort , pagenation }))
-    }, [dispatch, filter, Sort , pagee])
+        const pagenation = { _page: pagee, per_page: limit };
+        dispatch(fetchallproductscategoriesaync({ filter, Sort, pagenation }))
+    }, [dispatch, filter, Sort, pagee])
 
-    useEffect(()=>{
+    useEffect(() => {
         dispatch(fetchbrandsaync())
         dispatch(fetchcategoriesaync())
     }, [])
@@ -305,46 +305,48 @@ const Adminproductlist = () => {
 
                                     <div className="bg-white">
                                         <div className="mx-auto max-w-2xl px-4 py-0 sm:px-6 sm:py-0 lg:max-w-7xl lg:px-8">
-                                              <Link to="/admin/addproduct">  <button className='mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'>ADD New Product</button></Link>
-                                              <Link to="/admin/dashboard">  <button className='mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'>ADD New Product</button></Link>
+                                            <Link to="/admin/addproduct">
+                                                <button className='mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-stone-600 px-8 py-3 text-base font-medium text-white hover:bg-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2'>ADD New Product</button>
+                                            </Link>                                              
+                                            <Link to="/admin/dashboard">  <button className='mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-stone-600 px-8 py-3 text-base font-medium text-white hover:bg-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2'>Dashboard Analytic</button></Link>
 
                                             <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
 
                                                 {products.map((product) => (
                                                     <div>
-                                                    <Link to={`/admin/adminproductdetail/${product.id}`} key={product.id}>
-                                                        <div  className=" group relative border-solid border-2 p-2 border-gray-200">
-                                                            <div className="min-h60 aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-60">
-                                                                <img
-                                                                    src={product.thumbnail}
-                                                                    alt={product.imageAlt}
-                                                                    className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-                                                                />
-                                                            </div>
-                                                            <div className="mt-4 flex justify-between">
-                                                                <div>
-                                                                    <h3 className="text-sm text-gray-700">
-                                                                        <a href={product.thumbnail}>
-                                                                            <span aria-hidden="true" className="absolute inset-0" />
-                                                                            {product.title}
-                                                                        </a>
-                                                                    </h3>
-                                                                    <StarIcon className='w-6 h-6 inline'></StarIcon>
-                                                                    <span className='align-bottom text-sm text-gray-500'>{product.rating}</span>
+                                                        <Link to={`/admin/adminproductdetail/${product.id}`} key={product.id}>
+                                                            <div className=" group relative border-solid border-2 p-2 border-gray-200">
+                                                                <div className="min-h60 aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-60">
+                                                                    <img
+                                                                        src={product.thumbnail}
+                                                                        alt={product.imageAlt}
+                                                                        className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+                                                                    />
+                                                                </div>
+                                                                <div className="mt-4 flex justify-between">
+                                                                    <div>
+                                                                        <h3 className="text-sm text-gray-700">
+                                                                            <a href={product.thumbnail}>
+                                                                                <span aria-hidden="true" className="absolute inset-0" />
+                                                                                {product.title}
+                                                                            </a>
+                                                                        </h3>
+                                                                        <StarIcon className='w-6 h-6 inline'></StarIcon>
+                                                                        <span className='align-bottom text-sm text-gray-500'>{product.rating}</span>
+
+                                                                    </div>
+                                                                    <div>
+                                                                        <p className="text-sm block font-medium text-gray-900">${Math.round(product.price * (1 - product.discountPercentage / 100))}</p>
+                                                                        <p className="text-sm line-through block font-medium text-gray-400 ">${product.price}</p>
+
+                                                                    </div>
+
 
                                                                 </div>
-                                                                <div>
-                                                                    <p className="text-sm block font-medium text-gray-900">${Math.round(product.price * (1 - product.discountPercentage / 100))}</p>
-                                                                    <p className="text-sm line-through block font-medium text-gray-400 ">${product.price}</p>
-
-                                                                </div>
-
-
                                                             </div>
-                                                        </div>
-                                                        <button className='mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'>Edit</button>
+                                                            <button className='mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-stone-600 px-8 py-3 text-base font-medium text-white hover:bg-stone-800 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2'>Edit</button>
 
-                                                    </Link>
+                                                        </Link>
                                                     </div>
                                                 ))}
                                             </div>
@@ -367,25 +369,25 @@ const Adminproductlist = () => {
                                     <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
                                         <div>
                                             <p className="text-sm text-gray-700">
-                                                Showing <span className="font-medium">{(pagee-1)*limit}</span> to <span className="font-medium">{pagee*limit}</span> of{' '}
+                                                Showing <span className="font-medium">{(pagee - 1) * limit}</span> to <span className="font-medium">{pagee * limit}</span> of{' '}
                                                 <span className="font-medium">{total_product}</span> results
                                             </p>
                                         </div>
                                         <div>
                                             <nav aria-label="Pagination" className="isolate inline-flex -space-x-px rounded-md shadow-sm">
-                                               {
-                                                Array.from({length : Math.ceil(total_product/limit)}).map(
-                                                    (pages , index)=>
-                                                     <p
+                                                {
+                                                    Array.from({ length: Math.ceil(total_product / limit) }).map(
+                                                        (pages, index) =>
+                                                            <p
                                                         onClick={(e)=>pagenationhandler(e, index+1)}
-                                                    aria-current="page"
-                                                    className="relative z-10 inline-flex items-center bg-indigo-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                                    >
-                                                    {index+1}
-                                                    </p>
+                                                        aria-current="page"
+                                                        className="relative z-10 inline-flex items-center bg-stone-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-500"
+                                                      >
+                                                        {index+1}
+                                                      </p>
                                                     )
-                                               }
-                                         
+                                                }
+
                                                 {/* Current: "z-10 bg-indigo-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600", Default: "text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:outline-offset-0" */}
                                                 <a
                                                     href="#"
