@@ -58,10 +58,10 @@ function App() {
       path: '/',
       element: (
         <>
-          <Protected>
+          {/* <Protected> */}
           <Nav />
           <Home />
-          </Protected>
+          {/* </Protected> */}
         </>
       ),
     },
