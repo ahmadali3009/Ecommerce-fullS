@@ -379,7 +379,8 @@ const Productlist = () => {
                 <button
                     key={index}
                     onClick={(e) => pagenationhandler(e, index + 1)}
-                    className={`relative z-10 inline-flex items-center px-4 py-2 text-sm font-semibold ${pagee === index + 1 ? 'bg-indigo-600 text-white' : 'text-gray-700 hover:bg-gray-200'}`}
+                    className={`relative z-10 inline-flex items-center px-4 py-2 text-sm font-semibold ${pagee === index + 1 ? 'bg-stone-600 text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-600'
+                        : 'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-stone-50 focus:z-20 focus:outline-offset-0'}`}
                 >
                     {index + 1}
                 </button>
