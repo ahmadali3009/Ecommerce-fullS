@@ -20,7 +20,7 @@ import {
 } from "../productsList/prodectSlice"
 
 const sortOptions = [
-    { name: "Best Rating", sort: "-rating", current: false },
+    { name: "Best Rating", sort: "rating", current: false },
     { name: "Price: Low to High", sort: "price", current: false },
     { name: "Price: High to Low", sort: "-price", current: false },
 ];
@@ -87,7 +87,10 @@ const Productlist = () => {
         setfilter(newFilter);
     };
     const sorthandler = (e, option) => {
-        const sort = { _sort: option.sort };
+        const sort = { 
+            _sort: option.sort.replace('-', ''),
+            _order: option.sort.startsWith('-') ? 'desc' : 'asc'
+        };
         setSort(sort);
     };
 
@@ -105,8 +108,9 @@ const Productlist = () => {
 
     useEffect(() => {
         const pagenation = { _page: pagee, per_page: limit };
-        dispatch(fetchallproductscategoriesaync({ filter, Sort, pagenation }))
-    }, [dispatch, filter, Sort, pagee])
+        console.log('Dispatching with:', { filter, Sort, pagenation }); // Debug log
+        dispatch(fetchallproductscategoriesaync({ filter, Sort, pagenation }));
+    }, [dispatch, filter, Sort, pagee]);
 
     useEffect(() => {
         dispatch(fetchbrandsaync())

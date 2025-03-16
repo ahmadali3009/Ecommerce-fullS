@@ -23,39 +23,54 @@ async function handlecreateproduct(req, res) {
 
 }
 async function handleAllproductquery(req, res) {
-    let query = productmodel.find({});
-    let totalProductsQuery = productmodel.find({});
-  
-    if (req.query.category) {
-      query = query.find({ category: req.query.category });
-      totalProductsQuery = totalProductsQuery.find({
-        category: req.query.category,
-      });
-    }
-    if (req.query.brand) {
-      query = query.find({ brand: req.query.brand });
-      totalProductsQuery = totalProductsQuery.find({ brand: req.query.brand });
-    }
-    //TODO : How to get sort on discounted Price not on Actual price
-    if (req.query._sort && req.query._order) {
-      query = query.sort({ [req.query._sort]: req.query._order });
-    }
-  
-    const totalDocs = await totalProductsQuery.countDocuments().exec();
-    console.log({ totalDocs });
-  
-    if (req.query._page && req.query.per_page) {
-      const pageSize = req.query.per_page;
-      const page = req.query._page;
-      query = query.skip(pageSize * (page - 1)).limit(pageSize);
-    }
-  
     try {
-      const docs = await query.exec();
-      res.set('X-Total-Count', totalDocs);
-      res.status(200).json(docs);
+        let query = productmodel.find({});
+        let totalProductsQuery = productmodel.find({});
+
+        // Handle filters
+        if (req.query.category) {
+            const categories = Array.isArray(req.query.category) 
+                ? req.query.category 
+                : [req.query.category];
+            query = query.find({ category: { $in: categories } });
+            totalProductsQuery = totalProductsQuery.find({ category: { $in: categories } });
+        }
+
+        if (req.query.brand) {
+            const brands = Array.isArray(req.query.brand) 
+                ? req.query.brand 
+                : [req.query.brand];
+            query = query.find({ brand: { $in: brands } });
+            totalProductsQuery = totalProductsQuery.find({ brand: { $in: brands } });
+        }
+
+        // Handle sorting
+        if (req.query._sort && req.query._order) {
+            const sortOrder = req.query._order.toLowerCase() === 'desc' ? -1 : 1;
+            const sortField = req.query._sort;
+            
+            console.log('Sorting by:', sortField, 'Order:', sortOrder); // Debug log
+            
+            query = query.sort({ [sortField]: sortOrder });
+        }
+
+        // Get total count
+        const totalDocs = await totalProductsQuery.countDocuments().exec();
+
+        // Handle pagination
+        if (req.query._page && req.query.per_page) {
+            const pageSize = parseInt(req.query.per_page);
+            const page = parseInt(req.query._page);
+            query = query.skip(pageSize * (page - 1)).limit(pageSize);
+        }
+
+        const docs = await query.exec();
+        res.set('X-Total-Count', totalDocs);
+        res.status(200).json(docs);
+
     } catch (err) {
-      res.status(400).json(err);
+        console.error('Query error:', err);
+        res.status(400).json({ error: err.message });
     }
 }
 
