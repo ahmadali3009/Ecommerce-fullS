@@ -103,6 +103,7 @@ passport.use(
               return done(null, false, { message: 'invalid credentials' });
             }
             const token = jwt.sign(sanitizeUser(User), SECRET_KEY);
+            console.log("token in passport",token)
             return done(null, { ...sanitizeUser, token }); // Send sanitized user data and token
           }
         );
@@ -173,5 +174,5 @@ connect("mongodb://127.0.0.1:27017/FullEcommerce").then(()=>{console.log("connec
 
 
 server.listen(PORT ,()  => {
-    console.log("the server is running port:8000")
+    console.log("the server is running port:8080")
 })

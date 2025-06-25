@@ -10,7 +10,9 @@ export function featchorderbyuserid(){
 export function fetchuserinfo() {
     return new Promise(async (resolve, reject) => {
       try {
-        const response = await fetch('http://localhost:8080/users/self');
+        const response = await fetch('http://localhost:8080/users/self', {
+          credentials: 'include'
+        });
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }

@@ -6,7 +6,8 @@ export function currentorder(order){
         headers: {
             "Content-Type" : "application/json"
         },
-        body : JSON.stringify(order)
+        body : JSON.stringify(order),
+        credentials: 'include' // Include credentials (cookies)
     })
     const data = await response.json()
     console.log("dataapi" , data)

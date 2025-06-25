@@ -1,7 +1,18 @@
 const passport = require('passport');
 
-exports.isAuth = (req, res, done) => {
-  return passport.authenticate('jwt')
+exports.isAuth = () => {
+  return (req, res, next) => {
+    passport.authenticate('jwt', { session: false }, (err, user, info) => {
+      if (err) {
+        return next(err);
+      }
+      if (!user) {
+        return res.status(401).json({ message: 'Unauthorized access' });
+      }
+      req.user = user;
+      next();
+    })(req, res, next);
+  };
 };
 
 exports.sanitizeUser = (user)=>{
@@ -27,11 +38,6 @@ exports.cookieExtractor = function (req) {
     token = req.cookies['jwt']; // Extract token from the 'jwt' cookie
   }
   console.log("extracted token " , token)
-
-  // Use hardcoded token only if no token is found in the cookies (for testing)
-  if (!token) {
-    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY3MjRmNjcxMDYxMGVhNjVmNzVmNmFkZiIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzMwNDc1NjgwfQ.D1SO8lIXrXQXeNFwFhPt1OhOX_VbwZBz5sSU_bV0u_A";
-  }
   
   return token;
 };

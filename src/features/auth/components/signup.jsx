@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useForm } from "react-hook-form"
 import { useDispatch, useSelector } from 'react-redux'
 import { createuseraync, selectcreateuser } from "../authSlice"
-import { ToastContainer, toast } from "react-toastify"
+import { Bounce, ToastContainer, toast } from "react-toastify"
 const Signup = () => {
   let dispatch = useDispatch();
   const { register, handleSubmit, watch, formState: { errors } } = useForm()

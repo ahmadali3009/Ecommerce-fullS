@@ -6,7 +6,8 @@ export function addtocart(product){
         headers: {
             "Content-Type" : "application/json"
         },
-        body : JSON.stringify(product)
+        body : JSON.stringify(product),
+        credentials: 'include' // Include credentials (cookies)
     })
     const data = await response.json()
     console.log("addtocartdatacheck" , data)
@@ -18,9 +19,9 @@ export function fetchproductbyuserid(userid)
 {
     console.log("cartapiuser" , userid)
     return new Promise(async(resolve , reject)=>{
-   
-
-    const response = await fetch(`http://localhost:8080/cart?user=${userid}`)
+    const response = await fetch(`http://localhost:8080/cart?user=${userid}`, {
+        credentials: 'include' // Include credentials (cookies)
+    });
     const data = await response.json()
     console.log("dataapi" , data)
     resolve({data})
@@ -40,7 +41,8 @@ export function updateCart(update)
         headers: {
             "Content-Type" : "application/json"
         },
-        body : JSON.stringify(update)
+        body : JSON.stringify(update),
+        credentials: 'include' // Include credentials (cookies)
     })
     const data = await response.json()
     console.log("dataapi" , data)
@@ -58,6 +60,7 @@ export function deleteCart(productid) {
                 headers: {
                     "Content-Type": "application/json"
                 },
+                credentials: 'include' // Include credentials (cookies) 
             });
 
             if (!response.ok) {

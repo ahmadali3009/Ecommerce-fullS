@@ -52,10 +52,14 @@ let checkUser = async (req, res) => {
 };
 
 async function handleloginuser(req, res) {
-  res.cookie('jwt', req.user.token, {
-    expires: new Date(Date.now() + 3600000),
-    httpOnly: true,
-  }).status(201).json(req.user.token);
+
+  const token = jwt.sign(sanitizeUser(req.user), SECRET_KEY);
+res.cookie('jwt', token, {
+  httpOnly: true,
+  sameSite: 'Lax',
+  maxAge: 1000 * 60 * 60 * 24, // 1 day
+});
+res.status(200).json({ success: true, user: sanitizeUser(req.user) });
 }
 
 async function checkAuth(req, res) {

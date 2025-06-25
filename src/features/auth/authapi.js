@@ -22,6 +22,7 @@ export function checkuser(loginuser) {
           method: 'POST',
           body: JSON.stringify(loginuser),
           headers: { 'content-type': 'application/json' },
+          credentials: 'include' // Include credentials (cookies)
         });
         if (response.ok) {
           const data = await response.json();
@@ -40,7 +41,9 @@ export function checkuser(loginuser) {
   export function checkAuth() {
     return new Promise(async (resolve, reject) => {
       try {
-        const response = await fetch('http://localhost:8080/auth/checkAuth');
+        const response = await fetch('http://localhost:8080/auth/checkAuth', {
+          credentials: 'include' // Include credentials (cookies)
+        });
         if (response.ok) {
           const data = await response.json();
           resolve({ data });

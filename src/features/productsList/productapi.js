@@ -3,7 +3,9 @@ export function fetchallproducts()
     //TODO: we will not hard-code server URL here
         return new Promise (async (resolve)=>
             {
-                const response = await fetch("http://localhost:8080/products");
+                const response = await fetch("http://localhost:8080/products", {
+                    credentials: 'include' // Include credentials (cookies)
+                });
                 const data = await response.json();
                 resolve({data})
             })
@@ -39,7 +41,9 @@ export function fetchallproductscategories(filter, Sort, pagenation) {
 
     return new Promise(async (resolve, reject) => {
         try {
-            const response = await fetch(`http://localhost:8080/products?${queryString}`);
+            const response = await fetch(`http://localhost:8080/products?${queryString}`, {
+                credentials: 'include' // Include credentials (cookies)
+            });
             if (!response.ok) {
                 throw new Error('Failed to fetch products');
             }
@@ -57,7 +61,9 @@ export function fetchallproductscategories(filter, Sort, pagenation) {
     //TODO: we will not hard-code server URL here
         return new Promise (async (resolve)=>
             {
-                const response = await fetch("http://localhost:8080/brand");
+                const response = await fetch("http://localhost:8080/brand", {
+                    credentials: 'include' // Include credentials (cookies)
+                });
                 const data = await response.json();
                 resolve({data})
             })
@@ -67,7 +73,9 @@ export function fetchcategories()
     //TODO: we will not hard-code server URL here
         return new Promise (async (resolve)=>
             {
-                const response = await fetch("http://localhost:8080/category");
+                const response = await fetch("http://localhost:8080/category", {
+                    credentials: 'include' // Include credentials (cookies)
+                });
                 const data = await response.json();
                 resolve({data})
             })
@@ -78,7 +86,9 @@ export function fetchproductdetailbyid(id)
     //TODO: we will not hard-code server URL here
         return new Promise (async (resolve)=>
             {
-                const response = await fetch(`http://localhost:8080/products/${id}`);
+                const response = await fetch(`http://localhost:8080/products/${id}`, {
+                    credentials: 'include' // Include credentials (cookies)
+                });
                 const data = await response.json();
                 resolve({data})
             })
@@ -92,7 +102,8 @@ export function createproduct(product){
       headers: {
           "Content-Type" : "application/json"
       },
-      body : JSON.stringify(product)
+      body : JSON.stringify(product),
+      credentials: 'include' // Include credentials (cookies)
   })
   const data = await response.json()
   console.log("dataapi" , data)
@@ -113,7 +124,8 @@ export function updateproduct(update)
         headers: {
             "Content-Type" : "application/json"
         },
-        body : JSON.stringify(update)
+        body : JSON.stringify(update),
+        credentials: 'include' // Include credentials (cookies)
     })
     const data = await response.json()
     console.log("dataapi" , data)
