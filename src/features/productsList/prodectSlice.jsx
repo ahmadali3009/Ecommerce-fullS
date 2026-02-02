@@ -1,4 +1,3 @@
-import React from 'react'
 import {  createproduct, fetchallproducts, fetchallproductscategories , fetchbrands , fetchcategories , fetchproductdetailbyid, updateproduct} from './productapi'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
@@ -175,7 +174,5 @@ export const selectproductbyid = (state) => state.product.productdetail;
 export const selectTotalItems = (state) => state.product.totalItems;
 
 
-
-export const {} = productSlice.actions;
 
 export default productSlice.reducer;

@@ -1,12 +1,10 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
 import { selectAllorder } from './AdminOrderStatus/AdorderSSlice';
-import { 
-  CurrencyDollarIcon, 
+import {
+  CurrencyDollarIcon,
   ShoppingBagIcon,
-  UsersIcon,
   ArrowUpIcon,
-  ArrowDownIcon 
+  ArrowDownIcon,
 } from '@heroicons/react/24/outline';
 
 const DashboardOverview = () => {

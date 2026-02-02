@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { CheckCircleIcon } from '@heroicons/react/24/solid';
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { resetOrder, selectorder } from './orderSlice';
 import { selectcheckuser } from '../auth/authSlice';

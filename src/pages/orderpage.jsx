@@ -1,4 +1,3 @@
-import React from 'react'
 import Order from '../features/order/order'
 
 const Orderpage = () => {

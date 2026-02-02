@@ -20,7 +20,7 @@ export function addtocart(product){
 export function fetchproductbyuserid(userid)
 {
     console.log("cartapiuser" , userid)
-    return new Promise(async(resolve , reject)=>{
+    return new Promise(async(resolve , _reject)=>{
     const response = await fetch(`${API_BASE}/cart?user=${userid}`, {
         credentials: 'include' // Include credentials (cookies)
     });
@@ -34,7 +34,7 @@ export function fetchproductbyuserid(userid)
 export function updateCart(update)
 {
     console.log("cartapiupdate" , update)
-    return new Promise(async(resolve , reject)=>{
+    return new Promise(async(resolve , _reject)=>{
    
 
     const response = await fetch(`${API_BASE}/cart/`+update.id,{
@@ -96,7 +96,7 @@ export function deleteCart(productid) {
 
 export function resetCart(userid)
 {
-    return new Promise(async(resolve , reject)=>{
+    return new Promise(async(resolve , _reject)=>{
        let response = await fetchproductbyuserid(userid)
 
        let products = response.data

@@ -1,4 +1,3 @@
-import React from 'react'
 import Signup from '../features/auth/components/signup'
 
 const Signupoage = () => {

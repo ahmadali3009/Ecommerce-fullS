@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 
@@ -17,7 +17,7 @@ export default function StripeCheckout() {
     let currentOrder = useSelector(selectorder)
     console.log("stripepaymentorder" , currentOrder)
   const [clientSecret, setClientSecret] = useState("");
-  const [dpmCheckerLink, setDpmCheckerLink] = useState("");
+  const [, setDpmCheckerLink] = useState("");
   const totalAmountInCents = Math.round(currentOrder.response.totalAmount * 100);
 
   useEffect(() => {

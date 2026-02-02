@@ -1,4 +1,3 @@
-import React from 'react'
 import Adminorderstatus from '../features/admin/adminDashboard/AdminOrderStatus/Adminorderstatus'
 
 const adminorderstatus = () => {

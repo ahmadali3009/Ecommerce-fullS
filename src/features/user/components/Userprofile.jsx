@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {   selectuserinfo, updateUserprofileAync } from '../userSlice';
 import {  selectcheckuser } from '../../auth/authSlice';
@@ -30,7 +30,7 @@ const Userprofile = () => {
         setValue("postal", address.postal);
     };
 
-    const handleRemoveAddress = (index) => {
+    const handleRemoveAddress = (_index) => {
         // const updatedAddresses = userinfo.addresses.filter((_, addrIndex) => addrIndex !== index);
         // const updatedUser = { ...userinfo, addresses: updatedAddresses };
         // dispatch(updateUserprofileAync(updatedUser));

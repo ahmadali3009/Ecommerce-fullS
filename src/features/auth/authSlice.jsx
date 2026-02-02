@@ -1,4 +1,3 @@
-import React from 'react'
 import { createuser , checkuser, checkAuth } from './authapi'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 
@@ -83,7 +82,7 @@ export const authSlice = createSlice({
         state.checkuser = action.payload;
         state.userChecked = true;
       })
-      .addCase(checkAuthAsync.rejected, (state, action) => {
+      .addCase(checkAuthAsync.rejected, (state, _action) => {
         state.status = 'idle';
         state.userChecked = true;
       });
@@ -98,7 +97,5 @@ export const selectUserChecked = (state) => state.user.userChecked;
 
 
 
-
-export const {} = authSlice.actions;
 
 export default authSlice.reducer;

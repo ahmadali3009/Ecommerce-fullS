@@ -113,7 +113,7 @@ export function createproduct(product){
 export function updateproduct(update)
 {
     console.log("productapiupdate" , update)
-    return new Promise(async(resolve , reject)=>{
+    return new Promise(async(resolve , _reject)=>{
    
 
     const response = await fetch(`${API_BASE}/user/`+update.id,{

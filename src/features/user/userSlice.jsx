@@ -119,6 +119,4 @@ export const featchorderbyuseridaAync = createAsyncThunk(
 
 
 
-export const {  } = userSlice.actions;
-
 export default userSlice.reducer;

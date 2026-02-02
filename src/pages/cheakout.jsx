@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
-import { PhotoIcon, UserCircleIcon } from '@heroicons/react/24/solid'
-import { Link, Navigate } from 'react-router-dom'
+import { useState } from 'react'
+import { Navigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { deleteCartaync, selectcart, updateCartaync } from '../features/cart/cartslice'
 import { useForm } from 'react-hook-form'
@@ -19,10 +18,10 @@ const Cheakout = () => {
 };
 
 console.log("ammountcheckingg", totalamount(cartproduct));
-  const { register, handleSubmit, watch, reset, formState: {errors}} = useForm()
+  const { register, handleSubmit, reset, formState: { errors: _errors } } = useForm()
   let [paymentmethod , setpaymentmethod] = useState("")
   let dispatch =  useDispatch()
-  const [open, setOpen] = useState(true)
+  const [_open, setOpen] = useState(true)
   const handlequnatity = (e, productID)=>
       {
         console.log("productid", productID)
@@ -42,7 +41,7 @@ console.log("ammountcheckingg", totalamount(cartproduct));
     console.log(e.target.id)
     setpaymentmethod(e.target.id)
   }
-  const handleOrder = (e)=>
+  const handleOrder = (_e)=>
     {
       // e.preventDefault()
       let orderdata = {
@@ -59,9 +58,6 @@ console.log("ammountcheckingg", totalamount(cartproduct));
 
   
    
-  let initialValue = 0 
-
-
   return (
     <div>
 

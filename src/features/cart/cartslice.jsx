@@ -133,6 +133,4 @@ export const addtocartaync = createAsyncThunk(
 
 
 
-export const {} = cartSlice.actions;
-
 export default cartSlice.reducer;

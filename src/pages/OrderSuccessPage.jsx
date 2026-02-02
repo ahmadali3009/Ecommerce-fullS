@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { resetCartaync } from "../features/cart/cartslice";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { resetOrder } from "../features/order/orderSlice";
 
 function OrderSuccessPage() {

@@ -1,13 +1,11 @@
-import React from 'react'
 import { useState, useEffect } from 'react'
-import { StarIcon } from '@heroicons/react/20/solid'
 import { Radio, RadioGroup } from '@headlessui/react'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchproductdetailbyidaync, selectproductbyid } from '../prodectSlice'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { addtocartaync, selectcart } from '../../cart/cartslice'
 import { selectcheckuser } from '../../auth/authSlice'
-import { Bounce, toast, ToastContainer } from 'react-toastify'
+import { toast, ToastContainer } from 'react-toastify'
 
 let colors = [
   { name: 'White', class: 'bg-white', selectedClass: 'ring-gray-400' },

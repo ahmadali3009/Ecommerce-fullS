@@ -1,4 +1,3 @@
-import React from 'react'
 import Productdetail from '../features/productsList/productdetail/productdetail'
 
 const Producthistory = () => {

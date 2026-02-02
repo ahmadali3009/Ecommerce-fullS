@@ -1,11 +1,10 @@
-import React from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { checkuseraync , selectcheckuser , selecterror } from '../authSlice'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { Bounce, toast, ToastContainer } from 'react-toastify'
 const Login = () => {
-  const { register, handleSubmit, watch, formState: {errors}} = useForm()
+  const { register, handleSubmit, formState: { errors } } = useForm()
   const dispatch = useDispatch()
   const checkuser = useSelector(selectcheckuser)
   const error = useSelector(selecterror)

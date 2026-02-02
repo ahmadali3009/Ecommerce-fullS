@@ -34,7 +34,7 @@ export function fetchuserinfo() {
 export function updateUserprofile(update)
 {
     console.log("userapiupdate" , update)
-    return new Promise(async(resolve , reject)=>{
+    return new Promise(async(resolve , _reject)=>{
    
 
     const response = await fetch(`${API_BASE}/users/`+update.id,{
@@ -54,7 +54,7 @@ export function updateUserprofile(update)
 export function updateUser(update)
 {
     console.log("userapiupdate" , update)
-    return new Promise(async(resolve , reject)=>{
+    return new Promise(async(resolve , _reject)=>{
    
 
     const response = await fetch(`${API_BASE}/users`,{

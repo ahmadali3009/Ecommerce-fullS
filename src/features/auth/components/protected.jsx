@@ -1,4 +1,3 @@
-import React from 'react'
 import { selectcreateuser } from '../authSlice'
 import { useSelector } from 'react-redux'
 import { Navigate } from 'react-router-dom'

@@ -1,4 +1,3 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
 import { useForm } from "react-hook-form"
 import { useDispatch, useSelector } from 'react-redux'
@@ -6,8 +5,8 @@ import { createuseraync, selectcreateuser } from "../authSlice"
 import { Bounce, ToastContainer, toast } from "react-toastify"
 const Signup = () => {
   let dispatch = useDispatch();
-  const { register, handleSubmit, watch, formState: { errors } } = useForm()
-  const userdata = (data) => console.log(data)
+  const { register, handleSubmit, formState: { errors } } = useForm()
+  const _userdata = (data) => console.log(data)
   console.log(errors)
 
   const createuser = useSelector(selectcreateuser)

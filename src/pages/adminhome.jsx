@@ -1,4 +1,3 @@
-import React from 'react'
 import Adminproductlist from '../features/admin/Adminproductlist/adminproductlist'
 
 const Adminhome = () => {

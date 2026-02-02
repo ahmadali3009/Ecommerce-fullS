@@ -1,4 +1,3 @@
-import React from 'react';
 import Productlist from '../features/productsList/productlist';
 import Hero from '../features/productsList/Hero';
 import Footer from '../features/productsList/Footer';

@@ -1,19 +1,16 @@
-import React from 'react';
 import { useSelector } from 'react-redux';
 import { selectAllorder } from '../features/admin/adminDashboard/AdminOrderStatus/AdorderSSlice';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  Tooltip, 
-  ResponsiveContainer, 
-  PieChart, 
-  Pie, 
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
   Cell,
   Legend,
-  LineChart,
-  Line
 } from 'recharts';
 
 const AdminTorderC = () => {

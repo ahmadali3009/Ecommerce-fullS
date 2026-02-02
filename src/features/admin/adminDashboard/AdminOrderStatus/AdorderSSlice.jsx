@@ -42,6 +42,4 @@ export const fectchAllOrderStatusasync = createAsyncThunk(
 
   export  const selectAllorder = (state) => state.orderstatus.orderinfo;
 
-    export const {} = AdorderSSlice.actions;
-    
     export default AdorderSSlice.reducer;

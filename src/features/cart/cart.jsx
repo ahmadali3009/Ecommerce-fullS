@@ -1,15 +1,11 @@
-import { useEffect, useState } from 'react'
-import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
-import { XMarkIcon } from '@heroicons/react/24/outline'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteCartaync, selectcart, selectcartbyid, updateCartaync } from "./cartslice"
-import { selectcheckuser } from "../auth/authSlice"
-import { handler } from '@tailwindcss/aspect-ratio'
+import { deleteCartaync, selectcart, updateCartaync } from "./cartslice"
 
 const Cart = () => {
     let dispatch = useDispatch()
-    const [open, setOpen] = useState(true)
+    const [_open, setOpen] = useState(true)
     let cartproduct = useSelector(selectcart)
     console.log("cartproduct___________________---", cartproduct)
     const handlequnatity = (e, cartID) => {
