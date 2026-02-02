@@ -63,7 +63,9 @@ res.status(200).json({ success: true, user: sanitizeUser(req.user) });
 }
 
 async function checkAuth(req, res) {
+  console.log("req.user checkAuth controller ssssssssssssssssssss", req.user)
   if (req.user) {
+  
     res.json(req.user);
   } else {
     res.sendStatus(401);

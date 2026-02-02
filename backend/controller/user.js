@@ -1,7 +1,7 @@
 let user = require("../model/user");
 
 const handlefetchuserbyid = async (req, res) => {
-    console.log(req.user); // Check if req.user is populated
+    console.log(req.user || req.params.id || "no user found" || "no id found" || "no user found in request" ); // Check if req.user is populated
     if (!req.user) {
         return res.status(400).json({ error: 'No user found in request' });
     }

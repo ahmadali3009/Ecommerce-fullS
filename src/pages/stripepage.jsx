@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
 
+import { API_BASE } from "../config";
 import "../stripe.css";
 import { useSelector } from "react-redux";
 import { selectorder } from "../features/order/orderSlice";
@@ -21,7 +22,7 @@ export default function StripeCheckout() {
 
   useEffect(() => {
     // Create PaymentIntent as soon as the page loads
-    fetch("http://localhost:8080/create-payment-intent", {
+    fetch(`${API_BASE}/create-payment-intent`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({  totalAmount: totalAmountInCents, orderId:currentOrder.response.id  }),

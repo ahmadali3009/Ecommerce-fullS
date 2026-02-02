@@ -191,7 +191,7 @@ const Productdetail = () => {
               <p className="text-3xl tracking-tight text-gray-900">{products.price}</p>
 
               {/* Reviews */}
-              <div className="mt-6">
+              {/* <div className="mt-6">
                 <h3 className="sr-only">Reviews</h3>
                 <div className="flex items-center">
                   <div className="flex items-center">
@@ -208,7 +208,7 @@ const Productdetail = () => {
                   <p className="sr-only">{products.rating} out of 5 stars</p>
 
                 </div>
-              </div>
+              </div> */}
 
               <form className="mt-10">
                 {/* Colors */}

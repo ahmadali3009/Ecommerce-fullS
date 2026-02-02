@@ -1,6 +1,10 @@
+import { API_BASE } from '../../config';
+
 export function featchorderbyuserid(){
     return new Promise(async(resolve)=>{
-        const response = await fetch(`http://localhost:8080/order/own/`)
+        const response = await fetch(`${API_BASE}/order/own/`,{
+            credentials: 'include'
+        })
     const data = await response.json()
     console.log("dataapi" , data)
     resolve({data})
@@ -10,7 +14,7 @@ export function featchorderbyuserid(){
 export function fetchuserinfo() {
     return new Promise(async (resolve, reject) => {
       try {
-        const response = await fetch('http://localhost:8080/users/self', {
+        const response = await fetch(`${API_BASE}/users/self`, {
           credentials: 'include'
         });
         if (!response.ok) {
@@ -33,7 +37,7 @@ export function updateUserprofile(update)
     return new Promise(async(resolve , reject)=>{
    
 
-    const response = await fetch(`http://localhost:8080/users/`+update.id,{
+    const response = await fetch(`${API_BASE}/users/`+update.id,{
 
         method: "PATCH",
         headers: {
@@ -53,7 +57,7 @@ export function updateUser(update)
     return new Promise(async(resolve , reject)=>{
    
 
-    const response = await fetch(`http://localhost:8080/users`,{
+    const response = await fetch(`${API_BASE}/users`,{
 
         method: "PATCH",
         headers: {

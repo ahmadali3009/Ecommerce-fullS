@@ -1,9 +1,10 @@
+import { API_BASE } from '../../config';
+
 export function fetchallproducts() 
 {
-    //TODO: we will not hard-code server URL here
         return new Promise (async (resolve)=>
             {
-                const response = await fetch("http://localhost:8080/products", {
+                const response = await fetch(`${API_BASE}/products`, {
                     credentials: 'include' // Include credentials (cookies)
                 });
                 const data = await response.json();
@@ -41,7 +42,7 @@ export function fetchallproductscategories(filter, Sort, pagenation) {
 
     return new Promise(async (resolve, reject) => {
         try {
-            const response = await fetch(`http://localhost:8080/products?${queryString}`, {
+            const response = await fetch(`${API_BASE}/products?${queryString}`, {
                 credentials: 'include' // Include credentials (cookies)
             });
             if (!response.ok) {
@@ -58,10 +59,9 @@ export function fetchallproductscategories(filter, Sort, pagenation) {
 
     export function fetchbrands() 
 {
-    //TODO: we will not hard-code server URL here
         return new Promise (async (resolve)=>
             {
-                const response = await fetch("http://localhost:8080/brand", {
+                const response = await fetch(`${API_BASE}/brand`, {
                     credentials: 'include' // Include credentials (cookies)
                 });
                 const data = await response.json();
@@ -70,10 +70,9 @@ export function fetchallproductscategories(filter, Sort, pagenation) {
 }
 export function fetchcategories() 
 {
-    //TODO: we will not hard-code server URL here
         return new Promise (async (resolve)=>
             {
-                const response = await fetch("http://localhost:8080/category", {
+                const response = await fetch(`${API_BASE}/category`, {
                     credentials: 'include' // Include credentials (cookies)
                 });
                 const data = await response.json();
@@ -83,10 +82,9 @@ export function fetchcategories()
 
 export function fetchproductdetailbyid(id) 
 {
-    //TODO: we will not hard-code server URL here
         return new Promise (async (resolve)=>
             {
-                const response = await fetch(`http://localhost:8080/products/${id}`, {
+                const response = await fetch(`${API_BASE}/products/${id}`, {
                     credentials: 'include' // Include credentials (cookies)
                 });
                 const data = await response.json();
@@ -96,7 +94,7 @@ export function fetchproductdetailbyid(id)
 
 export function createproduct(product){
   return new Promise(async(resolve)=>{
-      const response = await fetch("http://localhost:8080/products",{
+      const response = await fetch(`${API_BASE}/products`,{
 
       method: "POST",
       headers: {
@@ -118,7 +116,7 @@ export function updateproduct(update)
     return new Promise(async(resolve , reject)=>{
    
 
-    const response = await fetch(`http://localhost:8080/user/`+update.id,{
+    const response = await fetch(`${API_BASE}/user/`+update.id,{
 
         method: "PATCH",
         headers: {

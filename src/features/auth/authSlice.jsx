@@ -36,6 +36,7 @@ export const createuseraync = createAsyncThunk(
     async () => {
       try {
         const response = await checkAuth();
+        console.log("response checkAuthAsync", response)
         return response.data;
       } catch (error) {
         console.log(error);

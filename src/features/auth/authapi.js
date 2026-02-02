@@ -1,6 +1,8 @@
+import { API_BASE } from '../../config';
+
 export function createuser(user){
     return new Promise(async(resolve)=>{
-        const response = await fetch("http://localhost:8080/auth/signup",{
+        const response = await fetch(`${API_BASE}/auth/signup`,{
 
         method: "POST",
         credentials: 'include', // Include credentials (cookies)
@@ -18,7 +20,7 @@ export function createuser(user){
 export function checkuser(loginuser) {
     return new Promise(async (resolve, reject) => {
       try {
-        const response = await fetch('http://localhost:8080/auth/login', {
+        const response = await fetch(`${API_BASE}/auth/login`, {
           method: 'POST',
           body: JSON.stringify(loginuser),
           headers: { 'content-type': 'application/json' },
@@ -41,7 +43,7 @@ export function checkuser(loginuser) {
   export function checkAuth() {
     return new Promise(async (resolve, reject) => {
       try {
-        const response = await fetch('http://localhost:8080/auth/checkAuth', {
+        const response = await fetch(`${API_BASE}/auth/checkAuth`, {
           credentials: 'include' // Include credentials (cookies)
         });
         if (response.ok) {

@@ -38,7 +38,7 @@ function App() {
 
   let dispach = useDispatch()
   let user = useSelector(selectcheckuser)
-  console.log("app" , user)
+  console.log("app", user)
 
   const userChecked = useSelector(selectUserChecked);
   useEffect(()=>{
@@ -245,7 +245,6 @@ function App() {
         {userChecked && <RouterProvider router={router} >
         </RouterProvider>}
 
-        
     </>
   )
 }

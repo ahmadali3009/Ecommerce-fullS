@@ -2,14 +2,15 @@ const passport = require('passport');
 
 exports.isAuth = () => {
   return (req, res, next) => {
-    passport.authenticate('jwt', { session: false }, (err, user, info) => {
+    passport.authenticate('jwt', { session: false }, (err, User, info) => {
       if (err) {
         return next(err);
       }
-      if (!user) {
+      console.log("user in isAuth middleware" , User || "no user found" || "no user found in request")
+      if (!User) {
         return res.status(401).json({ message: 'Unauthorized access' });
       }
-      req.user = user;
+      req.user = User;
       next();
     })(req, res, next);
   };

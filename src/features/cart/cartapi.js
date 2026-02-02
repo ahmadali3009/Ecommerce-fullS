@@ -1,6 +1,8 @@
+import { API_BASE } from '../../config';
+
 export function addtocart(product){
     return new Promise(async(resolve)=>{
-        const response = await fetch("http://localhost:8080/cart",{
+        const response = await fetch(`${API_BASE}/cart`,{
 
         method: "POST",
         headers: {
@@ -19,7 +21,7 @@ export function fetchproductbyuserid(userid)
 {
     console.log("cartapiuser" , userid)
     return new Promise(async(resolve , reject)=>{
-    const response = await fetch(`http://localhost:8080/cart?user=${userid}`, {
+    const response = await fetch(`${API_BASE}/cart?user=${userid}`, {
         credentials: 'include' // Include credentials (cookies)
     });
     const data = await response.json()
@@ -35,7 +37,7 @@ export function updateCart(update)
     return new Promise(async(resolve , reject)=>{
    
 
-    const response = await fetch(`http://localhost:8080/cart/`+update.id,{
+    const response = await fetch(`${API_BASE}/cart/`+update.id,{
 
         method: "PATCH",
         headers: {
@@ -55,7 +57,7 @@ export function deleteCart(productid) {
 
     return new Promise(async (resolve, reject) => {
         try {
-            const response = await fetch(`http://localhost:8080/cart/${productid}`, {
+            const response = await fetch(`${API_BASE}/cart/${productid}`, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json"

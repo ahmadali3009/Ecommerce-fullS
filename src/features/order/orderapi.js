@@ -1,6 +1,8 @@
+import { API_BASE } from '../../config';
+
 export function currentorder(order){
     return new Promise(async(resolve)=>{
-        const response = await fetch("http://localhost:8080/order",{
+        const response = await fetch(`${API_BASE}/order`,{
 
         method: "POST",
         headers: {

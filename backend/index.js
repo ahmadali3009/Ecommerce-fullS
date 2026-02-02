@@ -1,64 +1,69 @@
-let express = require('express')
-let server = express()
-const path = require('path');
-const stripe = require('stripe')('sk_test_51Q22khFoe1OIUX47QUaQBCGT0YWfiB9VbrZvvpgxAXaDvKgAA7XNZ9iB9UTQoj0bcAVSk3p7zPtnJwnlQB2MQiw800rBff4JeY');
-
-let cors = require("cors")
-let connect = require('./connection')
-let {productrouter} = require('./routes/product')
-let {categoryrouter} = require('./routes/category')
-let {brandrouter} = require('./routes/brand')
-let {authrouter} = require('./routes/auth')
-let {userrouter} = require('./routes/user')
-let {cartrouter} = require('./routes/cart')
-let {adminorderrouter} = require('./routes/adminorder')
-let { orderrouter } = require('./routes/order')
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
 const session = require('express-session');
+const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
-const user = require('./model/user')
-const { sanitizeUser , isAuth , cookieExtractor } = require('./services/common')
-const cookieParser = require('cookie-parser');
-
 const JwtStrategy = require('passport-jwt').Strategy;
-const ExtractJwt = require('passport-jwt').ExtractJwt;
 
+const connect = require('./connection');
+const user = require('./model/user');
+const { sanitizeUser, isAuth, cookieExtractor } = require('./services/common');
+const { productrouter } = require('./routes/product');
+const { categoryrouter } = require('./routes/category');
+const { brandrouter } = require('./routes/brand');
+const { authrouter } = require('./routes/auth');
+const { userrouter } = require('./routes/user');
+const { cartrouter } = require('./routes/cart');
+const { adminorderrouter } = require('./routes/adminorder');
+const { orderrouter } = require('./routes/order');
 
+const PORT = process.env.PORT || 8080;
+const SECRET_KEY = process.env.SECRET_KEY || process.env.JWT_SECRET || 'dev-secret-change-in-production';
+const SESSION_SECRET = process.env.SESSION_SECRET || process.env.SECRET_KEY || 'session-secret';
+const stripeKey = process.env.STRIPE_SECRET_KEY;
+const stripe = stripeKey ? require('stripe')(stripeKey) : null;
 
+// CORS: allow multiple origins from env (comma-separated), default dev
+const corsOrigin = process.env.CORS_ORIGIN || process.env.FRONTEND_URL || 'http://localhost:5173';
+const corsOrigins = corsOrigin.split(',').map((o) => o.trim()).filter(Boolean);
 
-let PORT = process.env.PORT || 8080;
+const corsOptions = {
+  origin: (origin, cb) => {
+    if (!origin || corsOrigins.length === 0) return cb(null, true);
+    if (corsOrigins.includes(origin)) return cb(null, true);
+    if (corsOrigins.includes('*')) return cb(null, true);
+    cb(null, false);
+  },
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  credentials: true,
+  allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
+  exposedHeaders: ['X-Total-Count'],
+};
+
+const server = express();
+
 // JWT options
 const opts = {};
-// opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.jwtFromRequest = cookieExtractor;
-const SECRET_KEY = 'SECRET_KEY';
-opts.secretOrKey = SECRET_KEY; // TODO: should not be in code;
+opts.secretOrKey = SECRET_KEY;
 
-
-//Middleware
-// server.use(express.static(path.resolve("./public")))
-// server.use(express.static(path.join(__dirname, 'dist'))); // Adjust as necessary
+// Middleware order: CORS first, then body/cookie, then session/auth
+server.use(cors(corsOptions));
+server.use(express.json());
 server.use(cookieParser());
 server.use(
-    session({
-      secret: 'keyboard cat',
-      resave: false, // don't save session if unmodified
-      saveUninitialized: false, // don't create session until something stored
-    })
-  );
-  server.use(passport.session()); 
-  server.use(passport.authenticate('session'));
-  server.use(cors(
-    {
-        origin: 'http://localhost:5173', // Allow only this domain
-        methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], // Include PATCH in allowed methods
-        credentials: true, // Allow credentials (cookies, authorization headers, etc.)
-    allowedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
-    exposedHeaders: ['X-Total-Count'] // Include X-Total-Count here
-    }));
-    server.use(express.json())
+  session({
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+server.use(passport.session());
+server.use(passport.authenticate('session'));
 
 
 server.get('/' , async (req , res)=>
@@ -69,12 +74,12 @@ server.use("/auth" , authrouter)
 
 
 server.use("/users", isAuth(), userrouter)
-server.use("/" ,isAuth(), productrouter)
-server.use("/" ,isAuth(), categoryrouter)
-server.use("/" ,isAuth(), brandrouter)
-server.use("/cart" ,isAuth(), cartrouter)
-server.use("/" ,isAuth(), adminorderrouter)
-server.use("/",isAuth() , orderrouter)
+server.use("/" ,  productrouter)
+server.use("/" , categoryrouter)
+server.use("/" , brandrouter)
+server.use("/cart" , isAuth(), cartrouter)
+server.use("/" , adminorderrouter)
+server.use("/" , isAuth(), orderrouter)
 
 // server.get('*', (req, res) => {
 //   res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
@@ -104,7 +109,7 @@ passport.use(
             }
             const token = jwt.sign(sanitizeUser(User), SECRET_KEY);
             console.log("token in passport",token)
-            return done(null, { ...sanitizeUser, token }); // Send sanitized user data and token
+            return done(null, sanitizeUser(User),token); // Send sanitized user data and token
           }
         );
       } catch (err) {
@@ -146,11 +151,13 @@ passport.use(
       return cb(null, User);
     });
   });
-// Stripe payment way
+// Stripe payment (only if STRIPE_SECRET_KEY is set)
 server.post("/create-payment-intent", async (req, res) => {
-  const { totalAmount , orderId} = req.body;
+  if (!stripe) {
+    return res.status(503).json({ error: 'Stripe is not configured' });
+  }
+  const { totalAmount, orderId } = req.body;
 
-  // Create a PaymentIntent with the order amount and currency
   const paymentIntent = await stripe.paymentIntents.create({
     amount: totalAmount, // for decimal compensation
     currency: "aed",
@@ -170,9 +177,10 @@ server.post("/create-payment-intent", async (req, res) => {
   });
 });
 
-connect("mongodb://127.0.0.1:27017/FullEcommerce").then(()=>{console.log("connection connected")}).catch((err)=>{console.log(err)})
+connect()
+  .then(() => console.log('MongoDB connected'))
+  .catch((err) => console.error('MongoDB connection error:', err));
 
-
-server.listen(PORT ,()  => {
-    console.log("the server is running port:8080")
-})
+server.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

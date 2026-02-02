@@ -1,10 +1,10 @@
+import { API_BASE } from '../../../../config';
 
 export function fectchAllOrderStatus() 
 {
-    //TODO: we will not hard-code server URL here
         return new Promise (async (resolve)=>
             {
-                let response = await fetch('http://localhost:8080/orderstatus');
+                let response = await fetch(`${API_BASE}/orderstatus`);
                 const data = await response.json();
                 resolve({data})
             })
