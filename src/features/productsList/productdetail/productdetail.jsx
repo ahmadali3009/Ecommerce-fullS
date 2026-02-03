@@ -188,7 +188,7 @@ const Productdetail = () => {
               <h2 className="sr-only">Product information</h2>
               <p className="text-3xl tracking-tight text-gray-900">{products.price}</p>
 
-              {/* Reviews */}
+              {/* Reviewssss */}
               {/* <div className="mt-6">
                 <h3 className="sr-only">Reviews</h3>
                 <div className="flex items-center">
