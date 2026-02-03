@@ -1,4 +1,3 @@
-const { useRouteLoaderData } = require("react-router-dom");
 let user = require("../model/user");
 const crypto = require('crypto');
 const { sanitizeUser } = require("../services/common");
