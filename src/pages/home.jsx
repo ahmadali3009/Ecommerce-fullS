@@ -10,7 +10,6 @@ const Home = () => {
     if (!checkuser) {
         return <Navigate to="/login" replace={true} />;
     }
-    //get the user from the database
   return (
 
     <div className="min-h-screen flex flex-col">
