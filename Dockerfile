@@ -13,6 +13,10 @@ RUN npm ci
 # Copy source code
 COPY . .
 
+# API URL for production (passed at build time by CD workflow from EC2_HOST secret)
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
+
 # Build the application
 RUN npm run build
 

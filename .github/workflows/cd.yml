@@ -61,6 +61,8 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            VITE_API_URL=${{ matrix.name == 'frontend' && format('http://{0}:8080', secrets.EC2_HOST) || 'http://localhost:8080' }}
 
   # Deploy: GitHub Secrets - EC2_HOST, EC2_SSH_KEY, MONGODB_URI, JWT_SECRET, CORS_ORIGIN, STRIPE_SECRET_KEY (required); EC2_USER (default: ubuntu), GHCR_TOKEN (for private GHCR images, optional)
   deploy:
