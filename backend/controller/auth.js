@@ -1,8 +1,8 @@
 let user = require("../model/user");
 const crypto = require('crypto');
 const { sanitizeUser } = require("../services/common");
-const SECRET_KEY = 'SECRET_KEY';
 const jwt = require('jsonwebtoken');
+const JWT_SECRET = process.env.JWT_SECRET || 'SECRET_KEY';
 async function handlecreateuser(req, res) {
   try {
     console.log("signupchecking", req.body)
@@ -27,8 +27,7 @@ async function handlecreateuser(req, res) {
             console.log("User document:", doc);
             const sanitizedUser = sanitizeUser(doc);
             console.log("Sanitized user:", sanitizedUser);
-            console.log("Secret key:", SECRET_KEY);
-            const token = jwt.sign(sanitizeUser(doc), SECRET_KEY);
+            const token = jwt.sign(sanitizeUser(doc), JWT_SECRET);
             console.log("Generated token:", token);
             res.cookie('jwt', token, { 
               httpOnly: true, 
@@ -52,7 +51,7 @@ let checkUser = async (req, res) => {
 
 async function handleloginuser(req, res) {
 
-  const token = jwt.sign(sanitizeUser(req.user), SECRET_KEY);
+  const token = jwt.sign(sanitizeUser(req.user), JWT_SECRET);
 res.cookie('jwt', token, {
   httpOnly: true,
   sameSite: 'Lax',

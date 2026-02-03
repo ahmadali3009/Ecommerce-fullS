@@ -2,6 +2,8 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/autoplay";
 import { Autoplay } from "swiper/modules";
+import eyesImg from "../../assets/eyes.jpg";
+import fragranceImg from "../../assets/fragrance.jpg";
 
 const Hero = () => {
   return (
@@ -16,7 +18,7 @@ const Hero = () => {
       <SwiperSlide>
         <div className="relative w-full h-[650px]">
           <img
-            src="/src/assets/eyes.jpg"
+            src={eyesImg}
             alt="Banner 1"
             className="w-full h-full object-cover opacity-80"
           />
@@ -35,7 +37,7 @@ const Hero = () => {
       <SwiperSlide>
         <div className="relative w-full h-[650px]">
           <img
-            src="/src/assets/fragrance.jpg"
+            src={fragranceImg}
             alt="Banner 2"
             className="w-full h-full object-cover opacity-80"
           />
