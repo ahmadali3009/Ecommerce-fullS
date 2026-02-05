@@ -4,6 +4,7 @@ import { Disclosure, Menu } from '@headlessui/react';
 import { Bars3Icon, ShoppingCartIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useSelector } from 'react-redux';
 import { selectcart } from '../cart/cartslice';
+import logoAhmed from '../../assets/ahemd.jpg';
 
 const navigation = [
   { name: 'Home', to: '/', current: true },
@@ -38,19 +39,15 @@ const Nav = () => {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3 group">
-            <div className="relative">
-              <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg blur opacity-25 group-hover:opacity-75 transition duration-200"></div>
-              <img 
-                className="relative h-10 w-auto" 
-                src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500" 
-                alt="Logo" 
+          {/* Logo - AHMED: gold on dark, blends with navbar */}
+          <Link to="/" className="flex items-center gap-2 group">
+            <div className="relative flex items-center justify-center h-14 w-auto max-w-[180px]">
+              <img
+                src={logoAhmed}
+                alt="AHMED"
+                className="h-14 w-auto object-contain object-center nav-logo"
               />
             </div>
-            <span className={`text-xl font-bold tracking-wide ${scrolling ? 'text-white' : 'text-white'} group-hover:text-indigo-400 transition-colors duration-200`}>
-              My Store
-            </span>
           </Link>
 
           {/* Desktop Navigation */}

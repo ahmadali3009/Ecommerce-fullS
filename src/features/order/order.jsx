@@ -13,14 +13,12 @@ const Order = () => {
 
     useEffect(() => {
         if (order) {
-            dispatch(resetCartaync(user.id))
-            const timer = setTimeout(() => {
-                dispatch(resetOrder());
-              }, 9000);
-              return () => clearTimeout(timer);        
-            }
-
-    }, [dispatch, user.id , order])
+            dispatch(resetCartaync(user.id));
+        }
+        return () => {
+            dispatch(resetOrder());
+        };
+    }, [dispatch, user?.id, order])
 
     console.log("order.........", order)
     return (
@@ -40,11 +38,11 @@ const Order = () => {
                         <h3 className="text-lg leading-6 font-medium text-gray-900">
                             Order Details
                         </h3>
-                        <div className="mt-6 text-sm text-gray-600">
-                            <p><strong>Order Number:</strong> #{order?.response.id}</p>
-                            <p><strong>Total Amount:</strong> #{order?.response.totalAmount}</p>
-                            <p><strong>Order status:</strong> {order?.response.status}</p>
-                            <p><strong>Payment Method:</strong>{order?.response.paymentMethod} </p>
+                        <div className="mt-6 text-sm text-gray-600 space-y-1">
+                            <p><strong>Order Number:</strong> #{order?.response?.id}</p>
+                            <p><strong>Total Amount:</strong> ${Number(order?.response?.totalAmount ?? 0).toFixed(2)}</p>
+                            <p><strong>Order status:</strong> {order?.response?.status}</p>
+                            <p><strong>Payment Method:</strong> {order?.response?.paymentMethod}</p>
                         </div>
                         <div className="mt-6">
                             <Link

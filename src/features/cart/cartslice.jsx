@@ -106,9 +106,9 @@ export const addtocartaync = createAsyncThunk(
         state.status = 'loading';
       })
       .addCase(deleteCartaync.fulfilled, (state, action) => {
-        console.log('action_______', action.payload);
-        const index = state.cartproduct.findIndex((product) => product.id === action.payload)
-        state.cartproduct.splice(index,1) ;
+        const id = action.payload?.id ?? action.payload;
+        const index = state.cartproduct.findIndex((item) => item.id === id);
+        if (index >= 0) state.cartproduct.splice(index, 1);
       })
       .addCase(deleteCartaync.rejected, (state, action) => {
         state.status = 'failed';

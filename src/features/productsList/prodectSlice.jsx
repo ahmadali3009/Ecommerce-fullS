@@ -172,6 +172,7 @@ export const selectAllbrand = (state) => state.product.brand;
 export const selectAllcategories = (state) => state.product.categories;
 export const selectproductbyid = (state) => state.product.productdetail;
 export const selectTotalItems = (state) => state.product.totalItems;
+export const selectProductStatus = (state) => state.product.status;
 
 
 

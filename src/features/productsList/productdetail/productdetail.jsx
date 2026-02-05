@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import { Radio, RadioGroup } from '@headlessui/react'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchproductdetailbyidaync, selectproductbyid } from '../prodectSlice'
-import { useParams } from 'react-router-dom'
+import { fetchproductdetailbyidaync, selectproductbyid, selectProductStatus } from '../prodectSlice'
+import { Link, useParams } from 'react-router-dom'
 import { addtocartaync, selectcart } from '../../cart/cartslice'
 import { selectcheckuser } from '../../auth/authSlice'
 import { toast, ToastContainer } from 'react-toastify'
@@ -38,12 +38,10 @@ const Productdetail = () => {
   const dispatch = useDispatch()
 
   const products = useSelector(selectproductbyid);
-  const cartproduct = useSelector(selectcart)
-  const user = useSelector(selectcheckuser)
-
-  console.log("productdetail____user", cartproduct)
-  console.log("productsindetail___________", products)
-  const prams = useParams()
+  const cartproduct = useSelector(selectcart);
+  const user = useSelector(selectcheckuser);
+  const status = useSelector(selectProductStatus);
+  const prams = useParams();
   const [selectedColor, setSelectedColor] = useState(colors[0])
   const [selectedSize, setSelectedSize] = useState(sizes[2])
 
@@ -108,37 +106,79 @@ const Productdetail = () => {
 
 
   useEffect(() => {
-    dispatch(fetchproductdetailbyidaync(prams.id))
-  }, [dispatch, prams.id])
+    dispatch(fetchproductdetailbyidaync(prams.id));
+  }, [dispatch, prams.id]);
+
+  const primaryImage = products?.images?.[0] || products?.thumbnail || '';
+  const img1 = products?.images?.[1] || primaryImage;
+  const img2 = products?.images?.[2] || primaryImage;
+  const img3 = products?.images?.[3] || primaryImage;
+
+  if (status === 'loading' || (!products && status !== 'failed')) {
+    return (
+      <div className="bg-white py-12">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <Link to="/" className="text-sm font-medium text-gray-500 hover:text-indigo-600 inline-flex items-center gap-1 mb-6">
+            <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to home
+          </Link>
+          <div className="animate-pulse grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="h-96 bg-gray-200 rounded-lg" />
+            <div className="space-y-4">
+              <div className="h-8 bg-gray-200 rounded w-3/4" />
+              <div className="h-6 bg-gray-200 rounded w-1/4" />
+              <div className="h-24 bg-gray-200 rounded" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (status === 'failed' || !products) {
+    return (
+      <div className="bg-white py-12 text-center">
+        <Link to="/" className="text-sm font-medium text-gray-500 hover:text-indigo-600 inline-flex items-center gap-1 mb-4">
+          <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Back to home
+        </Link>
+        <p className="text-gray-600">Unable to load this product.</p>
+        <button
+          type="button"
+          onClick={() => dispatch(fetchproductdetailbyidaync(prams.id))}
+          className="mt-4 text-indigo-600 hover:text-indigo-500 font-medium"
+        >
+          Try again
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className="bg-white">
-        {products && <div className="pt-6">
+        <div className="pt-6">
           <nav aria-label="Breadcrumb">
             <ol role="list" className="mx-auto flex max-w-2xl items-center space-x-2 px-4 sm:px-6 lg:max-w-7xl lg:px-8">
-              {/* {breadcrumbs && breadcrumbs.map((breadcrumb) => (
-                <li key={breadcrumb.id}>
-                  <div className="flex items-center">
-                    <a href={breadcrumb.href} className="mr-2 text-sm font-medium text-gray-900">
-                      {breadcrumb.name}
-                    </a>
-                    <svg
-                      fill="currentColor"
-                      width={16}
-                      height={20}
-                      viewBox="0 0 16 20"
-                      aria-hidden="true"
-                      className="h-5 w-4 text-gray-300"
-                    >
-                      <path d="M5.697 4.34L8.98 16.532h1.327L7.025 4.341H5.697z" />
-                    </svg>
-                  </div>
-                </li>
-              ))} */}
+              <li>
+                <Link to="/" className="text-sm font-medium text-gray-500 hover:text-indigo-600 flex items-center gap-1">
+                  <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                  </svg>
+                  Home
+                </Link>
+              </li>
+              <li className="flex items-center">
+                <span className="text-gray-400">/</span>
+              </li>
               <li className="text-sm">
-                <p aria-current="page" className="font-medium text-gray-500 hover:text-gray-600">
+                <span aria-current="page" className="font-medium text-gray-900">
                   {products.title}
-                </p>
+                </span>
               </li>
             </ol>
           </nav>
@@ -148,7 +188,7 @@ const Productdetail = () => {
             <div className="aspect-h-4 aspect-w-3 hidden overflow-hidden rounded-lg lg:block">
               <img
                 alt={products.title}
-                src={products.images[0]}
+                src={primaryImage}
                 className="h-full w-full object-cover object-center"
               />
             </div>
@@ -156,14 +196,14 @@ const Productdetail = () => {
               <div className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg">
                 <img
                   alt={products.title}
-                  src={products.images[1]}
+                  src={img1}
                   className="h-full w-full object-cover object-center"
                 />
               </div>
               <div className="aspect-h-2 aspect-w-3 overflow-hidden rounded-lg">
                 <img
                   alt={products.title}
-                  src={products.images[2]}
+                  src={img2}
                   className="h-full w-full object-cover object-center"
                 />
               </div>
@@ -171,7 +211,7 @@ const Productdetail = () => {
             <div className="aspect-h-5 aspect-w-4 lg:aspect-h-4 lg:aspect-w-3 sm:overflow-hidden sm:rounded-lg">
               <img
                 alt={products.title}
-                src={products.images[3]}
+                src={img3}
                 className="h-full w-full object-cover object-center"
               />
             </div>
@@ -358,10 +398,10 @@ const Productdetail = () => {
               </div>
             </div>
           </div>
-        </div>}
+        </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default Productdetail;

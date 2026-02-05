@@ -14,6 +14,7 @@ import { checkAuthAsync, selectcheckuser, selectUserChecked } from './features/a
 import Orderpage from './pages/orderpage'
 import Userorder from './features/user/components/Userorder'
 import { fetchuserinfoAync } from './features/user/userSlice'
+import { fetchcartbyidaync } from './features/cart/cartslice'
 import Userprofilepage from './pages/Userprofilepage'
 import Adminprotected from './features/admin/adminauth/Adminprotected'
 import Adminhome from './pages/adminhome'
@@ -25,6 +26,8 @@ import Adminorderstatus from './pages/adminorderstatus'
 import AdminTorderC from './pages/adminTorderC'
 import AdminTincomeC from './pages/adminTincomeC'
 import AdminTotaluserC from './pages/adminTotaluserC'
+import ShopPage from './pages/ShopPage'
+import ContactPage from './pages/ContactPage'
 
 function App() {
 
@@ -37,13 +40,12 @@ function App() {
     dispach(checkAuthAsync())
   },[dispach])
 
-  useEffect(()=>
-    {
-      if(user){
-        dispach(fetchuserinfoAync())
-        // dispach(fetchallproductsAycn())
-      }
-    }, [dispach,user])
+  useEffect(() => {
+    if (user?.id) {
+      dispach(fetchuserinfoAync());
+      dispach(fetchcartbyidaync(user.id));
+    }
+  }, [dispach, user]);
 
   const router = createBrowserRouter([
     {
@@ -54,6 +56,24 @@ function App() {
           <Nav />
           <Home />
           {/* </Protected> */}
+        </>
+      ),
+    },
+    {
+      path: '/shop',
+      element: (
+        <>
+          <Nav />
+          <ShopPage />
+        </>
+      ),
+    },
+    {
+      path: '/contact',
+      element: (
+        <>
+          <Nav />
+          <ContactPage />
         </>
       ),
     },

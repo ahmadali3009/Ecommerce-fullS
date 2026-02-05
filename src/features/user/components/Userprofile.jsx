@@ -14,7 +14,20 @@ const Userprofile = () => {
     const currentuser = useSelector(selectcheckuser)
     console.log("currentuser in userprofile ", currentuser)
     if (userinfo === -1) {
-        return <div>Loading...</div>;  // Show loading or handle the case where the user is not found
+        return (
+            <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8 bg-white shadow-md rounded-lg animate-pulse">
+                <div className="h-9 bg-gray-200 rounded w-48 mx-auto mb-8" />
+                <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-6 sm:gap-x-8">
+                    {[1, 2, 3, 4, 5, 6].map((i) => (
+                        <div key={i} className="sm:col-span-4">
+                            <div className="h-4 bg-gray-200 rounded w-24 mb-2" />
+                            <div className="h-10 bg-gray-200 rounded w-full" />
+                        </div>
+                    ))}
+                </div>
+                <div className="mt-10 h-12 bg-gray-200 rounded w-24" />
+            </div>
+        );
     }
 
 

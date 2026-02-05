@@ -1,363 +1,394 @@
-import { useState } from 'react'
-import { Navigate } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import { deleteCartaync, selectcart, updateCartaync } from '../features/cart/cartslice'
-import { useForm } from 'react-hook-form'
-import { createorderaync, selectorder } from '../features/order/orderSlice'
-import { selectuserinfo, updateUseraync } from '../features/user/userSlice'
-
+import { useState } from 'react';
+import { Link, Navigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteCartaync, selectcart, updateCartaync } from '../features/cart/cartslice';
+import { useForm } from 'react-hook-form';
+import { createorderaync, selectorder } from '../features/order/orderSlice';
+import { selectuserinfo, updateUseraync } from '../features/user/userSlice';
+import { selectcheckuser } from '../features/auth/authSlice';
 
 const Cheakout = () => {
-  let cartproduct = useSelector(selectcart)
-  console.log("cartproduct in checkout" , cartproduct)
-  let totalamount = (cartproduct) => {
-    return cartproduct.reduce((amount, products) => 
-        products.product.price * products.quantity + amount,
-        0 // initialValue should be 0
-    ).toFixed(2);
-};
+  const cartproduct = useSelector(selectcart) || [];
+  const user = useSelector(selectuserinfo);
+  const authUser = useSelector(selectcheckuser);
+  const currentOrder = useSelector(selectorder);
+  const dispatch = useDispatch();
 
-console.log("ammountcheckingg", totalamount(cartproduct));
-  const { register, handleSubmit, reset, formState: { errors: _errors } } = useForm()
-  let [paymentmethod , setpaymentmethod] = useState("")
-  let dispatch =  useDispatch()
-  const [_open, setOpen] = useState(true)
-  const handlequnatity = (e, productID)=>
-      {
-        console.log("productid", productID)
-          dispatch(updateCartaync({id : productID , quantity: +e.target.value ,user: cartproduct[0].user}))
-      }
-  const handledelete = (e, productid) =>
-  {
-      dispatch(deleteCartaync(productid))
+  const { register, handleSubmit, reset, formState: { errors } } = useForm();
+  const [paymentmethod, setpaymentmethod] = useState('');
+
+  const totalamount = (items) => {
+    return items.reduce(
+      (amount, item) => Number(item.product?.price ?? 0) * (item.quantity ?? 0) + amount,
+      0
+    );
+  };
+
+  const handlequnatity = (e, productID) => {
+    if (cartproduct.length === 0) return;
+    dispatch(updateCartaync({
+      id: productID,
+      quantity: +e.target.value,
+      user: cartproduct[0].user,
+    }));
+  };
+
+  const handledelete = (_e, productid) => {
+    dispatch(deleteCartaync(productid));
+  };
+
+  const handlepayment = (e) => {
+    setpaymentmethod(e.target.id);
+  };
+
+  const handleOrder = () => {
+    const orderdata = {
+      products: cartproduct,
+      totalAmount: totalamount(cartproduct).toFixed(2),
+      user: user?.id ?? authUser?.id,
+      paymentMethod: paymentmethod,
+      status: 'pending',
+      selectedAddress: user?.addresses || [],
+    };
+    dispatch(createorderaync(orderdata));
+  };
+
+  const onSaveAddress = (data) => {
+    dispatch(updateUseraync({
+      ...user,
+      addresses: [...(user?.addresses || []), data],
+    }));
+    reset();
+  };
+
+  const subtotal = totalamount(cartproduct);
+
+  if (cartproduct.length === 0) {
+    return <Navigate to="/" replace />;
   }
-  
-  let user = useSelector(selectuserinfo)
-  let currentOrder = useSelector(selectorder)
 
-  console.log("currentordercheckincheckout---" , currentOrder)
-
-  const handlepayment = (e)=>{
-    console.log(e.target.id)
-    setpaymentmethod(e.target.id)
+  if (currentOrder?.response?.paymentMethod === 'COD') {
+    return <Navigate to="/orderpage" replace />;
   }
-  const handleOrder = (_e)=>
-    {
-      // e.preventDefault()
-      let orderdata = {
-        products: cartproduct, // Match with the "products" field in the schema
-        totalAmount: totalamount(cartproduct),
-        user: user.id, // Match with the "user" field in the schema
-        paymentMethod: paymentmethod, // Match with the "paymentMethod" field in the schema
-        status: "pending", // Optional if you want to set a default status
-        selectedAddress: user.addresses, // Make sure to provide this if it's required
-    };      
-    dispatch(createorderaync(orderdata))
+  if (currentOrder?.response?.paymentMethod === 'COC') {
+    return <Navigate to="/stripe-checkout" replace />;
+  }
 
-    }
+  const inputClass = 'block w-full rounded-lg border border-gray-300 py-2.5 px-3 text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 sm:text-sm';
 
-  
-   
   return (
-    <div>
+    <div className="min-h-screen bg-gray-50 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 mb-8">
+          Checkout
+        </h1>
 
-{!cartproduct.length && <Navigate to="/" replace={true}></Navigate>}
-      {currentOrder && currentOrder.response.paymentMethod === 'COD' && (
-        <Navigate
-          to={`/orderpage`}
-          replace={true}
-        ></Navigate>
-      )}
-      {currentOrder && currentOrder.response.paymentMethod === 'COC' && (
-        <Navigate to={`/stripe-checkout`} replace={true}></Navigate>
-      )}
-
-    <div className="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5 ">
-    <div className='lg:col-span-3 bg-slate-100'>
-       <main className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-4">
-      <div className="space-y-12">
-        <div className="border-b border-gray-900/10 pb-12">
-          <h2 className="text-base font-semibold leading-7 text-gray-900">Personal Information</h2>
-          <p className="mt-1 text-sm leading-6 text-gray-600">Use a permanent address where you can receive mail.</p>
-          <form noValidate onSubmit={handleSubmit((data)=>{
-             dispatch(updateUseraync({
-              ...user,
-              addresses: [...(user.addresses || []), data],
-            }));
-          reset()}
-        )}>
-          <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-            <div className="sm:col-span-4">
-              <label htmlFor="first-name" className="block text-sm font-medium leading-6 text-gray-900">
-                Full name
-              </label>
-              <div className="mt-2">
-                <input
-                  type="text"
-                  {...register("fullname" , { required: "plz enter a full name" })}                  
-                  id="fullname"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-5">
+          {/* Left: Shipping & payment */}
+          <div className="lg:col-span-3 space-y-8">
+            {/* Personal info / new address */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              <div className="px-6 py-5 border-b border-gray-100">
+                <h2 className="text-lg font-semibold text-gray-900">Shipping address</h2>
+                <p className="mt-1 text-sm text-gray-500">Add or use a saved address for delivery.</p>
               </div>
-            </div>
-
-          
-
-            <div className="sm:col-span-4">
-              <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
-                Email address
-              </label>
-              <div className="mt-2">
-                <input
-                  id="email"
-                  {...register("email" , { required: "plz enter a vaild email" })}                  
-                  type="email"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-
-            <div className="sm:col-span-3">
-              <label htmlFor="country" className="block text-sm font-medium leading-6 text-gray-900">
-                Phone
-              </label>
-              <div className="mt-2">
-                <input
-                  id="tel"
-                  {...register("tel" , { required: "plz enter a vaild phone-number" })}                  
-                  type="tel"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-
-            <div className="col-span-full">
-              <label htmlFor="street-address" className="block text-sm font-medium leading-6 text-gray-900">
-                Street address
-              </label>
-              <div className="mt-2">
-                <input
-                  type="text"
-                  {...register("street" , { required: "plz enter a street address" })}                  
-                  id="street"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-
-            <div className="sm:col-span-2 sm:col-start-1">
-              <label htmlFor="city" className="block text-sm font-medium leading-6 text-gray-900">
-                City
-              </label>
-              <div className="mt-2">
-                <input
-                  type="text"
-                  {...register("city" , { required: "plz enter a city name" })}                  
-                  id="city"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-
-            <div className="sm:col-span-2">
-              <label htmlFor="region" className="block text-sm font-medium leading-6 text-gray-900">
-                State / Province
-              </label>
-              <div className="mt-2">
-                <input
-                  type="text"
-                  {...register("region" , { required: "plz enter a region" })}                  
-                  id="region"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-
-            <div className="sm:col-span-2">
-              <label htmlFor="postal-code" className="block text-sm font-medium leading-6 text-gray-900">
-                ZIP / Postal code
-              </label>
-              <div className="mt-2">
-                <input
-                  type="text"
-                  {...register("postal" , { required: "plz enter a postal code" })}                  
-                  id="postal"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-            <button className='bg-cyan-700' > save </button>
-          </div>
-          </form>
-        </div>
-
-        <div className="border-b border-gray-900/10 pb-12">
-          <h2 className="text-base font-semibold leading-7 text-gray-900">Address</h2>
-         
-            <div className='addresses'>
-            <ul role="list" className="divide-y divide-gray-100">
-      {user?.addresses?.map((address) => (
-        <li key={address?.email} className="flex justify-between gap-x-6 py-5">
-          <div className="flex min-w-0 gap-x-4">
-            <div className="min-w-0 flex-auto">
-              <p className="text-sm font-semibold leading-6 text-gray-900">{address.fullname}</p>
-              <p className="mt-1 truncate text-xs leading-5 text-gray-500">{address.email}</p>
-              <p className="mt-1 truncate text-xs leading-5 text-gray-500">{address.postal}</p>
-
-
-            </div>
-          </div>
-          <div className="hidden shrink-0 sm:flex sm:flex-col sm:items-end">
-            <p className="text-sm leading-6 text-gray-900"><strong>Street-Address: </strong>{address.street}</p>
-            <p className="text-sm leading-6 text-gray-900"><strong>City:</strong> {address.city}</p>
-            <p className="text-sm leading-6 text-gray-900"><strong>Province:</strong> {address.region}</p>
-
-            
-          </div>
-        </li>
-      ))}
-    </ul>
-            </div>
-          <div className="mt-10 space-y-10">
-     
-            <fieldset>
-              <legend className="text-sm font-semibold leading-6 text-gray-900">Payment Method</legend>
-              <p className="mt-1 text-sm leading-6 text-gray-600">Choose One</p>
-              <div className="mt-6 space-y-6">
-                <div className="flex items-center gap-x-3">
-                  <input
-                    id="COD"
-                    name="Payments"
-                    onChange={handlepayment}
-                    checked={paymentmethod === 'COD'}
-                    type="radio"
-                    className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                  />
-                  <label htmlFor="COD" className="block text-sm font-medium leading-6 text-gray-900">
-                    Cash On Delivery
-                  </label>
+              <form noValidate onSubmit={handleSubmit(onSaveAddress)} className="px-6 py-6">
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-6">
+                  <div className="sm:col-span-4">
+                    <label htmlFor="fullname" className="block text-sm font-medium text-gray-700">
+                      Full name
+                    </label>
+                    <input
+                      type="text"
+                      {...register('fullname', { required: 'Please enter your full name' })}
+                      id="fullname"
+                      className={`mt-1.5 ${inputClass}`}
+                      placeholder="John Doe"
+                    />
+                    {errors.fullname && (
+                      <p className="mt-1 text-sm text-red-600">{errors.fullname.message}</p>
+                    )}
+                  </div>
+                  <div className="sm:col-span-4">
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                      Email
+                    </label>
+                    <input
+                      id="email"
+                      {...register('email', { required: 'Please enter a valid email' })}
+                      type="email"
+                      className={`mt-1.5 ${inputClass}`}
+                      placeholder="you@example.com"
+                    />
+                    {errors.email && (
+                      <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
+                    )}
+                  </div>
+                  <div className="sm:col-span-3">
+                    <label htmlFor="tel" className="block text-sm font-medium text-gray-700">
+                      Phone
+                    </label>
+                    <input
+                      id="tel"
+                      {...register('tel', { required: 'Please enter a phone number' })}
+                      type="tel"
+                      className={`mt-1.5 ${inputClass}`}
+                      placeholder="+1 234 567 8900"
+                    />
+                    {errors.tel && (
+                      <p className="mt-1 text-sm text-red-600">{errors.tel.message}</p>
+                    )}
+                  </div>
+                  <div className="col-span-full">
+                    <label htmlFor="street" className="block text-sm font-medium text-gray-700">
+                      Street address
+                    </label>
+                    <input
+                      type="text"
+                      {...register('street', { required: 'Please enter street address' })}
+                      id="street"
+                      className={`mt-1.5 ${inputClass}`}
+                      placeholder="123 Main St"
+                    />
+                    {errors.street && (
+                      <p className="mt-1 text-sm text-red-600">{errors.street.message}</p>
+                    )}
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label htmlFor="city" className="block text-sm font-medium text-gray-700">
+                      City
+                    </label>
+                    <input
+                      type="text"
+                      {...register('city', { required: 'Please enter city' })}
+                      id="city"
+                      className={`mt-1.5 ${inputClass}`}
+                      placeholder="New York"
+                    />
+                    {errors.city && (
+                      <p className="mt-1 text-sm text-red-600">{errors.city.message}</p>
+                    )}
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label htmlFor="region" className="block text-sm font-medium text-gray-700">
+                      State / Province
+                    </label>
+                    <input
+                      type="text"
+                      {...register('region', { required: 'Please enter state or province' })}
+                      id="region"
+                      className={`mt-1.5 ${inputClass}`}
+                      placeholder="NY"
+                    />
+                    {errors.region && (
+                      <p className="mt-1 text-sm text-red-600">{errors.region.message}</p>
+                    )}
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label htmlFor="postal" className="block text-sm font-medium text-gray-700">
+                      ZIP / Postal code
+                    </label>
+                    <input
+                      type="text"
+                      {...register('postal', { required: 'Please enter postal code' })}
+                      id="postal"
+                      className={`mt-1.5 ${inputClass}`}
+                      placeholder="10001"
+                    />
+                    {errors.postal && (
+                      <p className="mt-1 text-sm text-red-600">{errors.postal.message}</p>
+                    )}
+                  </div>
                 </div>
-                <div className="flex items-center gap-x-3">
-                  <input
-                    id="COC"
-                    name="Payments"
-                    onChange={handlepayment}
-                    checked={paymentmethod === 'COC'}
-                    type="radio"
-                    className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-600"
-                  />
-                  <label htmlFor="COC" className="block text-sm font-medium leading-6 text-gray-900">
-                    Cash on Card
-                  </label>
+                <div className="mt-6">
+                  <button
+                    type="submit"
+                    className="rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  >
+                    Save address
+                  </button>
                 </div>
-            
+              </form>
+            </div>
+
+            {/* Saved addresses */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              <div className="px-6 py-5 border-b border-gray-100">
+                <h2 className="text-lg font-semibold text-gray-900">Saved addresses</h2>
+                <p className="mt-1 text-sm text-gray-500">Delivery will be made to your selected address.</p>
               </div>
-            </fieldset>
+              <div className="px-6 py-4">
+                {user?.addresses?.length > 0 ? (
+                  <ul role="list" className="space-y-4">
+                    {user.addresses.map((address, idx) => (
+                      <li
+                        key={`${address?.email}-${idx}`}
+                        className="rounded-lg border border-gray-200 bg-gray-50/50 p-4"
+                      >
+                        <p className="font-medium text-gray-900">{address.fullname}</p>
+                        <p className="mt-0.5 text-sm text-gray-500">{address.email}</p>
+                        <p className="mt-1 text-sm text-gray-600">
+                          {address.street}, {address.city}, {address.region} {address.postal}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="text-sm text-gray-500">No saved addresses yet. Add one above.</p>
+                )}
+              </div>
+            </div>
+
+            {/* Payment method */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              <div className="px-6 py-5 border-b border-gray-100">
+                <h2 className="text-lg font-semibold text-gray-900">Payment method</h2>
+                <p className="mt-1 text-sm text-gray-500">Choose how you want to pay.</p>
+              </div>
+              <div className="px-6 py-6">
+                <fieldset className="space-y-4">
+                  <label
+                    className={`flex cursor-pointer items-center gap-4 rounded-lg border p-4 transition-colors ${
+                      paymentmethod === 'COD'
+                        ? 'border-indigo-500 bg-indigo-50/50'
+                        : 'border-gray-200 hover:bg-gray-50'
+                    }`}
+                  >
+                    <input
+                      id="COD"
+                      name="Payments"
+                      type="radio"
+                      checked={paymentmethod === 'COD'}
+                      onChange={handlepayment}
+                      className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                    />
+                    <div>
+                      <span className="block font-medium text-gray-900">Cash on Delivery</span>
+                      <span className="block text-sm text-gray-500">Pay when your order is delivered</span>
+                    </div>
+                  </label>
+                  <label
+                    className={`flex cursor-pointer items-center gap-4 rounded-lg border p-4 transition-colors ${
+                      paymentmethod === 'COC'
+                        ? 'border-indigo-500 bg-indigo-50/50'
+                        : 'border-gray-200 hover:bg-gray-50'
+                    }`}
+                  >
+                    <input
+                      id="COC"
+                      name="Payments"
+                      type="radio"
+                      checked={paymentmethod === 'COC'}
+                      onChange={handlepayment}
+                      className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                    />
+                    <div>
+                      <span className="block font-medium text-gray-900">Card (Stripe)</span>
+                      <span className="block text-sm text-gray-500">Pay securely with card</span>
+                    </div>
+                  </label>
+                </fieldset>
+              </div>
+            </div>
+          </div>
+
+          {/* Right: Order summary */}
+          <div className="lg:col-span-2">
+            <div className="lg:sticky lg:top-24 bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              <div className="px-6 py-5 border-b border-gray-100">
+                <h2 className="text-lg font-semibold text-gray-900">Order summary</h2>
+              </div>
+              <div className="px-6 py-4">
+                <ul role="list" className="divide-y divide-gray-200">
+                  {cartproduct.map((item) => {
+                    const product = item.product || {};
+                    const productId = product.id ?? product._id ?? product;
+                    const title = product.title ?? 'Product';
+                    const thumbnail = product.thumbnail ?? '';
+                    const price = Number(product.price ?? 0);
+                    return (
+                    <li key={item.id} className="flex gap-4 py-4 first:pt-0">
+                      <Link
+                        to={productId ? `/productdetail/${productId}` : '#'}
+                        className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-lg border border-gray-200 bg-gray-100"
+                      >
+                        {thumbnail ? (
+                          <img
+                            src={thumbnail}
+                            alt={title}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <div className="h-full w-full flex items-center justify-center text-gray-400 text-xs">—</div>
+                        )}
+                      </Link>
+                      <div className="min-w-0 flex-1">
+                        <Link
+                          to={productId ? `/productdetail/${productId}` : '#'}
+                          className="font-medium text-gray-900 hover:text-indigo-600 line-clamp-2"
+                        >
+                          {title}
+                        </Link>
+                        <p className="mt-0.5 text-sm text-gray-500">
+                          Qty: {item.quantity} × ${price.toFixed(2)}
+                        </p>
+                        <div className="mt-2 flex items-center gap-3">
+                          <select
+                            value={item.quantity}
+                            onChange={(e) => handlequnatity(e, item.id)}
+                            className="rounded border border-gray-300 text-sm py-1 px-2"
+                          >
+                            {[1, 2, 3, 4, 5].map((n) => (
+                              <option key={n} value={n}>{n}</option>
+                            ))}
+                          </select>
+                          <button
+                            type="button"
+                            onClick={(e) => handledelete(e, item.id)}
+                            className="text-sm font-medium text-red-600 hover:text-red-500"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                      <div className="text-right text-sm font-medium text-gray-900">
+                        ${(price * (item.quantity ?? 0)).toFixed(2)}
+                      </div>
+                    </li>
+                    );
+                  })}
+                </ul>
+              </div>
+              <div className="border-t border-gray-200 px-6 py-5">
+                <div className="flex justify-between text-base font-medium text-gray-900">
+                  <span>Subtotal</span>
+                  <span>${subtotal.toFixed(2)}</span>
+                </div>
+                <p className="mt-1.5 text-sm text-gray-500">Shipping calculated at next step if applicable.</p>
+                <button
+                  type="button"
+                  onClick={handleOrder}
+                  disabled={!paymentmethod}
+                  className="mt-6 w-full rounded-lg bg-indigo-600 px-4 py-3 text-base font-semibold text-white shadow-sm hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                >
+                  {paymentmethod === 'COC' ? 'Continue to payment' : 'Place order'}
+                </button>
+                {!paymentmethod && (
+                  <p className="mt-2 text-center text-sm text-amber-600">Please select a payment method above.</p>
+                )}
+                <p className="mt-4 text-center text-sm text-gray-500">
+                  or{' '}
+                  <Link to="/" className="font-medium text-indigo-600 hover:text-indigo-500">
+                    Continue shopping →
+                  </Link>
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-
-    
-      </main>
-    
     </div>
-    <div className='lg:col-span-2'>
-
-    <div>
-            <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <h1 className="text-4xl font-bold tracking-tight text-gray-900 mt-9">Shopping Cart</h1>
-
-                <div className="mt-8">
-                    <div className="flow-root">
-                        <ul role="list" className="-my-6 divide-y divide-gray-200">
-                            {cartproduct.map((products) => (
-                                <li key={products.product.id} className="flex py-6">
-                                    <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                                        <img
-                                            src={products.product.thumbnail}
-                                            alt={products.product.title}
-                                            className="h-full w-full object-cover object-center"
-                                        />
-                                    </div>
-
-                                    <div className="ml-4 flex flex-1 flex-col">
-                                        <div>
-                                            <div className="flex justify-between text-base font-medium text-gray-900">
-                                                <h3>
-                                                    <a href={products.product.href}>{products.product.title}</a>
-                                                </h3>
-                                                <p className="ml-4">{products.product.price}</p>
-                                            </div>
-                                            <p className="mt-1 text-sm text-gray-500">{products.product.category}</p>
-                                        </div>
-                                        <div className="flex flex-1 items-end justify-between text-sm mb-5">
-                                            {/* {product.quantity} */}
-                                            <div className='text-gray-600'>
-                                                <label htmlFor="quantity" className="inline text-sm font-medium leading-6 text-gray-900">
-                                                    Qty
-                                                </label>
-                                                <select onChange={(e)=>handlequnatity(e,products.id)} value={products.quantity} className='ml-3'>
-                                                    <option value="1">1</option>
-                                                    <option value="2">2</option>
-                                                    <option value="3">3</option>
-                                                    <option value="4">4</option>
-                                                    <option value="5">5</option>
-
-                                                </select>
-                                            </div>
-                                            <div className="flex">
-                                                <button onClick={(e)=>handledelete(e , products.id)} type="button" className="font-medium text-indigo-600 hover:text-indigo-500">
-                                                    Remove
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                </div>
-                <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
-                    <div className="flex justify-between text-base font-medium text-gray-900">
-                        <p>Subtotal</p>
-                        <p>{
-                            
-                            totalamount(cartproduct)
-                            
-                            }</p>
-                    </div>
-                    <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
-                    <div className="mt-6">
-                        
-                    <div
-                    onClick={handleOrder}
-                    className="flex cursor-pointer items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
-                  >
-                    Order Now
-                  </div>
-                        
-                    </div>
-                    <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
-                        <p>
-                            or{' '}
-                            <button
-                                type="button"
-                                className="font-medium text-indigo-600 hover:text-indigo-500"
-                                onClick={() => setOpen(false)}
-                            >
-                                Continue Shopping
-                                <span aria-hidden="true"> &rarr;</span>
-                            </button>
-                        </p>
-                    </div>
-                </div>
-            </main>
-        </div>
-
-    </div>
-    </div>
-    </div>
-  )
-}
+  );
+};
 
 export default Cheakout;

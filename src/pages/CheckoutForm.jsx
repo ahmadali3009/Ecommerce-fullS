@@ -26,11 +26,11 @@ export default function CheckoutForm({dpmCheckerLink}) {
 
     setIsLoading(true);
 
+    const returnUrl = `${window.location.origin}/order-success/${currentOrder?.response?.id}`;
     const { error } = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        // Make sure to change this to your payment completion page
-        return_url: `http://localhost:5173/order-success/${currentOrder.response.id}`,
+        return_url: returnUrl,
       },
     });
 
@@ -65,13 +65,13 @@ export default function CheckoutForm({dpmCheckerLink}) {
         {/* Show any error or success messages */}
         {message && <div id="payment-message">{message}</div>}
       </form>
-      {/* [DEV]: Display dynamic payment methods annotation and integration checker */}
-      <div id="dpm-annotation">
-        <p>
-          Payment methods are dynamically displayed based on customer location, order amount, and currency.&nbsp;
-          <a href={dpmCheckerLink} target="_blank" rel="noopener noreferrer" id="dpm-integration-checker">Preview payment methods by transaction</a>
-        </p>
-      </div>
+      {typeof import.meta !== "undefined" && import.meta.env?.DEV && dpmCheckerLink && (
+        <div id="dpm-annotation" className="mt-4 text-center text-xs text-gray-500">
+          <p>
+            <a href={dpmCheckerLink} target="_blank" rel="noopener noreferrer">Preview payment methods by transaction</a>
+          </p>
+        </div>
+      )}
     </>
   );
 }

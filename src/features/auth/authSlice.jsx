@@ -93,6 +93,7 @@ export const selectcreateuser = (state) => state.user.createusers;
 export const selectcheckuser = (state) => state.user.checkuser;
 export const selecterror = (state) => state.user.error;
 export const selectUserChecked = (state) => state.user.userChecked;
+export const selectAuthStatus = (state) => state.user.status;
 
 
 

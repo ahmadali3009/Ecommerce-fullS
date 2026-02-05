@@ -1,4 +1,5 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '.env') });
 const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
@@ -33,10 +34,12 @@ const corsOrigins = corsOrigin.split(',').map((o) => o.trim()).filter(Boolean);
 
 const corsOptions = {
   origin: (origin, cb) => {
-    if (!origin || corsOrigins.length === 0) return cb(null, true);
-    if (corsOrigins.includes(origin)) return cb(null, true);
-    if (corsOrigins.includes('*')) return cb(null, true);
-    cb(null, false);
+    // With credentials: true we must return the request origin, never '*'
+    if (!origin) return cb(null, false);
+    if (corsOrigins.length === 0) return cb(null, origin);
+    if (corsOrigins.includes(origin)) return cb(null, origin);
+    if (corsOrigins.includes('*')) return cb(null, origin);
+    return cb(null, false);
   },
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   credentials: true,
@@ -72,14 +75,42 @@ server.get('/' , async (req , res)=>
 })
 server.use("/auth" , authrouter)
 
+// Stripe payment intent (before any catch-all "/" routers so it isn't matched by others)
+server.post("/create-payment-intent", async (req, res) => {
+  try {
+    if (!stripe) {
+      return res.status(503).json({ error: 'Stripe is not configured' });
+    }
+    const { totalAmount, orderId } = req.body;
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: totalAmount,
+      currency: "aed",
+      automatic_payment_methods: {
+        enabled: true,
+      },
+      metadata: {
+        orderId,
+      },
+    });
+
+    return res.json({
+      clientSecret: paymentIntent.client_secret,
+      dpmCheckerLink: `https://dashboard.stripe.com/settings/payment_methods/review?transaction_id=${paymentIntent.id}`,
+    });
+  } catch (err) {
+    console.error('create-payment-intent error:', err);
+    return res.status(500).json({ error: err.message || 'Payment setup failed' });
+  }
+});
 
 server.use("/users", isAuth(), userrouter)
 server.use("/" ,  productrouter)
 server.use("/" , categoryrouter)
 server.use("/" , brandrouter)
-server.use("/cart" , isAuth(), cartrouter)
+server.use("/cart" , cartrouter)
 server.use("/" , adminorderrouter)
-server.use("/" , isAuth(), orderrouter)
+server.use("/" , orderrouter)
 
 // server.get('*', (req, res) => {
 //   res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
@@ -151,31 +182,6 @@ passport.use(
       return cb(null, User);
     });
   });
-// Stripe payment (only if STRIPE_SECRET_KEY is set)
-server.post("/create-payment-intent", async (req, res) => {
-  if (!stripe) {
-    return res.status(503).json({ error: 'Stripe is not configured' });
-  }
-  const { totalAmount, orderId } = req.body;
-
-  const paymentIntent = await stripe.paymentIntents.create({
-    amount: totalAmount, // for decimal compensation
-    currency: "aed",
-    // In the latest version of the API, specifying the `automatic_payment_methods` parameter is optional because Stripe enables its functionality by default.
-    automatic_payment_methods: {
-      enabled: true,
-    },
-    metadata: {
-      orderId,
-    },
-  });
-
-  res.send({
-    clientSecret: paymentIntent.client_secret,
-    // [DEV]: For demo purposes only, you should avoid exposing the PaymentIntent ID in the client-side code.
-    dpmCheckerLink: `https://dashboard.stripe.com/settings/payment_methods/review?transaction_id=${paymentIntent.id}`,
-  });
-});
 
 connect()
   .then(() => console.log('MongoDB connected'))

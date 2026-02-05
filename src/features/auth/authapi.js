@@ -1,20 +1,25 @@
 import { API_BASE } from '../../config';
 
-export function createuser(user){
-    return new Promise(async(resolve)=>{
-        const response = await fetch(`${API_BASE}/auth/signup`,{
-
+export function createuser(user) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      const response = await fetch(`${API_BASE}/auth/signup`, {
         method: "POST",
-        credentials: 'include', // Include credentials (cookies)
-        headers: {
-            "Content-Type" : "application/json"
-        },
-        body : JSON.stringify(user)
-    })
-    const data = await response.json()
-    console.log("dataapi" , data)
-    resolve({data})
-    })
+        credentials: 'include',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(user),
+      });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        const message = data?.error || data?.message || response.statusText || 'Signup failed';
+        reject(new Error(typeof message === 'string' ? message : JSON.stringify(message)));
+        return;
+      }
+      resolve({ data });
+    } catch (err) {
+      reject(err);
+    }
+  });
 }
 
 export function checkuser(loginuser) {

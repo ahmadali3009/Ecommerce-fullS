@@ -12,12 +12,14 @@ import {
     MenuItems,
 } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon, StarIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
+import { ChevronDownIcon, ChevronLeftIcon, FunnelIcon, MinusIcon, PlusIcon, Squares2X2Icon, StarIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import { Link } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import {
-    selectAllProducts, fetchallproductscategoriesaync, selectAllcategories, selectAllbrand, fetchbrandsaync, fetchcategoriesaync, selectTotalItems,
-} from "../productsList/prodectSlice"
+    selectAllProducts, fetchallproductscategoriesaync, selectAllcategories, selectAllbrand, fetchbrandsaync, fetchcategoriesaync, selectTotalItems, selectProductStatus,
+} from "./prodectSlice"
+import { addtocartaync } from '../cart/cartslice'
+import { selectcheckuser } from '../auth/authSlice'
 
 const sortOptions = [
     { name: "Best Rating", sort: "rating", current: false },
@@ -36,13 +38,13 @@ function classNames(...classes) {
 }
 
 const Productlist = () => {
-    const products = useSelector(selectAllProducts);
-    console.log("important alert hhek", products)
+    const products = useSelector(selectAllProducts) || [];
     const brand = useSelector(selectAllbrand);
-    console.log("brand?>>>>>>>>" ,brand)
     const categories = useSelector(selectAllcategories);
     const totalItems = useSelector(selectTotalItems);
-    console.log("very very important totalitems" , totalItems)
+    const status = useSelector(selectProductStatus);
+    const user = useSelector(selectcheckuser);
+    const dispatch = useDispatch();
 
     console.log("useseletorhookbrand", brand)
     const filters = [
@@ -62,9 +64,8 @@ const Productlist = () => {
     console.log("fileters>>>>>>>>>>>>>>>" , filters)
     var limit = 10;
     var total_product = totalItems;
-    const dispatch = useDispatch();
 
-    let [filter, setfilter] = useState({})
+    let [filter, setfilter] = useState({});
     let [Sort, setSort] = useState({})
     let [pagee, setpage] = useState(1)
 
@@ -94,8 +95,18 @@ const Productlist = () => {
         setSort(sort);
     };
 
-    const pagenationhandler = (e, index) => {
+    const pagenationhandler = (_e, index) => {
         setpage(index);
+    };
+
+    const handleAddToCart = (e, product) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (!user?.id) return;
+        const cartproduct = []; // cart state not needed for add; backend handles merge
+        const productInCart = false;
+        if (productInCart) return;
+        dispatch(addtocartaync({ product: product.id, quantity: 1, user: user.id }));
     };
   
     // const sorthandler = (e, option)=>
@@ -204,7 +215,15 @@ const Productlist = () => {
                     </Dialog>
 
                     <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                        <div className="flex items-baseline justify-between border-b border-gray-200 pb-6 pt-24">
+                        <nav className="pt-24 pb-2" aria-label="Back to home">
+                            <Link to="/" className="text-sm font-medium text-gray-500 hover:text-indigo-600 inline-flex items-center gap-1">
+                                <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                </svg>
+                                Back to home
+                            </Link>
+                        </nav>
+                        <div className="flex items-baseline justify-between border-b border-gray-200 pb-6">
                             <h1 className="text-4xl font-bold tracking-tight text-gray-900">All Products</h1>
 
                             <div className="flex items-center">
@@ -319,52 +338,86 @@ const Productlist = () => {
                                 <div className="lg:col-span-3">
     <div className="bg-white">
         <div className="mx-auto max-w-2xl px-4 py-0 sm:px-6 sm:py-0 lg:max-w-7xl lg:px-8">
+            {status === 'loading' && (
+                <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 xl:gap-x-10">
+                    {[1, 2, 3, 4, 5, 6].map((i) => (
+                        <div key={i} className="animate-pulse rounded-lg border border-gray-200 p-4">
+                            <div className="h-72 rounded-md bg-gray-200" />
+                            <div className="mt-4 h-4 bg-gray-200 rounded w-3/4" />
+                            <div className="mt-2 h-4 bg-gray-200 rounded w-1/2" />
+                            <div className="mt-4 h-8 bg-gray-200 rounded" />
+                        </div>
+                    ))}
+                </div>
+            )}
+            {status !== 'loading' && products.length === 0 && (
+                <div className="mt-12 text-center py-12">
+                    <p className="text-lg text-gray-500">No products match your filters.</p>
+                    <p className="mt-2 text-sm text-gray-400">Try adjusting filters or sort options.</p>
+                </div>
+            )}
+            {status !== 'loading' && products.length > 0 && (
             <div className="mt-6 grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 xl:gap-x-10">
                 {products.map((product) => (
-                    <Link to={`/productdetail/${product.id}`} key={product.id}>
-                        <div className="group relative border-solid border-2 p-4 border-gray-200 rounded-lg shadow-md transition-transform duration-300 hover:scale-105 hover:shadow-lg">
+                    <div key={product.id} className="group relative border-solid border-2 p-4 border-gray-200 rounded-lg shadow-md transition-transform duration-300 hover:scale-[1.02] hover:shadow-lg">
+                        <Link to={`/productdetail/${product.id}`} className="block">
                             <div className="relative min-h-72 aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-90 lg:h-72">
                                 <img
                                     src={product.thumbnail}
-                                    alt={product.imageAlt}
+                                    alt={product.imageAlt || product.title}
                                     className="h-full w-full object-cover object-center lg:h-full lg:w-full"
                                 />
                                 {product.discountPercentage > 0 && (
-                                    <span className="absolute top-2 right-2  lg:bg-red-500 text-white text-xs px-2 py-1 rounded-full w-auto inline-block">
+                                    <span className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
                                         -{Math.round(product.discountPercentage)}% OFF
                                     </span>
                                 )}
                             </div>
                             <div className="mt-4 flex justify-between items-center">
                                 <div>
-                                    <h3 className="text-sm font-semibold text-gray-700">
-                                        <a href={product.thumbnail} className="hover:underline">
-                                            {product.title}
-                                        </a>
+                                    <h3 className="text-sm font-semibold text-gray-700 hover:underline">
+                                        {product.title}
                                     </h3>
-                                    <StarIcon className='w-5 h-5 inline text-yellow-400' />
-                                    <span className='align-bottom text-sm text-gray-500 ml-1'>{product.rating}</span>
+                                    <StarIcon className="w-5 h-5 inline text-yellow-400" />
+                                    <span className="align-bottom text-sm text-gray-500 ml-1">{product.rating}</span>
                                 </div>
                                 <div className="text-right">
-                                    <p className="text-sm font-bold text-gray-900">${Math.round(product.price * (1 - product.discountPercentage / 100))}</p>
+                                    <p className="text-sm font-bold text-gray-900">${Math.round(product.price * (1 - (product.discountPercentage || 0) / 100))}</p>
                                     <p className="text-sm line-through text-gray-400">${product.price}</p>
                                 </div>
                             </div>
-                            <button className="mt-2 h-7 w-full text-sm font-medium rounded-md bg-stone-600 text-stone-100 hover:bg-stone-800 transition-colors duration-200 ">
-                                Add to Cart
-                            </button>
-                        </div>
-                    </Link>
+                        </Link>
+                        <button
+                            type="button"
+                            onClick={(e) => handleAddToCart(e, product)}
+                            className="mt-2 h-9 w-full text-sm font-medium rounded-md bg-stone-600 text-stone-100 hover:bg-stone-700 transition-colors duration-200"
+                        >
+                            Add to Cart
+                        </button>
+                    </div>
                 ))}
             </div>
+            )}
         </div>
     </div>
     <div className="flex flex-1 sm:hidden justify-between mt-4">
-        <button className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
-            &larr; Prev
+        <button
+            type="button"
+            onClick={() => pagenationhandler(null, Math.max(1, pagee - 1))}
+            disabled={pagee <= 1}
+            className="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+            <ChevronLeftIcon className="h-5 w-5 mr-1" aria-hidden="true" />
+            Prev
         </button>
-        <button className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
-            Next &rarr;
+        <button
+            type="button"
+            onClick={() => pagenationhandler(null, Math.min(Math.ceil(total_product / limit) || 1, pagee + 1))}
+            disabled={pagee >= Math.ceil(total_product / limit)}
+            className="relative ml-3 inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+            Next
+            <ChevronRightIcon className="h-5 w-5 ml-1" aria-hidden="true" />
         </button>
     </div>
     <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between mt-4">

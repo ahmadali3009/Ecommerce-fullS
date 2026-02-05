@@ -35,13 +35,11 @@ const Footer = () => {
           <div>
             <h3 className="text-stone-100 text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
-              {['Home', 'Shop', 'About Us', 'Contact'].map((item) => (
-                <li key={item}>
-                  <Link to="#" className="text-stone-300 hover:text-stone-100 transition-colors duration-200">
-                    {item}
-                  </Link>
-                </li>
-              ))}
+              <li><Link to="/" className="text-stone-300 hover:text-stone-100 transition-colors duration-200">Home</Link></li>
+              <li><Link to="/shop" className="text-stone-300 hover:text-stone-100 transition-colors duration-200">Shop</Link></li>
+              <li><Link to="/contact" className="text-stone-300 hover:text-stone-100 transition-colors duration-200">Contact</Link></li>
+              <li><Link to="/userprofile" className="text-stone-300 hover:text-stone-100 transition-colors duration-200">My Account</Link></li>
+              <li><Link to="/cart" className="text-stone-300 hover:text-stone-100 transition-colors duration-200">Cart</Link></li>
             </ul>
           </div>
 
@@ -49,13 +47,8 @@ const Footer = () => {
           <div>
             <h3 className="text-stone-100 text-lg font-semibold mb-4">Customer Service</h3>
             <ul className="space-y-2">
-              {['FAQs', 'Shipping Info', 'Returns', 'Track Order'].map((item) => (
-                <li key={item}>
-                  <Link to="#" className="text-stone-300 hover:text-stone-100 transition-colors duration-200">
-                    {item}
-                  </Link>
-                </li>
-              ))}
+              <li><Link to="/userorder" className="text-stone-300 hover:text-stone-100 transition-colors duration-200">My Orders</Link></li>
+              <li><Link to="/userprofile" className="text-stone-300 hover:text-stone-100 transition-colors duration-200">Profile</Link></li>
             </ul>
           </div>
 
@@ -88,14 +81,11 @@ const Footer = () => {
               © {new Date().getFullYear()} My Store. All rights reserved.
             </p>
             <div className="flex space-x-6">
-              <Link to="#" className="text-stone-400 hover:text-stone-200 text-sm transition-colors duration-200">
+              <Link to="/" className="text-stone-400 hover:text-stone-200 text-sm transition-colors duration-200">
                 Privacy Policy
               </Link>
-              <Link to="#" className="text-stone-400 hover:text-stone-200 text-sm transition-colors duration-200">
+              <Link to="/" className="text-stone-400 hover:text-stone-200 text-sm transition-colors duration-200">
                 Terms of Service
-              </Link>
-              <Link to="#" className="text-stone-400 hover:text-stone-200 text-sm transition-colors duration-200">
-                Cookie Policy
               </Link>
             </div>
           </div>

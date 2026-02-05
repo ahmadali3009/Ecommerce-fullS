@@ -2,8 +2,12 @@ let { order } =  require("../model/order");
 
     async function handleOrderdata(req, res) {
         try {
-            
-            let orders = new order(req.body);
+            if (!req.user?.id) {
+                return res.status(401).json({ error: 'Authentication required to place an order.' });
+            }
+            const body = { ...req.body };
+            body.user = body.user || req.user.id;
+            let orders = new order(body);
             console.log("order check",orders)
             const response = await orders.save();
             if (response) {
